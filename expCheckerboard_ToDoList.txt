@@ -1,8 +1,20 @@
 Things to do:
 
-Redefine contrast values to: 4, 12, 16, 24, 64, 96. Create the appropriate block of trials. UNIT TEST!!
+Put the temporal frequency at 8.5 hz
 
--6. Program practice trials: WITH AND WITHOUT MONDRIANS
+Redefine contrast values to: 4, 12, 16, 24, 64. 
+
+Add the condition of middle after the first mask (visual masking condition).
+
+Program practice trials: WITH AND WITHOUT MONDRIANS
+
+Create the appropriate block of trials: two for practice and one general
+
+DO not randomize the yes - no response
+
+Test the accuracy of responses after the first block for ceiling.
+
+Do analyses of accuracy as a function to p(yes). Single participant.
 
 
 % HISTORY

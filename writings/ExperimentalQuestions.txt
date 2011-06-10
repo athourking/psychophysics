@@ -1,0 +1,22 @@
+
+
+Experiment 1: temporal masking
+
+How does the temporal distance between the mask and target affect visibility?
+
+Are there inhibitory and facilitatory effects of the masks with regard to the targets?
+
+Control: checkerboard appearing after the 1st mask
+
+Alessio proposed another way of testing subjects: contrast adjustment method. Subjects have to decrease the contrast of appearing checkerboards until they do not see them anymore.
+
+Experiment 2: frequency of the temporal masking
+
+How does the frequency of presentation of the mondrians affect visibility?
+
+
+Physiological Experiment:
+
+Does an unseen checkerboard target generate a P1 / early activity in V1?
+
+
