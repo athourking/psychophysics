@@ -1,14 +1,12 @@
 Things to do:
 
-Put the temporal frequency at 8.5 hz
+Put the temporal frequency at 8.5 hz  %#OK.
 
-Redefine contrast values to: 4, 12, 16, 24, 64. 
+Redefine contrast values to: 4, 12, 16, 24, 64. %#OK
 
-Add the condition of middle after the first mask (visual masking condition).
+Add the condition of middle after the first mask (visual masking condition). %#OK
 
 Program practice trials: WITH AND WITHOUT MONDRIANS
-
-Create the appropriate block of trials: two for practice and one general
 
 DO not randomize the yes - no response
 

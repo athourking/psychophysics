@@ -2,13 +2,14 @@ function runExp
 
 
 try
-    
+
 
     %% Defining parameters
 
     Exp.Gral.SubjectName= input('Please enter subject ID:\n', 's');
     Exp.Gral.SubjectNumber= input('Please enter subject number:\n');
     Exp.Gral.SubjectBlock= input('Please enter block number:\n');
+    Exp.Gral.BlockName= input('Block name:\n','s');
 
     PsychJavaTrouble; % Check there are no problems with Java
     Exp.Cfg.SkipSyncTest = 0; %This should be '0' on a properly working NVIDIA video card. '1' skips the SyncTest.
@@ -35,6 +36,12 @@ try
     Exp.addParams.exitKey = 'o';
     Exp.addParams.blankInterval = 15; % interval between the last mondrian and the question. IN FRAMES
 
+
+    Exp.totalDuration = [];  % Block duration
+    Exp.stimuli.randomTrials = 1; % 1 randomize, 0 do not randomize trials
+    Exp.stimuli.ITI = [21 42 63 85];    
+
+
     %% Use Psychophysics
     %C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard
 
@@ -42,13 +49,25 @@ try
     Exp = InitializeScreen (Exp);
 
     %% Define Trials
-    Exp = trials_definition (Exp);
-    
+    if isempty(Exp.Gral.BlockName)
+        Exp = trials_definition (Exp); %Define the trials online
+    else
+        load(Exp.Gral.BlockName);
+        Exp.Trial = Trial;
+        Exp.stimuli.stimDur = Exp.stimuli.stimDur;
+        Exp.simuli.mondrianStart = Exp.simuli.mondrianStart;
+        Exp.simuli.mondrianEnd = Exp.simuli.mondrianEnd;
+        Exp.stimuli.mondrianRate = Exp.stimuli.mondrianRate;
+        Exp.stimuli.mondrianEyeLocation = Exp.stimuli.mondrianEyeLocation;
+        Exp.stimuli.mondrianTiming = Exp.stimuli.mondrianTiming;
+        clear Trial
+    end
+
     % Preallocate the timing matrix for all trials
     for tr=1: size(Exp.Trial, 1)
         Exp.expinfo(tr).timing = zeros(Exp.stimuli.stimDur,6);
     end
-    
+
     %% Stimuli & Textures creation
     Exp.stimuli.frameSize = ceil(Exp.stimuli.frameSize * Exp.Cfg.pixelsPerDegree); % frames in pixels
 
@@ -145,7 +164,7 @@ try
 
     HideCursor;
     ListenChar(0);
-    Priority(1); %Set Maximun Priority to Window win    
+    Priority(1); %Set Maximun Priority to Window win
 
     time1 = GetSecs();
     for tr =1 : size(Exp.Trial, 1)
@@ -162,7 +181,7 @@ try
 
     %Save results
     save(Exp.Gral.SubjectName, 'Exp')
-    
+
     %% Plot timing control
     timing_diagnosis( Exp.expinfo, Exp.Cfg)
 
@@ -193,8 +212,26 @@ end
 %                       experiment
 %                       --Simple backward masking. Changed trial_definition
 %                       and showTrial: now we can specify the number of
-%                       mondrians and their time of presentation. We can 
+%                       mondrians and their time of presentation. We can
 %                       choose to use only 2 mondrians
 %                       in order to run the backward masking controls.
+
+
+% 12/06/2011    LK.     --Took the parameters of the mondrians and put them
+%                       outside of trial_definition. They were missing when
+%                       we loaded the Block*.mat. Now they are at the
+%                       beginning of runExp.
+
+
+
+
+
+
+
+
+
+
+
+
 
 

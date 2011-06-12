@@ -1,18 +1,16 @@
 function Exp = trials_definition (Exp)
 
 
-Exp.totalDuration = [];
-Exp.stimuli.randomTrials = 1; % 1 randomize, 0 do not randomize trials
-Exp.stimuli.stimDur = 100; %total number of frames for the stimuli presentation period
-Exp.stimuli.ITI = [21 42 63 85];
 
 %% parameters for mondrians
-Exp.simuli.mondrianStart= 1; % frame number to start showing mondrians
-Exp.simuli.mondrianEnd= 100; % frame number to stop showing mondrians
-Exp.stimuli.mondrianRate = 10; % numbers of frames to present each mondrian
-Exp.stimuli.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians to the righ eye
-Exp.stimuli.mondrianTiming = Exp.simuli.mondrianStart:Exp.stimuli.mondrianRate:Exp.simuli.mondrianEnd;
-
+    Exp.stimuli.stimDur = 100; %total number of frames for the stimuli presentation period
+    Exp.simuli.mondrianStart= 1; % frame number to start showing mondrians
+    Exp.simuli.mondrianEnd= 100; % frame number to stop showing mondrians
+    Exp.stimuli.mondrianRate = 10; % numbers of frames to present each mondrian
+    Exp.stimuli.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians to the righ eye
+    Exp.stimuli.mondrianTiming = Exp.simuli.mondrianStart:Exp.stimuli.mondrianRate:Exp.simuli.mondrianEnd;   
+    
+    
 %% parameters for the checkerboard
 
 contrast = [0.04 0.12 0.16 0.24 0.64 0.96]; % michelson contrast 
