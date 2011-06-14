@@ -238,19 +238,9 @@ Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
     Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;]; 
     Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
 
-    randNum = round(rand(1));
-if randNum
     Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xLeft - 70, Exp.stimuli.yLeft, [0 0 255]);
     Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xLeft + 50, Exp.stimuli.yLeft, [0 0 255]);
-    Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xRight -70, Exp.stimuli.yRight, [0 0 255]);
-    Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xRight +50, Exp.stimuli.yRight, [0 0 255]);
-else
-    Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xLeft - 70, Exp.stimuli.yLeft, [0 0 255]);
-    Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xLeft + 50, Exp.stimuli.yLeft, [0 0 255]);
-    Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xRight -70, Exp.stimuli.yRight, [0 0 255]);
-    Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xRight +50, Exp.stimuli.yRight, [0 0 255]);
-end
-
+    
 vbl= Screen('Flip', Exp.Cfg.win,  [], Exp.Cfg.AuxBuffers);
 
 RTflag=0; %Flag to collect only the first response for the trial
@@ -278,17 +268,9 @@ while (RTflag==0)
             elseif strcmpi(Exp.responses.ActualResponse, 'Down')
                 RTflag = 0;
             elseif strcmpi(Exp.responses.ActualResponse, 'Left')
-                if randNum
-                Exp.Trial(tr, 8) = 3; % 'left' is 'yes'
-                else
-                Exp.Trial(tr, 8) = 4; % 'left' is 'no'
-                end
+                Exp.Trial(tr, 8) = 3; 
             elseif strcmpi(Exp.responses.ActualResponse, 'Right')
-                if randNum
-                    Exp.Trial(tr, 8) = 4;
-                else
-                    Exp.Trial(tr, 8) = 3;
-                end
+                Exp.Trial(tr, 8) = 4;
             elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.exitKey)
                 % just do nothing
             else
