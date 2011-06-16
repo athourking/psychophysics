@@ -1,19 +1,7 @@
 Things to do:
 
-Put the temporal frequency at 8.5 hz  %#OK.
-
-Redefine contrast values to: 4, 12, 16, 24, 64. %#OK
-
-Add the condition of middle after the first mask (visual masking condition). %#OK
-
-Program practice trials: WITH AND WITHOUT MONDRIANS
-
-DO not randomize the yes - no response
-
-Test the accuracy of responses after the first block for ceiling.
-
-Do analyses of accuracy as a function to p(yes). Single participant.
-
+Do analyses of accuracy as a function of p(yes). Single participant.  %Work in progress
+i.e., fnish programing analyze_subjective.m
 
 % HISTORY
 
@@ -26,4 +14,16 @@ Do analyses of accuracy as a function to p(yes). Single participant.
 
 -- Program the backward, forward and middle masking conditions 		%#OK
 
--- Checkeed that computer hardware is functioning properly - i.e. - that flips are not missed. Use Profiler  %#OK
+--15062011 Check that computer hardware is functioning properly - i.e. - that flips are not missed. Use Profiler  %#OK
+
+	Put the temporal frequency at 8.5 hz  %#OK.
+
+	Redefine contrast values to: 4, 12, 16, 24, 64. %#OK
+
+	Add the condition of middle after the first mask (visual masking condition). %#OK
+
+	Program practice trials: WITH AND WITHOUT MONDRIANS %OK. 
+
+	DO not randomize the yes - no response  %OK 
+
+	Test the accuracy of responses after the first block for ceiling. %OK 

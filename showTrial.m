@@ -1,6 +1,5 @@
 function Exp = showTrial(Exp, tr)
 
-
 % Create Checkerboard
 % im = checkerboard(size,armsR,armsT,cont,mask,sd,inverted)
 check1= checkerboard(Exp.stimuli.frameSize, 4, 6, Exp.Trial(tr, 3), 1, 1, 1, Exp.Cfg.Color.inc);
@@ -30,10 +29,15 @@ for flp = 1 : Exp.stimuli.stimDur
         % Draw the mondrians
         % Draw every n frames a different mask (picked up randomly from the 40
         % mondrians on each trial)
-        if flp >= Exp.stimuli.mondrianTiming(1) && flp <= Exp.stimuli.mondrianTiming(end)
-            Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_left)
-        end
+        if Exp.stimuli.mondrianStart == 0
+            % Do not present any mondrians
+        else
+            if flp >= Exp.stimuli.mondrianTiming(1) && flp <= Exp.stimuli.mondrianTiming(end)
+                Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_left)
+            end
 
+        end
+        
         % Draw the checkerboard
         if flp == Exp.Trial(tr, 4)
             randi = randperm(length(Exp.stimuli.CheckTexs));
@@ -76,7 +80,14 @@ for flp = 1 : Exp.stimuli.stimDur
         % Draw the mondrians
         % Draw every n frames a different mask (picked up randomly from the 40
         % mondrians on each trial)
-        Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_right)
+        if Exp.stimuli.mondrianStart == 0
+            % Do not present any mondrians
+        else
+            if flp >= Exp.stimuli.mondrianTiming(1) && flp <= Exp.stimuli.mondrianTiming(end)
+                Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_right)
+            end
+        end
+        
         
         if flp == Exp.Trial(tr, 4)
             
@@ -126,6 +137,13 @@ for flp = 1 : Exp.stimuli.stimDur
     % Flip stimuli on the screen
     [VBLTimestamp StimulusOnsetTime FlipTimestamp Missed Beampos]= ...
         Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
+    
+    if flp == Exp.Trial(tr, 4)
+        if Exp.Trial(tr, 4) == 6
+            disp('hi')
+        end
+    end
+    
     
     % Keep all timing information for posterior check
     Exp.expinfo(tr).timing(flp,1:6)= [1, VBLTimestamp, ...
@@ -238,20 +256,12 @@ Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
     Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;]; 
     Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
 
-    randNum = round(rand(1));
-if randNum
     Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xLeft - 70, Exp.stimuli.yLeft, [0 0 255]);
     Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xLeft + 50, Exp.stimuli.yLeft, [0 0 255]);
-    Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xRight -70, Exp.stimuli.yRight, [0 0 255]);
-    Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xRight +50, Exp.stimuli.yRight, [0 0 255]);
-else
-    Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xLeft - 70, Exp.stimuli.yLeft, [0 0 255]);
-    Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xLeft + 50, Exp.stimuli.yLeft, [0 0 255]);
-    Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xRight -70, Exp.stimuli.yRight, [0 0 255]);
-    Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xRight +50, Exp.stimuli.yRight, [0 0 255]);
-end
-
-vbl= Screen('Flip', Exp.Cfg.win,  [], Exp.Cfg.AuxBuffers);
+    Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xRight - 70, Exp.stimuli.yRight, [0 0 255]);
+    Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xRight + 50, Exp.stimuli.yRight, [0 0 255]);
+    
+    vbl= Screen('Flip', Exp.Cfg.win,  [], Exp.Cfg.AuxBuffers);
 
 RTflag=0; %Flag to collect only the first response for the trial
 %Here begins to count the time for the RTs
@@ -278,17 +288,9 @@ while (RTflag==0)
             elseif strcmpi(Exp.responses.ActualResponse, 'Down')
                 RTflag = 0;
             elseif strcmpi(Exp.responses.ActualResponse, 'Left')
-                if randNum
                 Exp.Trial(tr, 8) = 3; % 'left' is 'yes'
-                else
-                Exp.Trial(tr, 8) = 4; % 'left' is 'no'
-                end
             elseif strcmpi(Exp.responses.ActualResponse, 'Right')
-                if randNum
-                    Exp.Trial(tr, 8) = 4;
-                else
-                    Exp.Trial(tr, 8) = 3;
-                end
+                Exp.Trial(tr, 8) = 4;
             elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.exitKey)
                 % just do nothing
             else

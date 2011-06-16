@@ -1,9 +1,6 @@
 function runExp
 
-
 try
-
-
     %% Defining parameters
 
     Exp.Gral.SubjectName= input('Please enter subject ID:\n', 's');
@@ -36,10 +33,9 @@ try
     Exp.addParams.exitKey = 'o';
     Exp.addParams.blankInterval = 15; % interval between the last mondrian and the question. IN FRAMES
 
-
     Exp.totalDuration = [];  % Block duration
     Exp.stimuli.randomTrials = 1; % 1 randomize, 0 do not randomize trials
-    Exp.stimuli.ITI = [21 42 63 85];    
+    Exp.stimuli.ITI = [21 42 63 85];   
 
 
     %% Use Psychophysics
@@ -49,19 +45,25 @@ try
     Exp = InitializeScreen (Exp);
 
     %% Define Trials
-    if isempty(Exp.Gral.BlockName)
-        Exp = trials_definition (Exp); %Define the trials online
-    else
-        load(Exp.Gral.BlockName);
-        Exp.Trial = Trial;
-        Exp.stimuli.stimDur = Exp.stimuli.stimDur;
-        Exp.simuli.mondrianStart = Exp.simuli.mondrianStart;
-        Exp.simuli.mondrianEnd = Exp.simuli.mondrianEnd;
-        Exp.stimuli.mondrianRate = Exp.stimuli.mondrianRate;
-        Exp.stimuli.mondrianEyeLocation = Exp.stimuli.mondrianEyeLocation;
-        Exp.stimuli.mondrianTiming = Exp.stimuli.mondrianTiming;
-        clear Trial
+    load(Exp.Gral.BlockName);
+    % Add the two columns with block and subject information
+    Trial(:, 1) = Exp.Gral.SubjectNumber; % subject number
+    Trial(:, 2) = Exp.Gral.SubjectBlock; % Block number    
+    Exp.Trial = Trial;    
+    Exp.stimuli.stimDur = Mondrians.stimDur; %deleted 'Exp.stimuli.' since not loaded that way
+    Exp.stimuli.mondrianStart = Mondrians.mondrianStart;
+    Exp.stimuli.mondrianEnd = Mondrians.mondrianEnd;
+    Exp.stimuli.mondrianRate = Mondrians.mondrianRate;
+    Exp.stimuli.mondrianEyeLocation = Mondrians.mondrianEyeLocation;
+    Exp.stimuli.mondrianTiming = Mondrians.mondrianTiming;
+    clear Trial Mondrians
+   
+    % randomize trials
+    if Exp.stimuli.randomTrials
+        randi = randperm(length(Exp.Trial));
+        Exp.Trial = Exp.Trial(randi, :);
     end
+    
 
     % Preallocate the timing matrix for all trials
     for tr=1: size(Exp.Trial, 1)
@@ -180,24 +182,28 @@ try
     Exp.totalDuration = time2 - time1; % total duration of the experiment in seconds
 
     %Save results
-    save(Exp.Gral.SubjectName, 'Exp')
+    outDir = 'C:\Programmi\MATLAB\R2006a\work\Lisandro\CFS_Checkerboard\Data\';
+    save([outDir Exp.Gral.SubjectName], 'Exp')
 
     %% Plot timing control
     timing_diagnosis( Exp.expinfo, Exp.Cfg)
-
+    
+    if Exp.Gral.SubjectBlock== 1
+        analyze_firstBlock(Exp.Gral.SubjectName)
+    end
+   
     %% Shut down
     Priority(0);
     Screen('CloseAll');
     sca
     ShowCursor;
 
-
+    
 catch % ME1
     sca;
     %     rethrow(ME1);
     rethrow(psychlasterror);
 end
-
 %% HISTORY
 
 % 02/06/2011    LK.     --Calculated the total duration of each block
@@ -222,6 +228,27 @@ end
 %                       we loaded the Block*.mat. Now they are at the
 %                       beginning of runExp.
 
+%14/06/2011     MS.     --1.Created 4 Block*.mat files, they contain specific
+%                        block parameters for both trial and stimuli. ShowTrial
+%                        lines 32-37 and 80-83 is how I make mondrians start
+%                        or not start, depending on which Block*.mat gets loaded. 
+%                        3. Added analyze_firstBlock at the bottom of
+%                        runExp, it produces an accuracy plot only when Block 
+%                        number ==1. 4.Created analyze_subjective.m to
+%                        measure accuracy for 'yes' and 'no' responses. Did not
+%                        finish.
+%                   
+%15/06/2011    LK.MS.    --Decided to have 3 *.mat files: 2 for practice(1 with 
+%                        (checkerboards, 1 with checkerboards(igher contrasts 
+%                        and mondrians), 1 for main block. 
+%                        --Seperated trials_definition from runExp. 
+%                        Now, when runExp run, must always provide mat file 
+%                        containing Trial(160x8 double, defining checkerboard
+%                        presentation and preallocates columns for subject data) 
+%                        and  Mondrians(structure with 6 variables, defining 
+%                        Mondrian presentation). Thus,runExp does not use 
+%                        trials_definition anymore. 
+%                  
 
 
 

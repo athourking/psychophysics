@@ -1,7 +1,6 @@
 function analyze_firstBlock(fileNameIn)
 
-
-inDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data/';
+inDir = 'C:\Programmi\MATLAB\R2006a\work\Lisandro\CFS_Checkerboard\Data\';
 load ([inDir fileNameIn]);
 Data = Exp.Trial;  
 timing_conditions = unique(Data(:,5)); 
@@ -15,10 +14,10 @@ for cond =1 : length(timing_conditions)
             aux_data = Data(Data(:,5) ==timing_conditions(cond)...
                 & Data(:,3)== all_contrasts(contrast), :) ;
             %just a sanity check
-            if size(aux_data, 1) ~= 8
-                display ('ERROR IN THE NUMBER OF TRIALS')
-                return
-            end                     
+            %if size(aux_data, 1) ~= 8
+             %   display ('ERROR IN THE NUMBER OF TRIALS')
+              %  return
+            %end                     
             
         accuracies(cond, contrast) = size( aux_data( aux_data(:,6) == aux_data(:,7), :), 1) / size(aux_data, 1);            
         end
