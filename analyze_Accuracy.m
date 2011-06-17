@@ -42,7 +42,7 @@ for m=1: length(all_contrasts)
 end
 
 % cols= {'0.04' '0.04' '0.08' '0.16' '0.32' '0.64' '0.96'};
-rows = {'backward' 'forward' 'middle'}; %#ok
+rows = {'backward' 'forward' 'middle' 'start'}; %#ok
 
 accuracies_means = mean(accuracies, 3);%#ok
 accuracies_std = std(accuracies, 0, 3);%#ok

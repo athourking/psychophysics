@@ -1,11 +1,11 @@
 function analyze_concatenateData
 
-rawDataDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data/';
+rawDataDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data/Final_Subjects/';
 resultsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
 figsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Figures/';
 
-fileName = 'Data_02062011'; % DEFINE THE NAME TO SAVE THE FILE
-files = dir([rawDataDir 'S*02062011*.mat']);
+fileName = 'Data_final_17062011'; % DEFINE THE NAME TO SAVE THE FILE
+files = dir([rawDataDir 'S*062011*.mat']);
 displayFiles (files)
 
 

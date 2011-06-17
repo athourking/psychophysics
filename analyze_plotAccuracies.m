@@ -12,9 +12,9 @@ for subj = 1 : size(accuracies, 3)
     set(gcf,'InvertHardcopy','off')
     hold on
 
-    markers = {'-ks'  '-k^' '-ok'};
-    markerColor = {'k'  'k' 'k'};
-    MarkerFaceColor = {'k'  'b' 'g'};
+    markers = {'-ks'  '-k^' '-ok' '-ks'};
+    markerColor = {'k'  'k' 'k' 'k'};
+    MarkerFaceColor = {'k'  'b' 'g' 'r'};
     markerSize = 7;
     for cond =1 : size(accuracies,1)
         plot(all_contrasts, accuracies(cond, : , subj), markers{cond},'MarkerEdgeColor', markerColor{cond}, ...
@@ -40,9 +40,9 @@ set(gcf,'Position',[0 0 600 300],'Color','w')
 set(gcf,'PaperPositionMode','auto')
 set(gcf,'InvertHardcopy','off')
 hold on
-markers = {'-ks'  '-k^' '-ok'};
-markerColor = {'k'  'k' 'k'};
-MarkerFaceColor = {'k'  'b' 'g'};
+markers = {'-ks'  '-k^' '-ok' '-ks'};
+markerColor = {'k'  'k' 'k' 'k'};
+MarkerFaceColor = {'k'  'b' 'g' 'r'};
 % markerSize = 6;
 for cond =1 : size(accuracies,1)
     plot(all_contrasts, accuracies_means(cond, :), markers{cond},'MarkerEdgeColor', markerColor{cond}, ...
