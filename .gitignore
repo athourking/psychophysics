@@ -5,3 +5,6 @@ Figures/
 *.asv
 *.mat
 Papers/
+Data_Figures/
+Data_Raw/
+analyze_concatenateDati.m
