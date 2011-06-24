@@ -1,10 +1,5 @@
-function analyze_Accuracy (fileName, inDir, outDir)
+function analyze_Accuracy (Data, fileName, inDir, outDir)
 
-% inDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
-% outDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
-% fileName = 'Data_3subjs_06062011';
-
-load ([inDir fileName])
 
 %% Conditions :
 % (1) subject number ; (2) Block number; (3) contrast value ; (4) timing
@@ -42,13 +37,20 @@ for m=1: length(all_contrasts)
 end
 
 % cols= {'0.04' '0.04' '0.08' '0.16' '0.32' '0.64' '0.96'};
-rows = {'backward' 'forward' 'middle'}; %#ok
+rows = {'backward' 'forward' 'middle' 'start'}; %#ok
 
 accuracies_means = mean(accuracies, 3);%#ok
 accuracies_std = std(accuracies, 0, 3);%#ok
 accuracies_sems = std(accuracies,0, 3) / sqrt(size(accuracies, 3));%#ok
+
+accuracies_zscored = zscore(accuracies);
+accuracies_means_zscored = mean(accuracies_zscored, 3);%#ok
+accuracies_std_zscored = std(accuracies_zscored, 0, 3);%#ok
+accuracies_sems_zscored = std(accuracies_zscored,0, 3) / sqrt(size(accuracies_zscored, 3));%#ok
+
 save([outDir fileName], 'accuracies', 'accuracies_means', 'accuracies_std', 'accuracies_sems', ...
-    'rows', 'cols', 'timing_conditions', 'subjects', 'all_contrasts', '-append')
+    'accuracies_zscored', 'accuracies_means_zscored', 'accuracies_std_zscored', 'accuracies_sems_zscored', ...
+    'rows', 'cols', 'timing_conditions', 'subjects', 'all_contrasts')
 
 
 

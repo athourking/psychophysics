@@ -1,13 +1,14 @@
 function analyze_concatenateData
 
-rawDataDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data/';
+% Concatenate all single subjects into one Matrix. This is done ONCE in the beginning.
+% After this is done we can filter the data for sub-groups of subjects and plot results
+
+rawDataDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data/Final_Subjects/';
 resultsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
-figsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Figures/';
 
-fileName = 'Data_02062011'; % DEFINE THE NAME TO SAVE THE FILE
-files = dir([rawDataDir 'S*02062011*.mat']);
+fileName = 'Data_final'; % DEFINE THE NAME TO SAVE THE FILE
+files = dir([rawDataDir 'S*.mat']);
 displayFiles (files)
-
 
 Data = [];
 for fi = 1: length(files)
@@ -19,9 +20,19 @@ end
 save([resultsDir fileName], 'Data')
 
 
-%% Analyze accuracy
+%% Analyze accuracy: Filter subjects here if needed
 
-analyze_Accuracy (fileName, resultsDir, resultsDir)
+resultsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
+figsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Figures/';
+load ([resultsDir 'Data_final']); % Load the main file
+% Filter subjects
+subjects = [1 3 5]; % vector of subjects to analyse
+fileName = 'Subjects_1_3_5';
+if ~isempty(subjects)
+    Data = Data( ismember(Data(:,1), subjects), :);
+end
+
+analyze_Accuracy (Data, fileName, resultsDir, resultsDir)
 
 %% Plot Results
 

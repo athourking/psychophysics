@@ -21,10 +21,24 @@ checkLocation = [1 2 3 4];
 timing = {[39 49 59 69] [32 42 52 62] [36 46 56 66] [6 6 6 6]};
 
 %addpath('C:\Users\John.John-PC\Documents\MATLAB\CFS_Data\Data_Raw');
-dataPath = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Data_Raw\';
+
+while (1)
+dataPath = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Data_Concat\';
+if exist([dataPath fileNameIn])
+
+load ([dataPath fileNameIn]);
+if exist
+    continue
+else
+    break
+end
+end
+elseif
+dataPath = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Data_Raw';
+load ([dataPath fileNameIn]);
+end
 %how can I say, check this, if works go on, if not, chech next, when works
 %continue
-load ([dataPath fileNameIn]);
 
 for i = 1:length(contrast)
     for j = 1:length(timing)
@@ -61,9 +75,9 @@ end
 condLabels= {'bacward' 'forward' 'middle' 'control'};
 
 %'Yes' accuracy bar-graph
-bar(contrast, yes_proportion');
+bar(contrast, yes_proportion','r');
 hold on
-bar(contrast, (yes_accuracy.*yes_proportion)', 'r');
+bar(contrast, (yes_accuracy.*yes_proportion)');
 set(gca,'XTick', contrast);
 legend(condLabels,'Location','Best');
 
