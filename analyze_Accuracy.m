@@ -43,7 +43,10 @@ accuracies_means = mean(accuracies, 3);%#ok
 accuracies_std = std(accuracies, 0, 3);%#ok
 accuracies_sems = std(accuracies,0, 3) / sqrt(size(accuracies, 3));%#ok
 
-accuracies_zscored = zscore(accuracies);
+
+for m=1: size(accuracies, 3)
+    accuracies_zscored(:,:,1) = zscore(accuracies(:,:,1));
+end
 accuracies_means_zscored = mean(accuracies_zscored, 3);%#ok
 accuracies_std_zscored = std(accuracies_zscored, 0, 3);%#ok
 accuracies_sems_zscored = std(accuracies_zscored,0, 3) / sqrt(size(accuracies_zscored, 3));%#ok
