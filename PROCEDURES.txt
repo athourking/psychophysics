@@ -1,4 +1,4 @@
-Lisandro 2
+Lisandro 
 
 BEFORE STARTING ANYTHING:
 --CHECK MONITOR SETTINGS: right click on desktop>proprieta>Impostazioni>Avanzate>Monitor
