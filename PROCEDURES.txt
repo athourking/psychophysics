@@ -1,3 +1,5 @@
+MODIFIED!
+
 BEFORE STARTING ANYTHING:
 --CHECK MONITOR SETTINGS: right click on desktop>proprieta>Impostazioni>Avanzate>Monitor
 --MONITOR REFRESH RATE: 85HZ
