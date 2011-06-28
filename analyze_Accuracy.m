@@ -1,5 +1,8 @@
 function analyze_Accuracy (Data, fileName, inDir, outDir)
-
+%This function is embedded in the script analyze_concatenateData. It takes
+%the data of the subjects that have been concatenated into a single matrix
+%called Data and appends a number of new variables. See the bottom of this
+%function to see which ones.
 
 %% Conditions :
 % (1) subject number ; (2) Block number; (3) contrast value ; (4) timing
