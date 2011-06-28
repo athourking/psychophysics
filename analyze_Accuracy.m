@@ -46,9 +46,10 @@ accuracies_means = mean(accuracies, 3);%#ok
 accuracies_std = std(accuracies, 0, 3);%#ok
 accuracies_sems = std(accuracies,0, 3) / sqrt(size(accuracies, 3));%#ok
 
-
 for m=1: size(accuracies, 3)
-    accuracies_zscored(:,:,1) = zscore(accuracies(:,:,1));
+    vector_accuracies = zscore(reshape(accuracies(:,:,m), length(timing_conditions) * length(all_contrasts), 1));
+    accuracies_zscored(:,:,m) = reshape(vector_accuracies, length(timing_conditions), length(all_contrasts)); %#ok
+%     accuracies_zscored(:,:,m) = zscore(accuracies(:,:,m)); %#ok
 end
 accuracies_means_zscored = mean(accuracies_zscored, 3);%#ok
 accuracies_std_zscored = std(accuracies_zscored, 0, 3);%#ok
