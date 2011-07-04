@@ -6,8 +6,8 @@ function analyze_anova %(fileName,inDir)
 %see if the difference is significant.
 
 %Load the data
-inDir = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Data_Concat\';
-fileName ='Data_final';
+inDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
+fileName ='Data_12Subjects';
 load([inDir fileName]);
 
 %Filter our the relevant conditions
@@ -25,9 +25,5 @@ bwd_mid_at16(:,2) = reshape(accuracies_zscored(3,3,:),12,1);
 anova1(bwd_mid_at12)
 title(gca,'BWD vs MID at 12% contrast');
 
-[h,p,ci]=ttest2(bwd_mid_at12(:,1), bwd_mid_at12(:,2))
-
 anova1(bwd_mid_at16);
 title(gca,'BWD vs MID at 16% contrast');
-
-[h,p,ci]=ttest2(bwd_mid_at16(:,1), bwd_mid_at16(:,2))

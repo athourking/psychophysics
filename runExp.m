@@ -161,6 +161,8 @@ try
     Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
     kbwait();
 
+    outDir = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Exp_images\';
+    printPsychtoolboxScreen (Exp.win, 'Frames', outDir);
 
     %% Run main experiment
 
