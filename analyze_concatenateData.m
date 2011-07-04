@@ -26,8 +26,8 @@ resultsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
 figsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Figures/';
 load ([resultsDir 'Data_final']); % Load the main file
 % Filter subjects
-subjects = [1 3 5]; % vector of subjects to analyse
-fileName = 'Subjects_1_3_5';
+subjects = []; % vector of subjects to analyse
+fileName = 'Subjects';
 if ~isempty(subjects)
     Data = Data( ismember(Data(:,1), subjects), :);
 end
