@@ -1,8 +1,9 @@
-function analyze_subjectiveP(fileNameIn)
+function analyze_subjective(fileNameIn)
 %fileNameIn is a string specifying the file(s) you wish to analyze. It goes
 %through each file. This function treats each file as representing one
 %subject. It outputs a grand total of 8 accuracy plots: ye/no responses X
 %4 masking conditions.
+%fileNameIn = 'Data_final'; 
 inDir = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Data_Concat\';
 subjectsToAnalyze = dir(([inDir fileNameIn]));
 

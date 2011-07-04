@@ -25,5 +25,9 @@ bwd_mid_at16(:,2) = reshape(accuracies_zscored(3,3,:),12,1);
 anova1(bwd_mid_at12)
 title(gca,'BWD vs MID at 12% contrast');
 
+[h,p,ci]=ttest2(bwd_mid_at12(:,1), bwd_mid_at12(:,2))
+
 anova1(bwd_mid_at16);
 title(gca,'BWD vs MID at 16% contrast');
+
+[h,p,ci]=ttest2(bwd_mid_at16(:,1), bwd_mid_at16(:,2))
