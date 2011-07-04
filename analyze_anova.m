@@ -6,8 +6,8 @@ function analyze_anova %(fileName,inDir)
 %see if the difference is significant.
 
 %Load the data
-inDir = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Data_Concat\';
-fileName ='Data_final';
+inDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
+fileName ='Data_12Subjects';
 load([inDir fileName]);
 
 %Filter our the relevant conditions

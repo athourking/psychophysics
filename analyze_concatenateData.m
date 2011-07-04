@@ -3,10 +3,10 @@ function analyze_concatenateData
 % Concatenate all single subjects into one Matrix. This is done ONCE in the beginning.
 % After this is done we can filter the data for sub-groups of subjects and plot results
 
-rawDataDir = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Data_Raw\';
-resultsDir = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Data_Concat\';
+rawDataDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data/Final_Subjects/';
+resultsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
 
-fileName = 'Data_final'; % DEFINE THE NAME TO SAVE THE FILE, contains a matrix of all subjects' trials
+fileName = 'Data_12Subjects'; % DEFINE THE NAME TO SAVE THE FILE, contains a matrix of all subjects' trials
 files = dir([rawDataDir 'S*.mat']);
 displayFiles (files);
 
@@ -18,7 +18,7 @@ for fi = 1: length(files)
 end
 
 save([resultsDir fileName], 'Data'); %this will save the matrix with name Data_final in folder Data_concat
-
+dlmwrite([resultsDir fileName '.txt'], Data, 'delimiter', '\t', 'precision', 8);
 
 %% Analyze accuracy: Filter subjects here if needed
 %All the subjects' data have been concatenated above. Here, by entering
@@ -27,9 +27,9 @@ save([resultsDir fileName], 'Data'); %this will save the matrix with name Data_f
 %anything, the functions analyze_Accuracy and analyze_plotAccuracies will
 %be applied to the entire matrix, i.e., all the subjects.
 
-resultsDir = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Data_Concat\';
-figsDir = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Data_Figures\';
-load ([resultsDir 'Data_final']); % Load the main file
+resultsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
+figsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Figures/Final_Subjects/';
+load ([resultsDir 'Data_12Subjects']); % Load the main file
 % Filter subjects
 subjects = []; % vector of subjects to analyse
 %fileName = 'Subject';

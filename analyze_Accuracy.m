@@ -49,7 +49,7 @@ rows = {'backward' 'forward' 'middle' 'start'}; %#ok
 
 accuracies_means = mean(accuracies, 3);%#ok
 accuracies_std = std(accuracies, 0, 3);%#ok
-accuracies_sems = std(accuracies,0, 3) / sqrt(size(accuracies, 3));%#ok
+accuracies_sems = std(accuracies,0, 3) ./ sqrt(size(accuracies, 3));%#ok
 
 for m=1: size(accuracies, 3)
     vector_accuracies = zscore(reshape(accuracies(:,:,m), length(timing_conditions) * length(all_contrasts), 1));
