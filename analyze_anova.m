@@ -1,4 +1,4 @@
-function analyze_anova (fileName,inDir)
+function analyze_anova %(fileName,inDir)
 
 %Based on what is visible in the plot of mean accuracies across all subjects, 
 %the biggest difference should be between backward and middle masking 
