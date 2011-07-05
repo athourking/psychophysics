@@ -18,7 +18,8 @@ contrast = [0.04 0.12 0.16 0.24 0.64]; % michelson contrast
 checkLocation = [1 2 3 4];
 % locations = 1: up; 2: down; 3: Left; 4: right;
 timing = {[39 49 59 69] [32 42 52 62] [36 46 56 66] [6 6 6 6]};
-% timingConds = { 'backwardMasking' 'forwardMasking' 'middleMasking'}; % 1, 2, 3
+% timingConds = { 'backwardMasking' 'forwardMasking' 'middleMasking'
+% 'control'}; % 1, 2, 3, 4
 
 repetitions= 2; % repetition of the minimun design -one trial per condition-
 

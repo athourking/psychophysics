@@ -21,11 +21,11 @@ str(dataset)
 # Calculate accuracies
 dataset$acc <- ifelse(dataset$location==dataset$response,1,0)
 
-dataset <- dataset[ dataset[,4] < 10 | dataset[,4] > 40 , ] # FILTER THE 4 FLASHES CONDITIONS
+# FILTER OUT THE TRIALS WITH LESS THAN 4 INITIAL FLASHES
+dataset <- dataset[ dataset[,4] < 10 | dataset[,4] > 40 , ]                                                             
 
-data.frame(dataset$acc,dataset$location,dataset$response)
-
-
+# Data sanity check: prints only the first 6 rows
+head(data.frame(dataset$acc,dataset$location,dataset$response))
 
 # Calculate accuracy means for each subject
 aggregatedData <- aggregate(dataset$acc,list(dataset$maskCode,dataset$contrast,dataset$subject),mean)
@@ -35,7 +35,20 @@ aggregatedData$maskCode <- factor(aggregatedData$maskCode)
 aggregatedData$contrast <- factor(aggregatedData$contrast)
 aggregatedData$subject <- factor(aggregatedData$subject)
 
-interaction.plot(aggregatedData$contrast,aggregatedData$maskCode,aggregatedData$acc,ylim=c(0,1))
+# Plot the interactions
+x11()
+png("mygraph.png")
+interaction.plot(aggregatedData$contrast,aggregatedData$maskCode,aggregatedData$acc,ylim=c(0.18,1),
+                 type="b",pch=c(16,17,18,19),cex=1.5)
+dev.copy(png,"mygraph.png")
+
+
+
+#subj <- "12"
+#interaction.plot(aggregatedData$contrast[aggregatedData$subject==subj],
+#                 aggregatedData$maskCode[aggregatedData$subject==subj],
+#                 aggregatedData$acc[aggregatedData$subject==subj],
+#                 ylim=c(0,1),type="b",pch=c(16,22,18,21),cex=1.5)
 
 # Calculate zscore accuracy means
 aggregatedData$zAcc <- rep(0,dim(aggregatedData)[1])
