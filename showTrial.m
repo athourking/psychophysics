@@ -33,7 +33,7 @@ for flp = 1 : Exp.stimuli.stimDur
         if flp >= Exp.stimuli.mondrianTiming(1) && flp <= Exp.stimuli.mondrianTiming(end)
             Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_left)
         end
-
+        
         % Draw the checkerboard
         if flp == Exp.Trial(tr, 4)
             randi = randperm(length(Exp.stimuli.CheckTexs));
@@ -126,6 +126,11 @@ for flp = 1 : Exp.stimuli.stimDur
     % Flip stimuli on the screen
     [VBLTimestamp StimulusOnsetTime FlipTimestamp Missed Beampos]= ...
         Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
+    
+    if flp == 1
+            outDir = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Exp_images\';
+    printPsychtoolboxScreen (Exp.Cfg.win, 'Mondrian3', outDir);
+        end
     
     % Keep all timing information for posterior check
     Exp.expinfo(tr).timing(flp,1:6)= [1, VBLTimestamp, ...

@@ -50,7 +50,7 @@ try
     Trial(:, 1) = Exp.Gral.SubjectNumber; % subject number
     Trial(:, 2) = Exp.Gral.SubjectBlock; % Block number    
     Exp.Trial = Trial;    
-    Exp.stimuli.stimDur = Mondrians.stimDur; %deleted 'Exp.stimuli.' since not loaded that way
+    Exp.stimuli.stimDur = 100; %Mondrians.stimDur; %deleted 'Exp.stimuli.' since not loaded that way
     Exp.stimuli.mondrianStart = Mondrians.mondrianStart;
     Exp.stimuli.mondrianEnd = Mondrians.mondrianEnd;
     Exp.stimuli.mondrianRate = Mondrians.mondrianRate;
@@ -67,6 +67,7 @@ try
 
     % Preallocate the timing matrix for all trials
     for tr=1: size(Exp.Trial, 1)
+        Exp.stimuli.stimDur = 100;
         Exp.expinfo(tr).timing = zeros(Exp.stimuli.stimDur,6);
     end
 
@@ -157,12 +158,10 @@ try
     Screen('DrawDots', Exp.Cfg.win, xy, 7, [0 0 255], [], 2);
     Screen('TextSize', Exp.Cfg.win, 18);
     Screen('DrawText', Exp.Cfg.win, 'Fixate', x(1)- 45, y(1) + 5, [0 0 255]);
+
     Screen('DrawText', Exp.Cfg.win, 'Fixate', x(2)- 45, y(2) + 5, [0 0 255]);
     Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
     kbwait();
-
-    outDir = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Exp_images\';
-    printPsychtoolboxScreen (Exp.win, 'Frames', outDir);
 
     %% Run main experiment
 

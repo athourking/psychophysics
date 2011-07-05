@@ -62,7 +62,7 @@ accuracies_sems_zscored = std(accuracies_zscored,0, 3) / sqrt(size(accuracies_zs
 
 save([outDir fileName], 'accuracies', 'accuracies_means', 'accuracies_std', 'accuracies_sems', ...
     'accuracies_zscored', 'accuracies_means_zscored', 'accuracies_std_zscored', 'accuracies_sems_zscored', ...
-    'rows', 'cols', 'timing_conditions', 'subjects', 'all_contrasts')
+    'rows', 'cols', 'timing_conditions', 'subjects', 'all_contrasts', '-append')
 
 
 

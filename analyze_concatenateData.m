@@ -3,10 +3,11 @@ function analyze_concatenateData
 % Concatenate all single subjects into one Matrix. This is done ONCE in the beginning.
 % After this is done we can filter the data for sub-groups of subjects and plot results
 
-rawDataDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data/Final_Subjects/';
-resultsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
+%% This will load the directory and file names needed to execute this function
 
-fileName = 'Data_12Subjects'; % DEFINE THE NAME TO SAVE THE FILE, contains a matrix of all subjects' trials
+[rawDataDir resultsDir figsDir fileName] = directories;
+%%
+
 files = dir([rawDataDir 'S*.mat']);
 displayFiles (files);
 
@@ -27,9 +28,7 @@ dlmwrite([resultsDir fileName '.txt'], Data, 'delimiter', '\t', 'precision', 8);
 %anything, the functions analyze_Accuracy and analyze_plotAccuracies will
 %be applied to the entire matrix, i.e., all the subjects.
 
-resultsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
-figsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Figures/Final_Subjects/';
-load ([resultsDir 'Data_12Subjects']); % Load the main file
+load ([resultsDir fileName]); % Load the main file
 % Filter subjects
 subjects = []; % vector of subjects to analyse
 %fileName = 'Subject';
