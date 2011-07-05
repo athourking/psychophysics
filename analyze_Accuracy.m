@@ -1,4 +1,4 @@
-function analyze_Accuracy (Data, fileName, inDir, outDir)
+function analyze_Accuracy (Data, fileName, outDir)
 %This function is embedded in the script analyze_concatenateData. It takes
 %the data of the subjects that have been concatenated into a single matrix
 %(either all subjects or the ones filtered out in that function) called 
@@ -14,6 +14,10 @@ function analyze_Accuracy (Data, fileName, inDir, outDir)
 % value ; (5) code for the timing conditions ; (6) location of the checkerboard
 % (7) responses for locations ; (8) responses for subjective visibility
 
+
+% Filter the less than 5 masks condition
+% Data = Data(Data(:,4) < 10 | Data(:,4) > 40, :);
+
 %  timingConds = { 'backwardMasking' 'forwardMasking' 'middleMasking'}; %
 %  1, 2, 3
 timing_conditions = unique(Data(:,5)); %#ok
@@ -26,10 +30,10 @@ for subj = 1: length(subjects)
         for contrast =1 :length(all_contrasts)
             
             % Filter subjects
-            aux_data = Data( Data(:,1) == subjects(subj) & Data(:,5) ==timing_conditions(cond)...
+            aux_data = Data( Data(:,1) == subjects(subj) & Data(:,5) == timing_conditions(cond)...
                 & Data(:,3)== all_contrasts(contrast), :) ; %#ok
             % just a sanity check
-            if size(aux_data, 1) ~= 48
+            if size(aux_data, 1) ~= 48 %|| size(aux_data, 1) ~= 36 
                 display ('ERROR IN THE NUMBER OF TRIALS')
                 return
             end

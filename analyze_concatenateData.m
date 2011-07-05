@@ -37,7 +37,7 @@ if ~isempty(subjects)
     Data = Data( ismember(Data(:,1), subjects), :);
 end
 
-analyze_Accuracy (Data, fileName, resultsDir, resultsDir)
+analyze_Accuracy (Data, fileName, resultsDir)
 %Data - the matrix, fileName - how to save it, resultsDir - the inDir,
 %resulsDir - the outDir (here the same as the inDir).
 %This takes the Data and the other variables from above

@@ -1,11 +1,9 @@
 Things to do:
 
-Do analyses of accuracy as a function of p(yes). Single participant.  %Work in progress
-i.e., fnish programing analyze_subjective.m
+# Program the next experiment
 
-Create the trials figure
+# Create the trials figure
 
-Test 12 subjects, analyze data and move on to test the frequency of masks
 
 % HISTORY
 
@@ -31,3 +29,14 @@ Test 12 subjects, analyze data and move on to test the frequency of masks
 	DO not randomize the yes - no response  %OK 
 
 	Test the accuracy of responses after the first block for ceiling. %OK 
+
+--05/07/2011
+
+	# Scripted analyze_subjective.m: analyses of accuracy as a function of p(yes)
+
+	# After seeing the results we decided on the parameters for the next experiment
+
+
+
+
+
