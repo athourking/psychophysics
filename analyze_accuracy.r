@@ -19,7 +19,7 @@ names(dataset) <- nomi
 str(dataset)
 
 # Calculate accuracies
-dataset$acc <- ifelse(dataset$location==dataset$response,1,0)
+dataset$acc <- ifelse(dataset$location == dataset$response, 1, 0)
 
 # FILTER OUT THE TRIALS WITH LESS THAN 4 INITIAL FLASHES
 dataset <- dataset[ dataset[,4] < 10 | dataset[,4] > 40 , ]                                                             

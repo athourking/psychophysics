@@ -56,7 +56,7 @@ end
 types = {accuracies_means accuracies_means_zscored};
 sems_types = {accuracies_sems accuracies_sems_zscored};
 names = {'_Accuracy_All_Subjects' '_Accuracy_zscored_All_Subjects'};
-ylimits = { [0 1] [-2.5 2.5]};
+ylimits = { [0.2 1] [-2.5 2.5]};
 
 for type = 1 : length(types)
     

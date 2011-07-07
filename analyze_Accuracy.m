@@ -18,6 +18,8 @@ function analyze_Accuracy (Data, fileName, outDir)
 % Filter the less than 5 masks condition
 % Data = Data(Data(:,4) < 10 | Data(:,4) > 40, :);
 
+% x = Data(Data(:,4) < 10, :);
+
 %  timingConds = { 'backwardMasking' 'forwardMasking' 'middleMasking'}; %
 %  1, 2, 3
 timing_conditions = unique(Data(:,5)); %#ok

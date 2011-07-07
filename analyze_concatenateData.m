@@ -6,6 +6,7 @@ function analyze_concatenateData
 %% This will load the directory and file names needed to execute this function
 
 [rawDataDir resultsDir figsDir fileName] = directories;
+
 %%
 
 files = dir([rawDataDir 'S*.mat']);
