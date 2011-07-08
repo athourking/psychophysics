@@ -1,4 +1,4 @@
-function analyze_sub (Data, subjects, timing_conditions, all_contrasts)
+function analyze_sub (Data, subjects, timing_conditions, all_contrasts, figsDir)
 
 %Data is the matrix containing all subjects' data
  
