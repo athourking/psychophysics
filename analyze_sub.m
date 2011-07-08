@@ -21,8 +21,6 @@ accuracy_sem = std(accuracy,0, 3) ./ sqrt(size(accuracy, 3));
 proportion_sem = std(accuracy,0, 3) ./ sqrt(size(accuracy, 3));
 meanProportion_sem_half = proportion_sem / 2;
 
-titles = {'Backward masking', 'Forward masking', 'Middle masking', 'Control condition'};
-
 figure()
 hold on
 line([0 1],[0.25 1]); % linear trend expected    
@@ -48,9 +46,9 @@ for maskCond = 1:size(meanAccuracy,1)
     end
 end
 
-title('');
-xlabel('Proportion of "yes" responses');
-ylabel('Accuracy');
+title('Accuracy as a function of proportion of "yes" responses','fontsize',14);
+xlabel('Proportion of "yes" responses','fontsize',12);
+ylabel('Accuracy','fontsize',12);
 set(gca,'Xlim', [0 1])
 
 

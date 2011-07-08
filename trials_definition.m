@@ -1,7 +1,6 @@
 function trials_definition (blockName)
 
 
-
 %% parameters for mondrians
     Mondrians.stimDur = 100; %total number of frames for the stimuli presentation period
     Mondrians.mondrianStart= 1; % 1: means start from from frame 1; 0: without mondrians
