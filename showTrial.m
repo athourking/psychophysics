@@ -30,7 +30,7 @@ for flp = 1 : Exp.stimuli.stimDur
         % Draw the mondrians
         % Draw every n frames a different mask (picked up randomly from the 40
         % mondrians on each trial)
-        if flp >= Exp.stimuli.mondrianTiming(1) && flp <= Exp.stimuli.mondrianTiming(end)
+        if flp >= Exp.stimuli.mondrianTiming{tr}(1) && flp <= Exp.stimuli.mondrianTiming{tr}(end)
             Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_left)
         end
         
@@ -76,8 +76,10 @@ for flp = 1 : Exp.stimuli.stimDur
         % Draw the mondrians
         % Draw every n frames a different mask (picked up randomly from the 40
         % mondrians on each trial)
-        Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_right)
-        
+        if flp >= Exp.stimuli.mondrianTiming{tr}(1) && flp <= Exp.stimuli.mondrianTiming{tr}(end)
+            Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_left)
+        end        
+               
         if flp == Exp.Trial(tr, 4)
             
             % Draw the checkerboard on the correct location
@@ -127,18 +129,14 @@ for flp = 1 : Exp.stimuli.stimDur
     [VBLTimestamp StimulusOnsetTime FlipTimestamp Missed Beampos]= ...
         Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
     
-    if flp == 1
-            outDir = 'C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard\Exp_images\';
-    printPsychtoolboxScreen (Exp.Cfg.win, 'Mondrian3', outDir);
-        end
-    
+        
     % Keep all timing information for posterior check
     Exp.expinfo(tr).timing(flp,1:6)= [1, VBLTimestamp, ...
         StimulusOnsetTime, FlipTimestamp, Missed, Beampos];
 
-    % use the mod function for presenting the mondrians
-    if  flp >= Exp.stimuli.mondrianTiming(1) && flp <= Exp.stimuli.mondrianTiming(end)
-        if mod(flp, Exp.stimuli.mondrianRate) == 0
+    % Use the mod function for presenting the mondrians
+    if  flp >= Exp.stimuli.mondrianTiming{tr}(1) && flp <= Exp.stimuli.mondrianTiming{tr}(end)
+        if mod(flp, Exp.stimuli.mondrianRate{tr}) == 0
             countMond = countMond +1;
         end
     end
@@ -239,13 +237,16 @@ Screen('FillRect',  Exp.Cfg.win, Exp.Cfg.Color.inc);
 Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.frameTex, [], Exp.stimuli.destFrame);
 Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
 %Draw fixation point
-    FixdotDims = [Exp.stimuli.xLeft-4, Exp.stimuli.xRight-4; Exp.stimuli.yLeft-4, Exp.stimuli.yRight-4; ...
-    Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;]; 
-    Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
+FixdotDims = [Exp.stimuli.xLeft-4, Exp.stimuli.xRight-4; Exp.stimuli.yLeft-4, Exp.stimuli.yRight-4; ...
+    Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;];
+Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
 
-    Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xLeft - 70, Exp.stimuli.yLeft, [0 0 255]);
-    Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xLeft + 50, Exp.stimuli.yLeft, [0 0 255]);
-    
+Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xLeft - 70, Exp.stimuli.yLeft, [0 0 255]);
+Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xLeft + 50, Exp.stimuli.yLeft, [0 0 255]);
+
+Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xRight - 70, Exp.stimuli.yRight, [0 0 255]);
+Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xRight + 50, Exp.stimuli.yRight, [0 0 255]);
+
 vbl= Screen('Flip', Exp.Cfg.win,  [], Exp.Cfg.AuxBuffers);
 
 RTflag=0; %Flag to collect only the first response for the trial

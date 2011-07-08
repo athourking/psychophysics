@@ -15,7 +15,7 @@ try
     AssertOpenGL;
     Screen('Preference','SkipSyncTests', Exp.Cfg.SkipSyncTest);
 
-    Exp.Cfg.WinSize= [];  %Empty means whole screen
+    Exp.Cfg.WinSize= [0 0 1000 500];  %Empty means whole screen
     Exp.Cfg.WinColor= []; % empty for the middle gray of the screen.
 
     Exp.Cfg.xDimCm = 32.5; %Length in cm of the screen in X
@@ -40,6 +40,9 @@ try
 
     %% Use Psychophysics
     %C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard
+    
+    %% Directories
+    [rawDataDir resultsDir figsDir inDir fileName] = directories;
 
     %% INITIALYZE SCREEN
     Exp = InitializeScreen (Exp);
@@ -53,17 +56,16 @@ try
     Exp.stimuli.stimDur = 100; %Mondrians.stimDur; %deleted 'Exp.stimuli.' since not loaded that way
     Exp.stimuli.mondrianStart = Mondrians.mondrianStart;
     Exp.stimuli.mondrianEnd = Mondrians.mondrianEnd;
-    Exp.stimuli.mondrianRate = Mondrians.mondrianRate;
+    Exp.stimuli.mondrianRate = Mondrians.mondrianRate; % now it must be a cell array of vectors
     Exp.stimuli.mondrianEyeLocation = Mondrians.mondrianEyeLocation;
-    Exp.stimuli.mondrianTiming = Mondrians.mondrianTiming;
+    Exp.stimuli.mondrianTiming = Mondrians.mondrianTiming; % now it must be a cell array of vectors
     clear Trial Mondrians
    
     % randomize trials
     if Exp.stimuli.randomTrials
         randi = randperm(length(Exp.Trial));
         Exp.Trial = Exp.Trial(randi, :);
-    end
-    
+    end    
 
     % Preallocate the timing matrix for all trials
     for tr=1: size(Exp.Trial, 1)
@@ -183,14 +185,15 @@ try
     Exp.totalDuration = time2 - time1; % total duration of the experiment in seconds
 
     %Save results
-    outDir = 'C:\Programmi\MATLAB\R2006a\work\Lisandro\CFS_Checkerboard\Data\';
-    save([outDir Exp.Gral.SubjectName], 'Exp')
+%     outDir = [pwd '/Data/'];
+    save(Exp.Gral.SubjectName, 'Exp')
 
     %% Plot timing control
     timing_diagnosis( Exp.expinfo, Exp.Cfg)
     
     if Exp.Gral.SubjectBlock== 1
-        analyze_firstBlock(Exp.Gral.SubjectName)
+        load ([inDir Exp.Gral.SubjectName]);
+        analyze_firstBlock(Exp.Trial)
     end
    
     %% Shut down
