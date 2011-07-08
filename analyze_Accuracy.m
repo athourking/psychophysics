@@ -16,9 +16,7 @@ function analyze_Accuracy (Data, fileName, outDir)
 
 
 % Filter the less than 5 masks condition
-% Data = Data(Data(:,4) < 10 | Data(:,4) > 40, :);
-
-% x = Data(Data(:,4) < 10, :);
+Data = Data(Data(:,4) < 10 | Data(:,4) > 40, :);
 
 %  timingConds = { 'backwardMasking' 'forwardMasking' 'middleMasking'}; %
 %  1, 2, 3
@@ -35,10 +33,10 @@ for subj = 1: length(subjects)
             aux_data = Data( Data(:,1) == subjects(subj) & Data(:,5) == timing_conditions(cond)...
                 & Data(:,3)== all_contrasts(contrast), :) ; %#ok
             % just a sanity check
-            if size(aux_data, 1) ~= 48 %|| size(aux_data, 1) ~= 36 
-                display ('ERROR IN THE NUMBER OF TRIALS')
-                return
-            end
+%             if size(aux_data, 1) ~= 48 %|| size(aux_data, 1) ~= 36 
+%                 display ('ERROR IN THE NUMBER OF TRIALS')
+%                 return
+%             end
             
             correct = size( aux_data( aux_data(:,6) == aux_data(:,7), :), 1) / size(aux_data, 1);            
             accuracies(cond, contrast, subj) = correct;

@@ -1,8 +1,5 @@
-function analyze_firstBlock(fileNameIn)
-
-inDir = 'C:\Programmi\MATLAB\R2006a\work\Lisandro\CFS_Checkerboard\Data\';
-load ([inDir fileNameIn]);
-Data = Exp.Trial;  
+function analyze_firstBlock(Data)
+ 
 timing_conditions = unique(Data(:,5)); 
 all_contrasts = unique(Data(:,3)); 
 

@@ -47,6 +47,9 @@ analyze_Accuracy (Data, fileName, resultsDir)
 
 %% Plot Results
 
+% Accuracies for single subjects and averages
 analyze_plotAccuracies (fileName, resultsDir, figsDir) %
 
+% Subjective plots
+analyze_sub (Data, subjects, timing_conditions, all_contrasts,  figsDir)
 
