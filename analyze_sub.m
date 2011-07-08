@@ -46,9 +46,9 @@ for maskCond = 1:size(meanAccuracy,1)
     end
 end
 
-title('Accuracy as function of proportion of "yes" responses','fontsize',14);
-xlabel('Proportion of "yes" responses');
-ylabel('Accuracy');
+title('Accuracy as a function of proportion of "yes" responses','fontsize',14);
+xlabel('Proportion of "yes" responses','fontsize',12);
+ylabel('Accuracy','fontsize',12);
 set(gca,'Xlim', [0 1])
 
 
