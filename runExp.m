@@ -15,7 +15,7 @@ try
     AssertOpenGL;
     Screen('Preference','SkipSyncTests', Exp.Cfg.SkipSyncTest);
 
-    Exp.Cfg.WinSize= [0 0 1000 500];  %Empty means whole screen
+    Exp.Cfg.WinSize= [];  %Empty means whole screen
     Exp.Cfg.WinColor= []; % empty for the middle gray of the screen.
 
     Exp.Cfg.xDimCm = 32.5; %Length in cm of the screen in X
@@ -65,6 +65,8 @@ try
     if Exp.stimuli.randomTrials
         randi = randperm(length(Exp.Trial));
         Exp.Trial = Exp.Trial(randi, :);
+        Exp.stimuli.mondrianRate = Exp.stimuli.mondrianRate(randi);
+        Exp.stimuli.mondrianTiming = Exp.stimuli.mondrianTiming(randi);
     end    
 
     % Preallocate the timing matrix for all trials
@@ -191,11 +193,12 @@ try
     %% Plot timing control
     timing_diagnosis( Exp.expinfo, Exp.Cfg)
     
-    if Exp.Gral.SubjectBlock== 1
-        load ([inDir Exp.Gral.SubjectName]);
-        analyze_firstBlock(Exp.Trial)
-    end
-   
+    %% Accuracy check
+    load ([inDir Exp.Gral.SubjectName]);
+    
+    analyze_freqFirstBlock(Exp.Trial) % For the frequencies exp
+    %analyze_firstBlock(Exp.Trial)    % For the masking conditions exp
+    
     %% Shut down
     Priority(0);
     Screen('CloseAll');
@@ -253,16 +256,3 @@ end
 %                        Mondrian presentation). Thus,runExp does not use 
 %                        trials_definition anymore. 
 %                  
-
-
-
-
-
-
-
-
-
-
-
-
-

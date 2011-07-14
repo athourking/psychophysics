@@ -5,10 +5,12 @@ Figures/
 *.asv
 *.mat
 Papers/
-Data_Figures/
 Data_Raw/
+Data_Freq_Raw/
 Data_Concat/
-analyze_concatenateDati.m
+Data_Freq_Concat/
+Data_Figures/
+Data_Freq_Figures/
 .Rhistory
 directories.m
 Exp_images/

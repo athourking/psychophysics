@@ -6,11 +6,12 @@ function analyze_plotAccuracies (fileName, inDir, outDir)
 % Load desired file
 load ([inDir fileName])
 
-%% single subject plots
+%% 1. Single subject plots
 
 types = {accuracies accuracies_zscored};
 names = {'_Accuracy_Subject' '_Accuracy_zscored_Subject'};
 ylimits = {[0 1] [-2.5 2.5]};
+
 
 for type = 1 : length(types)
 
@@ -21,15 +22,15 @@ for type = 1 : length(types)
         set(gcf,'InvertHardcopy','off')
         hold on
 
-        markers = {'-ks'  '-k^' '-ok' '-ks'};
+        markers = {'-ks' '-k^' '-ok' '-ks'}; 
         markerColor = {'k'  'k' 'k' 'k'};
-        MarkerFaceColor = {'k'  'b' 'g' 'r'};
+        MarkerFaceColor = {'k' 'b' 'g' 'r'}; 
         markerSize = 7;
         for cond =1 : size(types{type},1)
             plot(all_contrasts, types{type}(cond, : , subj), markers{cond},'MarkerEdgeColor', markerColor{cond}, ...
                 'MarkerFaceColor', MarkerFaceColor{cond}, 'MarkerSize', markerSize); %#ok
         end
-
+        
         % Anotate the figure
         title(['Subject :  ' num2str(subjects(subj))], 'fontsize',14,'fontweight','b');
         ylabel('Accuracies', 'fontsize',12,'fontweight','b');
@@ -51,7 +52,7 @@ end
 %The loops below take the averages of all subjects and creates two plots:
 %one with average accuracies, the other with average accuracies z-scored.
 %--
-%% plot means across participants
+%% 2. Plot means across participants
 
 types = {accuracies_means accuracies_means_zscored};
 sems_types = {accuracies_sems accuracies_sems_zscored};
@@ -74,6 +75,7 @@ for type = 1 : length(types)
             'MarkerFaceColor', MarkerFaceColor{cond}, 'MarkerSize', markerSize); %#ok
     end
 
+
     % Anotate the figure
     title('All Subjects', 'fontsize',14,'fontweight','b');
     ylabel('Accuracy', 'fontsize',12,'fontweight','b');
@@ -84,5 +86,39 @@ for type = 1 : length(types)
     print(gcf, '-djpeg', [outDir fileName names{type}])
 
 end
+
+%% 3. Plot mean subjective response accuracy vs. actual accuracy 
+
+figure()
+hold on
+line([0 1],[0.25 1]); % linear trend expected    
+
+%shapes for contrast
+shapes = {'o' 'v' 's' '^' 'd'};
+%color for masking
+MarkerFaceColor = {'k'  'b' 'g' 'r'};
+markerSize = 10;
+
+
+for maskCond = 1:size(accuracies_means,1)
+    for cont = 1:size(accuracies_means,2)
+        
+        % plot the markers with the y errorbars
+        errorbar(meanProportion(maskCond, cont),accuracies_means(maskCond,cont),...
+            accuracies_sems(maskCond,cont), [MarkerFaceColor{maskCond} shapes{cont}], ...
+            'MarkerFaceColor', MarkerFaceColor{maskCond}, 'MarkerSize', markerSize);
+        % x error bars
+        herrorbar(meanProportion(maskCond,cont), accuracies_means(maskCond,cont), ...
+            meanProportion_sem_half(maskCond,cont), meanProportion_sem_half(maskCond,cont), ...
+            [MarkerFaceColor{maskCond} shapes{cont}]);
+        
+    end
+end
+
+title('Accuracy as a function of proportion of "yes" responses','fontsize',14)
+xlabel('Proportion of "yes" responses','fontsize',12)
+ylabel('Accuracy','fontsize',12)
+set(gca,'Xlim', [0 1])
+print(gcf, '-djpeg', [outDir fileName '_subjective'])
 
 close all

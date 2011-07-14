@@ -1,17 +1,16 @@
 function analyze_concatenateData
-
 % Concatenate all single subjects into one Matrix. This is done ONCE in the beginning.
 % After this is done we can filter the data for sub-groups of subjects and plot results
 
 %% This will load the directory and file names needed to execute this function
 
-[rawDataDir resultsDir figsDir fileName] = directories;
+[rawDataDir resultsDir figsDir inDir fileName] = directories;
 
-%%
-
-files = dir([rawDataDir 'S*.mat']);
+%% Pick the experiment
+files = dir([rawDataDir 'F*.mat']); %specify here which files to concatenate
 displayFiles (files);
 
+%% Concatenate files and save
 Data = [];
 for fi = 1: length(files)
     load ( [rawDataDir files(fi).name] );
@@ -19,10 +18,11 @@ for fi = 1: length(files)
     clear Exp
 end
 
-save([resultsDir fileName], 'Data'); %this will save the matrix with name Data_final in folder Data_concat
-dlmwrite([resultsDir fileName '.txt'], Data, 'delimiter', '\t', 'precision', 8);
+save([resultsDir fileName], 'Data'); %this will save the matrix with name 'fileName' in folder Data_concat
+%dlmwrite([concatDataDir fileName '.txt'], Data, 'delimiter', '\t',
+%'precision', 8); % This saves the matrix in a txt file
 
-%% Analyze accuracy: Filter subjects here if needed
+%% Filter subjects here if needed
 %All the subjects' data have been concatenated above. Here, by entering
 %subject numbers in subjects = [], you can specify which subjects will be
 %retained in the variable 'Data' for furher analysis. If you do not enter
@@ -38,18 +38,29 @@ if ~isempty(subjects)
     Data = Data( ismember(Data(:,1), subjects), :);
 end
 
-analyze_Accuracy (Data, fileName, resultsDir)
-%Data - the matrix, fileName - how to save it, resultsDir - the inDir,
-%resulsDir - the outDir (here the same as the inDir).
-%This takes the Data and the other variables from above
-%and appends more variables to be plotted by analyze_plotAccuracies
+%% Analyze accuracies and plot for first (masking conditions) experiment 
+
+%analyze_Accuracy (Data, fileName, resultsDir) %<-----
+
+%Data - the matrix, fileName - how to save it, concatDataDir - where the 
+% file will go - the same place it came from, just with more accuracy 
+% measures appended to the file. They will be plotted by analyze_plotAccuracies
 %(below).
 
-%% Plot Results
+% Plot single subjects accuracies, means, and subjective response accuracies
 
-% Accuracies for single subjects and averages
-analyze_plotAccuracies (fileName, resultsDir, figsDir) %
+%analyze_plotAccuracies (fileName, resultsDir, figsDir) %<-----
 
-% Subjective plots
-analyze_sub (Data, subjects, timing_conditions, all_contrasts,  figsDir)
+%% Analyze accuracies and plot for second (mask frequencies)experiment 
+
+% Data = Data( Data(:,4) < 111, :); % to play with the timing condition
+% Similar to the first experiment, this function appends a number of
+% variables to the file containing the data matrix.
+analyze_FreqAccuracy (Data, fileName, resultsDir)
+
+% This function creates accuracies, mean accuracies, subjective response accuracies
+analyze_plotFreqAccuracies (fileName, resultsDir, figsDir) 
+
+
+
 

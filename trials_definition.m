@@ -5,9 +5,9 @@ function trials_definition (blockName)
     Mondrians.stimDur = 100; %total number of frames for the stimuli presentation period
     Mondrians.mondrianStart= 1; % 1: means start from from frame 1; 0: without mondrians
     Mondrians.mondrianEnd= 100; % frame number to stop showing mondrians
-    Mondrians.mondrianRate = 10; % numbers of frames to present each mondrian
+    Mondrians.mondrianRate{1} = 10; % numbers of frames to present each mondrian
     Mondrians.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians to the righ eye
-    Mondrians.mondrianTiming = Mondrians.mondrianStart:Mondrians.mondrianRate:Mondrians.mondrianEnd;   
+    Mondrians.mondrianTiming{1} = Mondrians.mondrianStart:Mondrians.mondrianRate{1}:Mondrians.mondrianEnd;   
     
     
 %% parameters for the checkerboard
@@ -32,7 +32,7 @@ for m= 1 : length(contrast)
             Trial(count, 1) = 0; % subject number
             Trial(count, 2) = 0; % Block number
             Trial(count, 3) = contrast(m); % contrast value
-            randi = ceil(rand(1)*4);
+            randi = ceil(rand(1)*length(timing));
             Trial(count, 4) = timing{j}(randi); % timing value
             Trial(count, 5) = j; % code for the timing conditions
             Trial(count, 6) = k; % location of the checkerboard
@@ -44,5 +44,6 @@ for m= 1 : length(contrast)
 end
 
 Trial = repmat(Trial, repetitions, 1); %#ok
-
+Mondrians.mondrianTiming = repmat(Mondrians.mondrianTiming, length(Trial), 1); %#ok
+Mondrians.mondrianRate = repmat(Mondrians.mondrianRate, length(Trial), 1); %#ok
 save(blockName, 'Trial', 'Mondrians')
