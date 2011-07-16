@@ -5,11 +5,11 @@ Figures/
 *.asv
 *.mat
 Papers/
-Data_Raw/
+Data_Mask_Raw/
+Data_Mask_Concat/
+Data_Mask_Figures/
 Data_Freq_Raw/
-Data_Concat/
 Data_Freq_Concat/
-Data_Figures/
 Data_Freq_Figures/
 .Rhistory
 directories.m

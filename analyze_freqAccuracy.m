@@ -1,4 +1,4 @@
-function analyze_freqAccuracy (Data, fileName, outDir)
+function analyze_freqAccuracy (Data, locVars)
 %This function is embedded in the script analyze_concatenateData. It takes
 %the data of the subjects that have been concatenated into a single matrix
 %(either all subjects or the ones filtered out in that function) called 
@@ -11,57 +11,57 @@ function analyze_freqAccuracy (Data, fileName, outDir)
 % frequencies; (5) code for the mask frequencies; (6) location of the checkerboard
 % (7) responses for locations ; (8) responses for subjective visibility
 
-all_contrasts = unique(Data(:,3));
-frequencies = unique(Data(:,5));
-subjects = unique(Data(:,1));
+data.all_contrasts = unique(Data(:,3));
+data.frequencies = unique(Data(:,5));
+data.subjects = unique(Data(:,1));
 
-accuracies =  zeros(length(all_contrasts), length(frequencies), length(subjects)); % 6 x 2 x subjects
-yesProportion =  zeros(length(all_contrasts), length(frequencies), length(subjects));
+data.accuracies =  zeros(length(data.all_contrasts), length(data.frequencies), length(data.subjects)); % 6 x 2 x subjects
+data.yesProportion =  zeros(length(data.all_contrasts), length(data.frequencies), length(data.subjects));
 
-for su = 1: length(subjects)
-    for con = 1: length(all_contrasts)
-        for freq = 1: length(frequencies)
+for su = 1: length(data.subjects)
+    for con = 1: length(data.all_contrasts)
+        for freq = 1: length(data.frequencies)
             % row:contrast, col:frequency, layer:subject; filtering subject,contrast, frequency AND when location 
             % is equal to location response, dividing the whole with the number of trials for this subject for this 
             % contrast and frequency
-            accuracies(con, freq, su) = size(Data(Data(:,1) == su & Data(:,3)== all_contrasts(con) & Data(:,5)== frequencies(freq)...
+            data.accuracies(con, freq, su) = size(Data(Data(:,1) == data.subjects(su) & Data(:,3)== data.all_contrasts(con) & Data(:,5)== data.frequencies(freq)...
                 & Data(:,6)== Data(:,7),:),1)  ...
-                / size(Data(Data(:,1) == su & Data(:,3)== all_contrasts(con) & Data(:,5)== frequencies(freq)),1);
+                / size(Data(Data(:,1) == data.subjects(su) & Data(:,3)== data.all_contrasts(con) & Data(:,5)== data.frequencies(freq)),1);
             % positions identical; filtering subject, contrast, frequency and when subject said 'yes', dividing the whole 
             % with the number of trials trials for this subject for this contrast and frequency
-            yesProportion(con, freq, su) = ...
-                size(Data(Data(:,8)==3 & Data(:,1) == su & Data(:,3)== all_contrasts(con) & Data(:,5)== frequencies(freq),:),1)...
-                / size(Data(Data(:,1) == su & Data(:,3)== all_contrasts(con) & Data(:,5)== frequencies(freq)),1);
+            data.yesProportion(con, freq, su) = ...
+                size(Data(Data(:,8)==3 & Data(:,1) == data.subjects(su) & Data(:,3)== data.all_contrasts(con) & Data(:,5)== data.frequencies(freq),:),1)...
+                / size(Data(Data(:,1) == data.subjects(su) & Data(:,3)== data.all_contrasts(con) & Data(:,5)== data.frequencies(freq)),1);
         end
     end
 end
 
 %Create labels to be used for plotting frequencies 
-for m=1: length(frequencies)
-    cols{m} = ([num2str(frequencies(m)) ' Hz']); %#ok
+for m=1: length(data.frequencies)
+    data.cols{m} = ([num2str(data.frequencies(m)) ' Hz']); 
 end
 
 
 % cols=  {'5'    '8.5'    '10.6'    '16.6'    '20.3'    '28.5'}
-rows = {'backward at 12%' 'backward at 16%'}; %#ok
+data.rows = {'backward at 12%' 'backward at 16%'}; 
 
-accuracies_means = mean(accuracies, 3);%#ok
-accuracies_std = std(accuracies, 0, 3);%#ok
-accuracies_sems = std(accuracies,0, 3) ./ sqrt(size(accuracies, 3));%#ok
+data.accuracies_means = mean(data.accuracies, 3);
+data.accuracies_std = std(data.accuracies, 0, 3);
+data.accuracies_sems = std(data.accuracies,0, 3) ./ sqrt(size(data.accuracies, 3));
 
-for m=1: size(accuracies, 3)
-    vector_accuracies = zscore(reshape(accuracies(:,:,m), length(frequencies) * length(all_contrasts), 1));
-    accuracies_zscored(:,:,m) = reshape(vector_accuracies, length(all_contrasts), length(frequencies)); %#ok
-%     accuracies_zscored(:,:,m) = zscore(accuracies(:,:,m)); %#ok
+for m=1: size(data.accuracies, 3)
+    vector_accuracies = zscore(reshape(data.accuracies(:,:,m), length(data.frequencies) * length(data.all_contrasts), 1));
+    data.accuracies_zscored(:,:,m) = reshape(vector_accuracies, length(data.all_contrasts), length(data.frequencies)); 
+%     data.accuracies_zscored(:,:,m) = zscore(data.accuracies(:,:,m)); 
 end
-accuracies_means_zscored = mean(accuracies_zscored, 3);%#ok
-accuracies_std_zscored = std(accuracies_zscored, 0, 3);%#ok
-accuracies_sems_zscored = std(accuracies_zscored,0, 3) / sqrt(size(accuracies_zscored, 3));%#ok
+data.accuracies_means_zscored = mean(data.accuracies_zscored, 3);
+data.accuracies_std_zscored = std(data.accuracies_zscored, 0, 3);
+data.accuracies_sems_zscored = std(data.accuracies_zscored,0, 3) / sqrt(size(data.accuracies_zscored, 3));
 
 % Variables that will be used for subjective responses' plot
-meanProportion = mean(yesProportion,3); %#ok
-proportion_sem = std(accuracies,0, 3) ./ sqrt(size(accuracies, 3)); % Will be used for the errorbar
-meanProportion_sem_half = proportion_sem / 2; %#ok Will be used the horizontal error bar
+data.meanProportion = mean(data.yesProportion,3); %
+data.proportion_sem = std(data.accuracies,0, 3) ./ sqrt(size(data.accuracies, 3)); % Will be used for the errorbar
+data.meanProportion_sem_half = data.proportion_sem / 2; % Will be used the horizontal error bar
 
 
 %% Saving all variables to file
@@ -70,8 +70,5 @@ meanProportion_sem_half = proportion_sem / 2; %#ok Will be used the horizontal e
 % variable 'timing_conditions' has been renamed to 'frequencies' because
 % the data in column 5 of data matrix now signify the mask frequencies.
 
-save([outDir fileName], 'accuracies', 'accuracies_means', 'accuracies_std', 'accuracies_sems', ...
-    'accuracies_zscored', 'accuracies_means_zscored', 'accuracies_std_zscored', 'accuracies_sems_zscored', ...
-    'rows', 'cols', 'frequencies', 'subjects', 'all_contrasts', 'yesProportion','meanProportion',...
-    'proportion_sem','meanProportion_sem_half', '-append')
+save([locVars.resultsDir locVars.fileName], 'data', '-append');
 

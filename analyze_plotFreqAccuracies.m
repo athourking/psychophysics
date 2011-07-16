@@ -1,13 +1,10 @@
-function analyze_plotFreqAccuracies (fileName, inDir, outDir)
+function analyze_plotFreqAccuracies (data, locVars)
 %This function is embedded in the script analyze_concatenateData. It
 %uses the variables produced by analyze_Accuracy to draw plots.
 
-% Load desired file
-load ([inDir fileName])
-
 %% 1. Single subject plots
 
-types = {accuracies accuracies_zscored};
+types = {data.accuracies data.accuracies_zscored};
 names = {'_Accuracy_Subject' '_Accuracy_zscored_Subject'};
 ylimits = {[0 1] [-2.5 2.5]};
 
@@ -26,19 +23,19 @@ for type = 1 : length(types)
         %markerColor = {'k' 'k'};% 'k' 'k'};
      
         for cond =1 : size(types{type},1)
-            plot(frequencies, types{type}(cond, : , subj), markers{cond},...
+            plot(data.frequencies, types{type}(cond, : , subj), markers{cond},...
                 'MarkerFaceColor', MarkerFaceColor{cond}, 'MarkerSize', markerSize{cond}); 
         end
         
         % Anotate the figure
-        title(['Subject :  ' num2str(subjects(subj))], 'fontsize',14,'fontweight','b');
-        ylabel('Accuracies', 'fontsize',12,'fontweight','b');
+        title(['Subject :  ' num2str(data.subjects(subj))], 'fontsize',14,'fontweight','b');
+        ylabel('Accuracy', 'fontsize',12,'fontweight','b');
         xlabel('Frequencies', 'fontsize',12,'fontweight','b');
-        set(gca,'XTick', frequencies,'XTickLabel',cols,'fontsize',8)
-        legend(rows, 'Location', 'SouthWest')
+        set(gca,'XTick', data.frequencies,'XTickLabel',data.cols,'fontsize',8)
+        legend(data.rows, 'Location', 'SouthWest')
 
         set(gca,'YLim', ylimits{type})
-        print(gcf, '-djpeg', [outDir fileName names{type} num2str(subjects(subj))])
+        print(gcf, '-djpeg', [locVars.figsDir locVars.fileName names{type} num2str(data.subjects(subj))])
 
     end
 
@@ -52,8 +49,8 @@ end
 %one with average accuracies, the other with average accuracies z-scored.
 %% 2. Plot means across participants
 
-types = {accuracies_means accuracies_means_zscored};
-sems_types = {accuracies_sems accuracies_sems_zscored};
+types = {data.accuracies_means data.accuracies_means_zscored};
+sems_types = {data.accuracies_sems data.accuracies_sems_zscored};
 names = {'_Accuracy_All_Subjects' '_Accuracy_zscored_All_Subjects'};
 ylimits = { [0 1] [-2.5 2.5]};
 
@@ -70,20 +67,20 @@ for type = 1 : length(types)
     markerSize = {8 7};
     %markerColor = {'k' 'k'};% 'k' 'k'};
 
-    for cond =1 : size(accuracies_means,1)
-        errorbar(frequencies, types{type}(cond, :), sems_types{type}(cond,:),...
+    for cond =1 : size(data.accuracies_means,1)
+        errorbar(data.frequencies, types{type}(cond, :), sems_types{type}(cond,:),...
         markers{cond}, 'MarkerFaceColor', MarkerFaceColor{cond}, 'MarkerSize', markerSize{cond}); 
     end
 
 
     % Anotate the figure
     title('All Subjects', 'fontsize',14,'fontweight','b');
-    ylabel('Accuracies', 'fontsize',12,'fontweight','b');
+    ylabel('Accuracy', 'fontsize',12,'fontweight','b');
     xlabel('Frequencies', 'fontsize',12,'fontweight','b');
-    set(gca,'XTick', frequencies,'XTickLabel',cols,'fontsize',8)
-    legend(rows, 'Location', 'SouthWest')
+    set(gca,'XTick', data.frequencies,'XTickLabel',data.cols,'fontsize',8)
+    legend(data.rows, 'Location', 'SouthWest')
     set(gca,'YLim', ylimits{type})
-    print(gcf, '-djpeg', [outDir fileName names{type}])
+    print(gcf, '-djpeg', [locVars.figsDir locVars.fileName names{type}])
 
 end
 
@@ -100,26 +97,26 @@ MarkerFaceColor = {'b' 'k'};% 'g' 'r'};
 markerSize = 8;
 
 
-for contr = 1:size(accuracies_means,1)
-    for frq = 1:size(accuracies_means,2)
+for contr = 1:size(data.accuracies_means,1)
+    for frq = 1:size(data.accuracies_means,2)
         
         % plot the markers with the y errorbars
-        plotHandle(contr,frq) = errorbar(meanProportion(contr, frq),accuracies_means(contr,frq),...
-            accuracies_sems(contr,frq), [MarkerFaceColor{contr} shapes{frq}], ...
+        plotHandle(contr,frq) = errorbar(data.meanProportion(contr, frq),data.accuracies_means(contr,frq),...
+            data.accuracies_sems(contr,frq), [MarkerFaceColor{contr} shapes{frq}], ...
             'MarkerFaceColor', MarkerFaceColor{contr}, 'MarkerSize', markerSize); %#ok
         % x error bars
-        herrorbar(meanProportion(contr,frq), accuracies_means(contr,frq), ...
-            meanProportion_sem_half(contr,frq), meanProportion_sem_half(contr,frq),...
+        herrorbar(data.meanProportion(contr,frq), data.accuracies_means(contr,frq), ...
+            data.meanProportion_sem_half(contr,frq), data.meanProportion_sem_half(contr,frq),...
             [MarkerFaceColor{contr} shapes{frq}]);
         
     end
 end
 
-title('Accuracy as a function of visibility','fontsize',14)
+title('Accuracy as a Function of Visibility','fontsize',14)
 xlabel('Visibility','fontsize',12)
-ylabel('Accuracies','fontsize',12)
-legend(plotHandle(1,:), cols, 'Location','SouthEast');
+ylabel('Accuracy','fontsize',12)
+legend(plotHandle(1,:), data.cols, 'Location','SouthEast');
 set(gca,'Xlim', [0 1])
-print(gcf, '-djpeg', [outDir fileName '_subjective'])
+print(gcf, '-djpeg', [locVars.figsDir locVars.fileName '_subjective'])
 
 close all
