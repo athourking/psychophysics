@@ -1,55 +1,56 @@
-function analyze_frequenciesExp
+function analyze_frequenciesExp 
+%% --INFO START--
+%Specify in localVariables what you wish to do before coming here!
 
-%% CONCATENATE and SAVE
-% Load local variables
-locVars = localVariables;
-% Load the raw data files to be concatenated
-files = dir([locVars.rawDataDir locVars.fileNamesIn]); 
-displayFiles (files);
+% If you have a set of raw data files and you wish to concatenate,
+% analyze, plot, and filter(optional) in one go, specify the raw data files
+% in locVars.fileNamesIn and come run this function. It will do it all.
 
-% Concatenate files and save
-Data = [];
-for fi = 1: length(files)
-    load ( [locVars.rawDataDir files(fi).name] );
-    Data = cat(1,Data, Exp.Trial);
-    clear Exp
-end
-numOfSubjects = num2str(length(unique(Data(:,1)))); %The number of subjects concatenated goes into the file name
-save([locVars.resultsDir 'freqExp_all_' numOfSubjects 'subjects'], 'Data'); 
+% If you already have a concatenated data file, specify, which one it is in
+% locVars.fileName and then come execute the cells you're interested in:
+% analyze, plot, or filter (filter is still work in progress).
+
+% 'Can't get there from here' warning: you cannot go from 'concatenate' to
+% 'plot' without executing also the 'analyze' cell. Else, there will be
+% nothing to plot.
+%   --INFO END--
+%% CONCATENATE (only selected subjects, IF SPECIFIED) and SAVE
+locVars = localVariables; % Load local variables
+files = dir([locVars.rawDataDir locVars.fileNamesIn]); % Load the raw data files to be concatenated
+[subjectNums Data] = analyze_concatenateData (files, locVars); % The concatenate function
+save([locVars.resultsDir 'freqExp_allSubjects_' subjectNums], 'Data'); 
 
 % If you wish to continue straight on with the analysis of the just-concatenated 
-% file, you do not need to go enter this file name in local variables
-nameOfConcatFile= (['freqExp_all_' numOfSubjects 'subjects']);
+% file, you do not need to go to localVariables to enter the the file name
+% in locVars.fileName. The cells below will take it from here: 
+nameOfConcatFile= (['freqExp_allSubjects_' subjectNums]);
 
-%% FILTER(if specified) and ANALYZE 
+%% ANALYZE to APPEND number of ACCURACY measures AND SAVE (under the same name)
 locVars = localVariables;
-if exist('nameOfConcatFile','var')
+if exist('nameOfConcatFile','var') % This kicks in if and only if you've executed 'concatenate' cell just before
     locVars.fileName = nameOfConcatFile;
 end
+
 load ([locVars.resultsDir locVars.fileName]); % Load the main file
+data = analyze_freqAccuracy (Data, locVars); % The data analysis function 
+save([locVars.resultsDir locVars.fileName], 'data', '-append');
 
-if ~isempty(locVars.subjFilter)
-    locVars.fileName = ([locVars.fileName num2str(locVars.subjFilter)]);
-    Data = Data( ismember(Data(:,1), locVars.subjFilter),:);
-    if ~isempty(locVars.blockFilter)
-    Data = Data( ismember(Data(:,2), locVars.blockFilter),:); 
-    end
-    %Data = Data( ismember(Data(:,1), subjects), :)
-    if isempty(locVars.blockFilter)
-        locVars.blockFilter = 'allBlocks';
-    end
-    save([locVars.resultsDir 'subjectNum_' num2str(locVars.subjFilter) '_blockNum_' num2str(locVars.blockFilter)], 'Data');
-end
-
-% locVars = localVariables;
-% locVars.fileName = ([locVars.resultsDir 'subjectNum_' num2str(locVars.subjFilter) '_blockNum_' num2str(locVars.blockFilter)]);
-% load ([locVars.resultsDir locVars.fileName]);
-analyze_freqAccuracy (Data, locVars) 
-
-%% Plot single subjects accuracies, means, and subjective response accuracies
+%% PLOT ALL single subjects (also z-scored), means (also z-scored), and subjective accuracies AND SAVE plot images
 locVars = localVariables;
-if exist('nameOfConcatFile','var')
+if exist('nameOfConcatFile','var') % This kicks in iff you've executed 'concatenate' cell just before 
     locVars.fileName = nameOfConcatFile;
 end
+
 load ([locVars.resultsDir locVars.fileName]);
-analyze_plotfreqAccuracies (data, locVars)
+analyze_plotfreqAccuracies (data, locVars) % The plotting function
+% save: plots saved inside the plot function, not here
+
+%% PLOT SPECIFIED SUBJECTS AS ONE GROUP
+locVars = localVariables;
+if exist('nameOfConcatFile','var') % This kicks in iff you've executed 'concatenate' cell just before
+    locVars.fileName = nameOfConcatFile;
+end
+
+load ([locVars.resultsDir locVars.fileName]);
+analyze_freqSubjectFilter (Data, locVars) %the initial concatenated data matrix, and local variables
+

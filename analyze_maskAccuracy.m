@@ -1,4 +1,4 @@
-function analyze_Accuracy (Data, locVars)
+function data = analyze_maskAccuracy (Data)
 %This function is embedded in the script analyze_concatenateData. It takes
 %the data of the subjects that have been concatenated into a single matrix
 %(either all subjects or the ones filtered out in that function) called 
@@ -8,12 +8,12 @@ function analyze_Accuracy (Data, locVars)
 %folder, with the same name as the file of the concatenated data matrix.
 %% Conditions :
 % (1) subject number ; (2) Block number; (3) contrast value ; (4) timing
-% value ; (5) code for the timing conditions ; (6) location of the checkerboard
+% conditions ; (5) code for the timing conditions ; (6) location of the checkerboard
 % (7) responses for locations ; (8) responses for subjective visibility
 
 
 % Filter the less than 5 masks condition
-Data = Data(Data(:,4) < 10 | Data(:,4) > 40, :);
+Data = Data(Data(:,4) < 10 | Data(:,4) > 40, :); %Some data was like that.
 
 %  timingConds = { 'backwardMasking' 'forwardMasking' 'middleMasking'}; %
 %  1, 2, 3
@@ -45,11 +45,11 @@ for subj = 1: length(data.subjects)
 end
 
 for m=1: length(data.all_contrasts)
-    data.cols{m} = num2str(data.all_contrasts(m)); 
+    data.cols{m} = ([num2str(data.all_contrasts(m)*100) '%']); % Used for x axis
 end
 
 % data.cols= {'0.04' '0.04' '0.08' '0.16' '0.32' '0.64' '0.96'};
-data.rows = {'backward' 'forward' 'middle' 'start'}; 
+data.rows = {'backward' 'forward' 'middle' 'start'}; % Used for the legend
 
 data.accuracies_means = mean(data.accuracies, 3);
 data.accuracies_std = std(data.accuracies, 0, 3);
@@ -71,6 +71,5 @@ data.meanProportion_sem_half = data.proportion_sem / 2; %This for the horizontal
 
 
 %% Saving all variables to file
-
-save([locVars.resultsDir locVars.fileName], 'data', '-append');
-
+% save([locVars.resultsDir locVars.fileName], 'data', '-append');
+% Saving is done outside, in analyze_maskExp.

@@ -14,12 +14,12 @@ for fi = 1: length(files)
     Data = cat(1,Data, Exp.Trial);
     clear Exp
 end
-numOfSubjects = num2str(length(unique(Data(:,1)))); %The number of subjects concatenated goes into the file name
-save([locVars.resultsDir 'maskExp_all_' numOfSubjects 'subjects'], 'Data'); 
+subjectNums = num2str(unique(Data(:,1)')); %The number of subjects concatenated goes into the file name
+save([locVars.resultsDir 'maskExp_allSubjects_' subjectNums], 'Data'); 
 
 % If you wish to continue straight on with the analysis of the just-concatenated 
 % file, you do not need to go enter this file name in local variables
-nameOfConcatFile= (['maskExp_all_' numOfSubjects 'subjects']);
+nameOfConcatFile= (['maskExp_allSubjects_' subjectNums]);
 
 %% FILTER(if specified) and ANALYZE 
 locVars = localVariables;
@@ -38,15 +38,13 @@ if ~isempty(locVars.subjFilter)
     if isempty(locVars.blockFilter)
         locVars.blockFilter = 'allBlocks';
     end
-    save([locVars.resultsDir 'subjectNum_' num2str(locVars.subjFilter) '_blockNum_' num2str(locVars.blockFilter)], 'Data');
+    save([locVars.resultsDir 'maskExp_subjectNum_' num2str(locVars.subjFilter) '_blockNum_' num2str(locVars.blockFilter)], 'Data');
 end
 
-% locVars = localVariables;
-% locVars.fileName = ([locVars.resultsDir 'subjectNum_' num2str(locVars.subjFilter) '_blockNum_' num2str(locVars.blockFilter)]);
-% load ([locVars.resultsDir locVars.fileName]);
+locVars.fileName = (['freqExp_subjectNum_' num2str(locVars.subjFilter) '_blockNum_' num2str(locVars.blockFilter)]);
 analyze_Accuracy (Data, locVars) 
 
-%% Plot single subjects accuracies, means, and subjective response accuracies
+%% PLOT single subjects accuracies(also z-scored), all subject means (also z-scored), and subjective response accuracies
 locVars = localVariables;
 if exist('nameOfConcatFile','var')
     locVars.fileName = nameOfConcatFile;

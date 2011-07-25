@@ -1,4 +1,4 @@
-function trials_definition (blockName)
+function trials_definition_maskConditions (blockName)
 
 
 %% parameters for mondrians

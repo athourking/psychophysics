@@ -42,7 +42,7 @@ try
     %C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard
     
     %% Directories
-    [rawDataDir resultsDir figsDir inDir fileName] = directories;
+    %locVars = localVariables;
 
     %% INITIALYZE SCREEN
     Exp = InitializeScreen (Exp);
@@ -194,10 +194,10 @@ try
     timing_diagnosis( Exp.expinfo, Exp.Cfg)
     
     %% Accuracy check
-    load ([inDir Exp.Gral.SubjectName]);
+    load ([pwd '\' Exp.Gral.SubjectName]);
     
     analyze_freqFirstBlock(Exp.Trial) % For the frequencies exp
-    %analyze_firstBlock(Exp.Trial)    % For the masking conditions exp
+    %analyze_maskFirstBlock(Exp.Trial)    % For the masking conditions exp
     
     %% Shut down
     Priority(0);

@@ -7,11 +7,10 @@ Mondrians.mondrianStart= 1; % 1: means start from from frame 1; 0: without mondr
 Mondrians.mondrianEnd= 130; % frame number to stop showing mondrians
 Mondrians.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians to the righ eye
 
-
 %% Parameters for the checkerboard
 
 % 0.04 0.12 0.16 0.24 0.64 0.96
-contrast = [0.12 0.16]; % michelson contrast
+contrast = [0.12 0.16 0.64]; % michelson contrast
 checkLocation = [1 2 3 4]; % locations = 1: up; 2: down; 3: Left; 4: right;
 
 % With 85 Hz refresh rate. Frames rate:
@@ -31,13 +30,13 @@ checkLocation = [1 2 3 4]; % locations = 1: up; 2: down; 3: Left; 4: right;
 %     0.0118    0.1059    0.2000    0.2941    0.3882    0.4824    0.5765    0.6706    0.7647    0.8588    0.9529    1.0471
 %    1.1412    1.2353    1.3294    1.4235    1.5176
 
-frequency = {16 10 8 5 4 3}; % % numbers of frames to present each mondrian (MondrianRate in previous versions)
-frequencyCodes = {5 8.5 10.6 16.6 20.3 28.5};
+frequency = {16};%{16 10 8 5 4 3};  % numbers of frames to present each mondrian (MondrianRate in previous versions)
+frequencyCodes = {5};%{5 8.5 10.6 16.6 20.3 28.5};
 % each position in the cell array corresponds to each frequency
-timing = { [79 95 111] [49 59 69] [55 63 71] [49 59 69] [51 63 75] [50 62 74] }; 
+timing = {[111]}; %{ [79 95 111] [49 59 69] [55 63 71] [49 59 69] [51 63 75] [50 62 74] }; 
 % timingConds = { 'backwardMasking'};  % 1
 
-repetitions= 2; % repetition of the minimun design -one trial per condition-
+repetitions= 10; % repetition of the minimun design -one trial per condition-
 
 % Create the block trials: set one trial in each condition / location
 Trial = zeros(length(contrast) * length(frequency) * length (checkLocation), 8);

@@ -1,4 +1,4 @@
-function analyze_freqAccuracy (Data, locVars)
+function data = analyze_freqAccuracy (Data)
 %This function is embedded in the script analyze_concatenateData. It takes
 %the data of the subjects that have been concatenated into a single matrix
 %(either all subjects or the ones filtered out in that function) called 
@@ -15,7 +15,7 @@ data.all_contrasts = unique(Data(:,3));
 data.frequencies = unique(Data(:,5));
 data.subjects = unique(Data(:,1));
 
-data.accuracies =  zeros(length(data.all_contrasts), length(data.frequencies), length(data.subjects)); % 6 x 2 x subjects
+data.accuracies =  zeros(length(data.all_contrasts), length(data.frequencies), length(data.subjects)); % 5 x 3 x subjects
 data.yesProportion =  zeros(length(data.all_contrasts), length(data.frequencies), length(data.subjects));
 
 for su = 1: length(data.subjects)
@@ -25,25 +25,26 @@ for su = 1: length(data.subjects)
             % is equal to location response, dividing the whole with the number of trials for this subject for this 
             % contrast and frequency
             data.accuracies(con, freq, su) = size(Data(Data(:,1) == data.subjects(su) & Data(:,3)== data.all_contrasts(con) & Data(:,5)== data.frequencies(freq)...
-                & Data(:,6)== Data(:,7),:),1)  ...
+                & Data(:,6) == Data(:,7),:), 1)  ...
                 / size(Data(Data(:,1) == data.subjects(su) & Data(:,3)== data.all_contrasts(con) & Data(:,5)== data.frequencies(freq)),1);
             % positions identical; filtering subject, contrast, frequency and when subject said 'yes', dividing the whole 
             % with the number of trials trials for this subject for this contrast and frequency
             data.yesProportion(con, freq, su) = ...
-                size(Data(Data(:,8)==3 & Data(:,1) == data.subjects(su) & Data(:,3)== data.all_contrasts(con) & Data(:,5)== data.frequencies(freq),:),1)...
-                / size(Data(Data(:,1) == data.subjects(su) & Data(:,3)== data.all_contrasts(con) & Data(:,5)== data.frequencies(freq)),1);
+                size( Data(Data(:,8) == 3 & Data(:,1) == data.subjects(su) & Data(:,3)== data.all_contrasts(con) & Data(:,5)== data.frequencies(freq),:),1)...
+                / size( Data(Data(:,1) == data.subjects(su) & Data(:,3)== data.all_contrasts(con) & Data(:,5)== data.frequencies(freq)),1);
         end
     end
 end
 
-%Create labels to be used for plotting frequencies 
-for m=1: length(data.frequencies)
+%Create labels to be used for plotting frequencies (used for x axis) 
+for m= 1: length(data.frequencies)
     data.cols{m} = ([num2str(data.frequencies(m)) ' Hz']); 
 end
 
-
-% cols=  {'5'    '8.5'    '10.6'    '16.6'    '20.3'    '28.5'}
-data.rows = {'backward at 12%' 'backward at 16%'}; 
+%Create labels to be used for plotting contrasts (used for the legend)
+for n= 1: length(data.all_contrasts)
+    data.rows{n}= (['backward at ' num2str(data.all_contrasts(n)*100) '%']);
+end
 
 data.accuracies_means = mean(data.accuracies, 3);
 data.accuracies_std = std(data.accuracies, 0, 3);
@@ -70,5 +71,5 @@ data.meanProportion_sem_half = data.proportion_sem / 2; % Will be used the horiz
 % variable 'timing_conditions' has been renamed to 'frequencies' because
 % the data in column 5 of data matrix now signify the mask frequencies.
 
-save([locVars.resultsDir locVars.fileName], 'data', '-append');
-
+%save([locVars.resultsDir.fileName], 'data', '-append');
+% saved outside, therefore, this function does not need locVars as input

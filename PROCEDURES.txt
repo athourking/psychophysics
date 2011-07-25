@@ -8,6 +8,8 @@ BEFORE STARTING ANYTHING:
   File>Set Path>Add with subfolders .. indicate the path. Do not save, only close.
 --MAKER SURE YOU HAVE THE HEXAGONAL INSTRUMENTS!
 
+!!!ASK SUBJECT IF THEY HAVE A HISTORY OF EPILEPSY!!! FAST FREQUENCY CHECKERBOARD CAN BE DANGEROUS!!!
+
 STEREOSCOPE CALIBRATION:
 -- IN THE DARK SO SUBJECT ADAPTS TO THE CONDITIONS
 -- runExp WITH Block_Practice_NoMondrian, STOP AT WHEN FRAMES PRESENTED 
@@ -28,7 +30,7 @@ Eye dominance:
   (CHANGE IN runExp: Exp.stimuli.mondrianEyeLocation = 1 or 2).
 
 Set the function for accuracy check:
---ENABLE THE CORRECT FUNCTION FOR PLOTTING ACCURACY CHECK AFTER EACH BLOCK
+--ENABLE THE CORRECT FUNCTION FOR PLOTTING ACCURACY AFTER EACH BLOCK
 (CHANGE IN runExp: bottom of script, in cell titled "Accuracy check")
 
 Practice:
@@ -53,4 +55,5 @@ Actual experiment:
 
 After experiment:
 --ASK SUBJECT TO REPORT ANY OBSERVATION HE/SHE MAY HAVE REGARDING THE EXPERIMENT
---THANK YOU, SUBJECT 
+--THANK YOU, SUBJECT!
+--COLLECT DATA FROM THE LAB COMPUTER: 1)Raw dta files, 2)Individual block accuracies' jpgs. 

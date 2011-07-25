@@ -1,9 +1,9 @@
-function analyze_plotAccuracies (data, locVars)
+function analyze_plotMaskAccuracies (fileName, data, locVars)
 %This function is also embedded in the script analyze_concatenateData. 
 %It takes data which contains the data matrix + various accuracy measures,
 %and variables specifying the relevant directories. Produces various plots.
-
-
+%%
+if ismember(1, locVars.whichPlot)
 %% 1. Single subject plots
 
 types = {data.accuracies data.accuracies_zscored};
@@ -15,6 +15,7 @@ for type = 1 : length(types)
 
     for subj = 1 : size(types{type}, 3)
         figure();
+        grid on
         set(gcf,'Position',[0 0 600 300],'Color','w')
         set(gcf,'PaperPositionMode','auto')
         set(gcf,'InvertHardcopy','off')
@@ -26,18 +27,18 @@ for type = 1 : length(types)
         markerSize = 7;
         for cond =1 : size(types{type},1)
             plot(data.all_contrasts, types{type}(cond, : , subj), markers{cond},'MarkerEdgeColor', markerColor{cond}, ...
-                'MarkerFaceColor', MarkerFaceColor{cond}, 'MarkerSize', markerSize); %#ok
+                'MarkerFaceColor', MarkerFaceColor{cond}, 'MarkerSize', markerSize);
         end
         
         % Anotate the figure
         title(['Subject :  ' num2str(data.subjects(subj))], 'fontsize',14,'fontweight','b');
         ylabel('Accuracy', 'fontsize',12,'fontweight','b');
         xlabel('Contrast levels', 'fontsize',12,'fontweight','b');
-        set(gca,'XTick', data.all_contrasts,'XTickLabel',data.cols)
-        legend(data.rows, 'Location', 'Best')
-
+        set(gca,'XTick', data.all_contrasts,'XTickLabel',data.cols,'fontsize',8)
+        legend(data.rows, 'Location', 'SouthEast')
         set(gca,'YLim', ylimits{type})
-        print(gcf, '-djpeg', [locVars.figsDir locVars.fileName names{type} num2str(data.subjects(subj))])
+        set(gca,'XLim', [data.all_contrasts(1) data.all_contrasts(end)])
+        print(gcf, '-djpeg', [locVars.figsDir fileName names{type} num2str(data.subjects(subj))])
 
     end
 
@@ -50,6 +51,10 @@ end
 %The loops below take the averages of all subjects and creates two plots:
 %one with average accuracies, the other with average accuracies z-scored.
 %--
+%%
+end
+%%
+if ismember(2, locVars.whichPlot)
 %% 2. Plot means across participants
 
 types = {data.accuracies_means data.accuracies_means_zscored};
@@ -60,6 +65,7 @@ ylimits = { [0.2 1] [-2.5 2.5]};
 for type = 1 : length(types)
     
     figure();
+    grid on
     set(gcf,'Position',[0 0 600 300],'Color','w')
     set(gcf,'PaperPositionMode','auto')
     set(gcf,'InvertHardcopy','off')
@@ -67,10 +73,10 @@ for type = 1 : length(types)
     markers = {'-ks'  '-k^' '-ok' '-ks'};
     markerColor = {'k'  'k' 'k' 'k'};
     MarkerFaceColor = {'k'  'b' 'g' 'r'};
-    % markerSize = 6;
+    markerSize = 6;
     for cond =1 : size(data.accuracies,1)
         errorbar(data.all_contrasts, types{type}(cond, :), sems_types{type}(cond,:), markers{cond},'MarkerEdgeColor', markerColor{cond}, ...
-            'MarkerFaceColor', MarkerFaceColor{cond}, 'MarkerSize', markerSize); %#ok
+            'MarkerFaceColor', MarkerFaceColor{cond}, 'MarkerSize', markerSize);
     end
 
 
@@ -78,16 +84,23 @@ for type = 1 : length(types)
     title('All Subjects', 'fontsize',14,'fontweight','b');
     ylabel('Accuracy', 'fontsize',12,'fontweight','b');
     xlabel('Contrast levels', 'fontsize',12,'fontweight','b');
-    set(gca,'XTick', data.all_contrasts,'XTickLabel',data.cols)
-    legend(data.rows, 'Location', 'Best')
+    set(gca,'XTick', data.all_contrasts,'XTickLabel',data.cols,'fontsize',8)
+    legend(data.rows, 'Location', 'SouthEast')
     set(gca,'YLim', ylimits{type})
-    print(gcf, '-djpeg', [locVars.figsDir locVars.fileName names{type}])
+    set(gca,'XLim', [data.all_contrasts(1) data.all_contrasts(end)])
+    print(gcf, '-djpeg', [locVars.figsDir fileName names{type}])
 
 end
-
+%%
+end
+%%
+if ismember(3, locVars.whichPlot)
 %% 3. Plot mean subjective response accuracy vs. actual accuracy 
 
 figure()
+set(gcf,'Position',[0 0 600 450],'Color','w')
+set(gcf,'PaperPositionMode','auto')
+set(gcf,'InvertHardcopy','off')
 hold on
 line([0 1],[0.25 1]); % linear trend expected    
 
@@ -102,9 +115,9 @@ for maskCond = 1:size(data.accuracies_means,1)
     for cont = 1:size(data.accuracies_means,2)
         
         % plot the markers with the y errorbars
-        errorbar(data.meanProportion(maskCond, cont),data.accuracies_means(maskCond,cont),...
+        plotHandle(maskCond,cont) = errorbar(data.meanProportion(maskCond, cont),data.accuracies_means(maskCond,cont),...
             data.accuracies_sems(maskCond,cont), [MarkerFaceColor{maskCond} shapes{cont}], ...
-            'MarkerFaceColor', MarkerFaceColor{maskCond}, 'MarkerSize', markerSize);
+            'MarkerFaceColor', MarkerFaceColor{maskCond}, 'MarkerSize', markerSize); %#ok
         % x error bars
         herrorbar(data.meanProportion(maskCond,cont), data.accuracies_means(maskCond,cont), ...
             data.meanProportion_sem_half(maskCond,cont), data.meanProportion_sem_half(maskCond,cont), ...
@@ -114,9 +127,10 @@ for maskCond = 1:size(data.accuracies_means,1)
 end
 
 title('Accuracy as a Function of Visibility','fontsize',14)
-xlabel('Visibility','fontsize',12)
-ylabel('Accuracy','fontsize',12)
+xlabel('Visibility', 'fontsize', 12)
+ylabel('Accuracy', 'fontsize', 12)
+legend(plotHandle(1,:), data.cols, 'Location', 'SouthEast')
 set(gca,'Xlim', [0 1])
-print(gcf, '-djpeg', [locVars.figsDir locVars.fileName '_subjective'])
-
+print(gcf, '-djpeg', [locVars.figsDir fileName '_subjective'])
+end
 close all
