@@ -53,7 +53,7 @@ try
     Trial(:, 1) = Exp.Gral.SubjectNumber; % subject number
     Trial(:, 2) = Exp.Gral.SubjectBlock; % Block number    
     Exp.Trial = Trial;    
-    Exp.stimuli.stimDur = 100; %Mondrians.stimDur; %deleted 'Exp.stimuli.' since not loaded that way
+    Exp.stimuli.stimDur = Mondrians.stimDur; %deleted 'Exp.stimuli.' since not loaded that way
     Exp.stimuli.mondrianStart = Mondrians.mondrianStart;
     Exp.stimuli.mondrianEnd = Mondrians.mondrianEnd;
     Exp.stimuli.mondrianRate = Mondrians.mondrianRate; % now it must be a cell array of vectors
@@ -71,7 +71,6 @@ try
 
     % Preallocate the timing matrix for all trials
     for tr=1: size(Exp.Trial, 1)
-        Exp.stimuli.stimDur = 100;
         Exp.expinfo(tr).timing = zeros(Exp.stimuli.stimDur,6);
     end
 
