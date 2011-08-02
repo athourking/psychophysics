@@ -7,8 +7,8 @@ function data = analyze_freqAccuracy (Data)
 %outDir - where to save it. analyze_Accuracy puts it back into the same
 %folder, with the same name as the file of the concatenated data matrix.
 %% Conditions :
-% (1) subject number ; (2) Block number; (3) contrast value ; (4) mask
-% frequencies; (5) code for the mask frequencies; (6) location of the checkerboard
+% (1) subject number ; (2) Block number; (3) contrast value ; (4) timing of checkerboard;
+% (5) mask frequencies; (6) location of the checkerboard
 % (7) responses for locations ; (8) responses for subjective visibility
 
 data.all_contrasts = unique(Data(:,3));

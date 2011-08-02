@@ -1,3 +1,8 @@
+
+#############################################################################
+# PART I: DETECTION FOR DIFFERENT TIMINGS OF PRESENTATION OF THE CHECHERBOARD
+#############################################################################
+
 # experimental data set
 setwd('/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/')
 dataset <- read.table('Data_12Subjects.txt',as.is=TRUE)
@@ -36,12 +41,8 @@ aggregatedData$contrast <- factor(aggregatedData$contrast)
 aggregatedData$subject <- factor(aggregatedData$subject)
 
 # Plot the interactions
-x11()
-png("mygraph.png")
 interaction.plot(aggregatedData$contrast,aggregatedData$maskCode,aggregatedData$acc,ylim=c(0.18,1),
                  type="b",pch=c(16,17,18,19),cex=1.5)
-dev.copy(png,"mygraph.png")
-
 
 
 #subj <- "12"
@@ -97,3 +98,135 @@ t.test(md,ct,paired=TRUE,alternative=("two.sided"))
 
 
 # boxplot(aggregatedData$acc ~ aggregatedData$maskCode)
+
+
+
+
+#############################################################################
+# PART II: DETECTION FOR DIFFERENT FREQUENCIES OF THE MONDRIANS
+#############################################################################
+
+
+# experimental data set
+setwd("/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/")
+dataset <- read.table('freqExp_allDataUnix.txt',as.is=TRUE)
+str(dataset)
+
+# (1) subject number ; (2) Block number; (3) contrast value ; (4) timing of checkerboard;
+# (5) mask frequencies; (6) location of the checkerboard
+# (7) responses for locations ; (8) responses for subjective visibility
+
+nomi <- c("subject",
+  "block",
+  "contrast",
+  "timing",
+  "frequency",
+  "location",
+  "response",
+  "subjectiveResponse")
+names(dataset) <- nomi  
+str(dataset)
+
+# Calculate accuracies
+dataset$acc <- ifelse(dataset$location == dataset$response, 1, 0)
+
+# Data sanity check: prints only the first 6 rows
+head(data.frame(dataset$acc,dataset$location,dataset$response))
+
+# Calculate accuracy means for each subject
+aggregatedData <- aggregate(dataset$acc,list(dataset$frequency, dataset$contrast, dataset$subject),mean)
+names(aggregatedData) <- c("frequency","contrast","subject","acc")
+
+# Create our factors
+aggregatedData$frequency <- factor(aggregatedData$frequency)
+aggregatedData$contrast <- factor(aggregatedData$contrast)
+aggregatedData$subject <- factor(aggregatedData$subject)
+
+# Plot interactions
+interaction.plot(aggregatedData$frequency, aggregatedData$contrast, aggregatedData$acc,
+                 ylim=c(0.18,1), type="b",pch=c(16,17,18,19),cex=1.5)
+
+
+# Two-ways repeated measures Anova 
+mod.withinAnova <- aov(acc ~ (frequency * contrast ) +
+                       Error(subject / (frequency * contrast) ),data=aggregatedData)
+summary(mod.withinAnova)
+
+
+# One-way repeated measures anova for each contrast condition
+mod <- list(0)
+i <- 1
+for (cond in levels(aggregatedData$contrast)){  
+  idxs <- aggregatedData$contrast == cond
+  mod[[i]] <- aov(acc ~  frequency +
+                       Error(subject /  frequency) ,data=aggregatedData[idxs,])
+   # mod[[i]].cond <- cond
+  i <- i + 1
+}
+
+??tuckey
+# Post hoc comparisons: 10 comparisons make a bonferroni corrected p value
+# of 0.005
+
+idxs <- aggregatedData$contrast == 0.12
+
+hz_5 <- aggregatedData$acc[idxs & aggregatedData$frequency == 5]
+hz_8 <- aggregatedData$acc[idxs & aggregatedData$frequency == 8.5]
+hz_10 <- aggregatedData$acc[idxs & aggregatedData$frequency == 10]
+hz_16 <- aggregatedData$acc[idxs & aggregatedData$frequency == 16.6]
+hz_28 <- aggregatedData$acc[idxs & aggregatedData$frequency == 28.5]
+
+t.test(hz_5, hz_8, paired=TRUE, alternative=("two.sided"))
+t.test(hz_5, hz_10, paired=TRUE,alternative=("two.sided"))
+t.test(hz_5, hz_16, paired=TRUE,alternative=("two.sided"))
+t.test(hz_5, hz_28, paired=TRUE,alternative=("two.sided"))
+t.test(hz_8, hz_10, paired=TRUE, alternative=("two.sided"))
+t.test(hz_8, hz_16, paired=TRUE, alternative=("two.sided"))
+t.test(hz_8, hz_28, paired=TRUE, alternative=("two.sided"))
+t.test(hz_10, hz_16, paired=TRUE, alternative=("two.sided"))
+t.test(hz_10, hz_28, paired=TRUE,alternative=("two.sided"))
+t.test(hz_16, hz_28, paired=TRUE,alternative=("two.sided"))
+
+
+idxs <- aggregatedData$contrast == 0.16
+
+hz_5 <- aggregatedData$acc[idxs & aggregatedData$frequency == 5]
+hz_8 <- aggregatedData$acc[idxs & aggregatedData$frequency == 8.5]
+hz_10 <- aggregatedData$acc[idxs & aggregatedData$frequency == 10]
+hz_16 <- aggregatedData$acc[idxs & aggregatedData$frequency == 16.6]
+hz_28 <- aggregatedData$acc[idxs & aggregatedData$frequency == 28.5]
+
+t.test(hz_5, hz_8, paired=TRUE, alternative=("two.sided"))
+t.test(hz_5, hz_10, paired=TRUE,alternative=("two.sided"))
+t.test(hz_5, hz_16, paired=TRUE,alternative=("two.sided"))
+t.test(hz_5, hz_28, paired=TRUE,alternative=("two.sided"))
+t.test(hz_8, hz_10, paired=TRUE, alternative=("two.sided"))
+t.test(hz_8, hz_16, paired=TRUE, alternative=("two.sided"))
+t.test(hz_8, hz_28, paired=TRUE, alternative=("two.sided"))
+t.test(hz_10, hz_16, paired=TRUE, alternative=("two.sided"))
+t.test(hz_10, hz_28, paired=TRUE,alternative=("two.sided"))
+t.test(hz_16, hz_28, paired=TRUE,alternative=("two.sided"))
+
+
+idxs <- aggregatedData$contrast == 0.64
+
+hz_5 <- aggregatedData$acc[idxs & aggregatedData$frequency == 5]
+hz_8 <- aggregatedData$acc[idxs & aggregatedData$frequency == 8.5]
+hz_10 <- aggregatedData$acc[idxs & aggregatedData$frequency == 10]
+hz_16 <- aggregatedData$acc[idxs & aggregatedData$frequency == 16.6]
+hz_28 <- aggregatedData$acc[idxs & aggregatedData$frequency == 28.5]
+
+t.test(hz_5, hz_8, paired=TRUE, alternative=("two.sided"))
+t.test(hz_5, hz_10, paired=TRUE,alternative=("two.sided"))
+t.test(hz_5, hz_16, paired=TRUE,alternative=("two.sided"))
+t.test(hz_5, hz_28, paired=TRUE,alternative=("two.sided"))
+t.test(hz_8, hz_10, paired=TRUE, alternative=("two.sided"))
+t.test(hz_8, hz_16, paired=TRUE, alternative=("two.sided"))
+t.test(hz_8, hz_28, paired=TRUE, alternative=("two.sided"))
+t.test(hz_10, hz_16, paired=TRUE, alternative=("two.sided"))
+t.test(hz_10, hz_28, paired=TRUE,alternative=("two.sided"))
+t.test(hz_16, hz_28, paired=TRUE,alternative=("two.sided"))
+
+
+
+
