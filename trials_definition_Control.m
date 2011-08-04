@@ -1,10 +1,12 @@
-function trials_definition_maskFrequencies (blockName)
+function trials_definition_Control (blockName)
 
+
+% Function to define the trials in which no CFS is used but just backward,
+% forward and middle masking with the same timing as in the frequency
+% experiment
 
 %% parameters for mondrians
 Mondrians.stimDur = 130; %total number of frames for the stimuli presentation period
-Mondrians.mondrianStart= 1; % 1: means start from from frame 1; 0: without mondrians
-Mondrians.mondrianEnd= 130; % frame number to stop showing mondrians
 Mondrians.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians to the righ eye
 
 %% Parameters for the checkerboard
@@ -33,7 +35,7 @@ checkLocation = [1 2 3 4]; % locations = 1: up; 2: down; 3: Left; 4: right;
 frequency = {16};%{16 10 8 5 4 3};  % numbers of frames to present each mondrian (MondrianRate in previous versions)
 frequencyCodes = {5};%{5 8.5 10.6 16.6 20.3 28.5};
 % each position in the cell array corresponds to each frequency
-timing = { [79 95 111] [49 59 69] [55 63 71] [49 59 69] [51 63 75] [50 62 74] }; 
+timing = { [79 95] };  % { [79 95] [49 59 69] [55 63 71] [49 59 69] [51 63 75] [50 62 74] }; 
 % timingConds = { 'backwardMasking'};  % 1
 
 repetitions= 10; % repetition of the minimun design -one trial per condition-
@@ -55,6 +57,9 @@ for m= 1 : length(contrast)
             Trial(count, 6) = loc; % location of the checkerboard
             Trial(count, 7) = 0; %  responses for locations
             Trial(count, 8) = 0; %  responses for subjective visibility
+            
+            Mondrians.mondrianStart= Trial(count, 4) + 2 - frequency{freq}; % 1: means start from from frame 1; 0: without mondrians
+            Mondrians.mondrianEnd=  Trial(count, 4) + 2 ; % frame number to stop showing mondrians
             
             Mondrians.mondrianRate{count, 1} = frequency{freq};
             Mondrians.mondrianTiming{count, 1} = Mondrians.mondrianStart: frequency{freq} :Mondrians.mondrianEnd; %#ok
