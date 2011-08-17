@@ -4,7 +4,7 @@
 #############################################################################
 
 # experimental data set
-setwd("/media/New Volume/psychScriptz/CFS_Checkerboard/Data")
+setwd("../Data_results")
 dataset <- read.table('Data_12Subjects.txt',as.is=TRUE)
 str(dataset)
 library(sciplot)
@@ -62,19 +62,19 @@ abline(h=0.25,lwd=1,lty=2)
 axis(2,seq(0.2,1,0.1),seq(0.2,1,0.1),las=1,cex.axis=1.4)
 axis(1,unique(contrastLin),unique(contrastLin),cex.axis=1.4)
 
-# log Sciplot
-subjMeans <- rep(tapply(aggregatedData[,4],list(aggregatedData[,3]),mean),rep(15,12))
-overallMean <- rep(mean(aggregatedData[,4]),length(subjMeans))
-plotData <- aggregatedData[,4]-(subjMeans-overallMean)
-contrastLin <- as.numeric(as.character(aggregatedData[,2]))
-contrastLog <- log(as.numeric(as.character(aggregatedData[,2])))
-lineplot.CI(contrastLog,plotData,group=aggregatedData[,1],x.cont=TRUE,
-            ci.fun = function(x) c( mean(x) + sd(x)/sqrt(12) , mean(x) - sd(x)/sqrt(12) ),
-            ylim=c(0.2,1),bty="n",axes=FALSE,x.leg=min(unique(contrastLog)),y.leg=0.9,xlim=c(min(unique(contrastLog)),max(unique(contrastLog))),
-            err.lty=c(4,3,2,1),lwd=2,cex=2,cex.lab=1.5,cex.leg=1)
-abline(h=0.25,lwd=1,lty=2)
-axis(2,seq(0.2,1,0.1),seq(0.2,1,0.1),las=1)
-axis(1,unique(contrastLog),unique(contrastLin))
+# # log Sciplot
+# subjMeans <- rep(tapply(aggregatedData[,4],list(aggregatedData[,3]),mean),rep(15,12))
+# overallMean <- rep(mean(aggregatedData[,4]),length(subjMeans))
+# plotData <- aggregatedData[,4]-(subjMeans-overallMean)
+# contrastLin <- as.numeric(as.character(aggregatedData[,2]))
+# contrastLog <- log(as.numeric(as.character(aggregatedData[,2])))
+# lineplot.CI(contrastLog,plotData,group=aggregatedData[,1],x.cont=TRUE,
+#             ci.fun = function(x) c( mean(x) + sd(x)/sqrt(12) , mean(x) - sd(x)/sqrt(12) ),
+#             ylim=c(0.2,1),bty="n",axes=FALSE,x.leg=min(unique(contrastLog)),y.leg=0.9,xlim=c(min(unique(contrastLog)),max(unique(contrastLog))),
+#             err.lty=c(4,3,2,1),lwd=2,cex=2,cex.lab=1.5,cex.leg=1)
+# abline(h=0.25,lwd=1,lty=2)
+# axis(2,seq(0.2,1,0.1),seq(0.2,1,0.1),las=1)
+# axis(1,unique(contrastLog),unique(contrastLin))
 
 # Calculate zscore accuracy means
 aggregatedData$zAcc <- rep(0,dim(aggregatedData)[1])
@@ -106,18 +106,32 @@ for (cond in levels(aggregatedData$contrast)){
 }
 
 # Post-Hoc multiple comparisons
-idxs <- aggregatedData$contrast == 0.64
+idxs <- aggregatedData$contrast == 0.12
 bw <- aggregatedData$acc[idxs & aggregatedData$maskCode == 1]
 fw <- aggregatedData$acc[idxs & aggregatedData$maskCode == 2]
 md <- aggregatedData$acc[idxs & aggregatedData$maskCode == 3]
 ct <- aggregatedData$acc[idxs & aggregatedData$maskCode == 4]
 
 t.test(bw,fw,paired=TRUE,alternative=("two.sided"))
-t.test(bw,md,paired=TRUE,alternative=("less"))
-t.test(bw,ct,paired=TRUE,alternative=("less"))
+t.test(bw,md,paired=TRUE,alternative=("two.sided"))
+#t.test(bw,ct,paired=TRUE,alternative=("less"))
 
 t.test(fw,md,paired=TRUE,alternative=("two.sided"))
-t.test(md,ct,paired=TRUE,alternative=("two.sided"))
+#t.test(md,ct,paired=TRUE,alternative=("two.sided"))
+
+
+idxs <- aggregatedData$contrast == 0.16
+bw <- aggregatedData$acc[idxs & aggregatedData$maskCode == 1]
+fw <- aggregatedData$acc[idxs & aggregatedData$maskCode == 2]
+md <- aggregatedData$acc[idxs & aggregatedData$maskCode == 3]
+ct <- aggregatedData$acc[idxs & aggregatedData$maskCode == 4]
+
+t.test(bw,fw,paired=TRUE,alternative=("two.sided"))
+t.test(bw,md,paired=TRUE,alternative=("two.sided"))
+#t.test(bw,ct,paired=TRUE,alternative=("less"))
+
+t.test(fw,md,paired=TRUE,alternative=("two.sided"))
+#t.test(md,ct,paired=TRUE,alternative=("two.sided"))
 
 
 
@@ -132,7 +146,7 @@ t.test(md,ct,paired=TRUE,alternative=("two.sided"))
 
 
 # experimental data set
-setwd("/media/New Volume/psychScriptz/CFS_Checkerboard/Data")
+setwd("/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results")
 dataset <- read.table('freqExp_allData.txt',as.is=TRUE)
 str(dataset)
 library(sciplot)
@@ -171,16 +185,33 @@ aggregatedData$subject <- factor(aggregatedData$subject)
 subjMeans <- rep(tapply(aggregatedData[,4],list(aggregatedData[,3]),mean),rep(15,12))
 overallMean <- rep(mean(aggregatedData[,4]),length(subjMeans))
 plotData <- aggregatedData[,4]-(subjMeans-overallMean)
-lineplot.CI(aggregatedData[,1],plotData,group=aggregatedData[,2],
+lineplot.CI(aggregatedData[,1], plotData, group=aggregatedData[,2], x.cont=FALSE, legend=TRUE,
             ci.fun = function(x) c( mean(x) + sd(x)/sqrt(12) , mean(x) - sd(x)/sqrt(12) ),
-            ylim=c(0,1),bty="n",axes=FALSE,x.leg=1,y.leg=0.25,
-            err.lty=c(3,2,1),lwd=1.5,cex=3,cex.lab=1.5,cex.leg=2)
+            ylim=c(0.2,1), bty="n", axes=FALSE, 
+            err.lty=c(1,2,3), lty = c(1,2,3), col=c("blue","black","red"), pch=c(15,16,17),
+            lwd=2, cex=2, cex.lab=1.5, cex.leg=1.5,
+            xlab="", ylab="", leg.lab = c("64% contrast", "16% contrast", "12% contrast"), 
+            x.leg= 1, y.leg= 0.45)
 
+title(xlab="Frequency",ylab="Accuracy",cex.lab=2)
+abline(h=0.25,lwd=1,lty=2)
+axis(2,seq(0.2,1,0.1), seq(0.2,1,0.1), las=1, cex.axis=1.4)
+axis(1,unique(aggregatedData[,1]), unique(aggregatedData[,1]),cex.axis=1.4)
 
-# Plot interactions
-interaction.plot(aggregatedData$frequency, aggregatedData$contrast, aggregatedData$acc,
-                 ylim=c(0.18,1), type="b",pch=c(16,17,18,19),cex=1.5)
+smartlegend(x = c("left", y = c("bottom"), inset = 0.05)
 
+ xlim = c(3,30),
+
+# lineplot.CI(aggregatedData[,2],plotData,group=aggregatedData[,1],x.cont=TRUE,
+#             ci.fun = function(x) c( mean(x) + sd(x)/sqrt(12) , mean(x) - sd(x)/sqrt(12) ),
+#             ylim=c(0.2,1),bty="n",axes=FALSE,x.leg=0.3,y.leg=0.5,xlim=c(0,0.7),
+#             err.lty=c(1,2,3),lty=c(1,2,3),col=c("black","grey25","grey50"),pch=c(15,16,17)
+#       ,lwd=2,cex=2,cex.lab=1.5,cex.leg=2,
+# 	    xlab="",ylab="",leg.lab=c("Middle","Backward","Forward"))
+# title(xlab="Contrast",ylab="Accuracy",cex.lab=2)
+# abline(h=0.25,lwd=1,lty=2)
+# axis(2,seq(0.2,1,0.1),seq(0.2,1,0.1),las=1,cex.axis=1.4)
+# axis(1,unique(contrastLin),unique(contrastLin),cex.axis=1.4)
 
 # Two-ways repeated measures Anova 
 mod.withinAnova <- aov(acc ~ (frequency * contrast ) +
@@ -199,7 +230,7 @@ for (cond in levels(aggregatedData$contrast)){
   i <- i + 1
 }
 
-??tuckey
+# ??tuckey
 # Post hoc comparisons: 10 comparisons make a bonferroni corrected p value
 # of 0.005
 
