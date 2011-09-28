@@ -1,7 +1,5 @@
 Things to do:
 
-# Program the next experiment
-
 # Create the trials figure
 
 

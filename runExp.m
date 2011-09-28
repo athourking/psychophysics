@@ -205,11 +205,13 @@ try
     ShowCursor;
 
     
+
 catch % ME1
     sca;
     %     rethrow(ME1);
     rethrow(psychlasterror);
 end
+
 %% HISTORY
 
 % 02/06/2011    LK.     --Calculated the total duration of each block

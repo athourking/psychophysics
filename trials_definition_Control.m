@@ -1,4 +1,4 @@
-function trials_definition_Control (blockName)
+function trials_definition_Control 
 
 
 % Function to define the trials in which no CFS is used but just backward,
@@ -32,10 +32,11 @@ checkLocation = [1 2 3 4]; % locations = 1: up; 2: down; 3: Left; 4: right;
 %     0.0118    0.1059    0.2000    0.2941    0.3882    0.4824    0.5765    0.6706    0.7647    0.8588    0.9529    1.0471
 %    1.1412    1.2353    1.3294    1.4235    1.5176
 
-frequency = {16};%{16 10 8 5 4 3};  % numbers of frames to present each mondrian (MondrianRate in previous versions)
-frequencyCodes = {5};%{5 8.5 10.6 16.6 20.3 28.5};
+blockName = 'Block_Control_28Hz';
+frequencyCodes = {28.5};%{5  8.5  10.6  16.6  20.3  28.5};
+frequency = {3};%{16  10  8  5  4  3};  % number of frames to present each mondrian (MondrianRate in previous versions)
 % each position in the cell array corresponds to each frequency
-timing = { [79 95] };  % { [79 95] [49 59 69] [55 63 71] [49 59 69] [51 63 75] [50 62 74] }; 
+timing = { [50 62 74] };  % { [79 95] [49 59 69] [55 63 71] [49 59 69] [51 63 75] [50 62 74] }; 
 % timingConds = { 'backwardMasking'};  % 1
 
 repetitions= 10; % repetition of the minimun design -one trial per condition-
@@ -59,7 +60,7 @@ for m= 1 : length(contrast)
             Trial(count, 8) = 0; %  responses for subjective visibility
             
             Mondrians.mondrianStart= Trial(count, 4) + 2 - frequency{freq}; % 1: means start from from frame 1; 0: without mondrians
-            Mondrians.mondrianEnd=  Trial(count, 4) + 2 ; % frame number to stop showing mondrians
+            Mondrians.mondrianEnd=  Trial(count, 4) + 2  + frequency{freq}; % frame number to stop showing mondrians
             
             Mondrians.mondrianRate{count, 1} = frequency{freq};
             Mondrians.mondrianTiming{count, 1} = Mondrians.mondrianStart: frequency{freq} :Mondrians.mondrianEnd; %#ok
