@@ -1,43 +1,27 @@
 function runExp
 
 try
-    %% Defining parameters
-    KbName('UnifyKeyNames');
     
-    %%% IF RUNNING IN WINDOWS OR WINDOWS EMULATION FROM A WINDOWS/MAC MACHINE
-    %escapeKey = KbName('esc');
-    %upKey = KbName('up'); %38 in Windows, 82 in MAC
-    %downKey = KbName('down'); %40 in Windows, 81 in MAC
-    %exitKey = KbName('x'); %88 in Windows, 67 in MAC
-
-    %%%IF RUNNING IN MAC FROM A MAC MACHINE
-    escapeKey = KbName('ESCAPE');
-    responseKey = KbName('Space'); 
-    upKey = KbName('UpArrow'); %38 in Windows, 82 in MAC
-    downKey = KbName('DownArrow'); %40 in Windows, 81 in MAC
-    exitKey = KbName('x'); %88 in Windows, 67 in MAC
-    message='Calibration: Try to fixate on the points as they appear';
-
-
+    
     Exp.Gral.SubjectName= input('Please enter subject ID:\n', 's');
     Exp.Gral.SubjectNumber= input('Please enter subject number:\n');
     Exp.Gral.SubjectBlock= input('Please enter block number:\n');
     Exp.Gral.BlockName= input('Block name:\n','s');
-
+    
     PsychJavaTrouble; % Check there are no problems with Java
     Exp.Cfg.SkipSyncTest = 0; %This should be '0' on a properly working NVIDIA video card. '1' skips the SyncTest.
     Exp.Cfg.AuxBuffers= 1; % '0' if no Auxiliary Buffers available, otherwise put it into '1'.
     % Check for OpenGL compatibility
     AssertOpenGL;
     Screen('Preference','SkipSyncTests', Exp.Cfg.SkipSyncTest);
-
-    Exp.Cfg.WinSize= [];  %Empty means whole screen
+    
+    Exp.Cfg.WinSize= [0 0 500 500];  %Empty means whole screen
     Exp.Cfg.WinColor= []; % empty for the middle gray of the screen.
-
+    
     Exp.Cfg.xDimCm = 32.5; %Length in cm of the screen in X
     Exp.Cfg.yDimCm = 24.5; %Length in cm of the screen in Y
     Exp.Cfg.distanceCm = 60; %Viewing distance
-
+    
     Exp.addParams.textSize = 30;
     Exp.addParams.textColor = [0 0 255];
     Exp.stimuli.checkSize = 3; % IN DEGREES
@@ -45,30 +29,63 @@ try
     Exp.stimuli.arrowSize = 2;% IN DEGREES
     Exp.stimuli.arrowOffcenter = 1.5; %IN DEGREES
     Exp.stimuli.frameSize = 8;
-
-    Exp.addParams.exitKey = 'o';
+    
+    
     Exp.addParams.blankInterval = 15; % interval between the last mondrian and the question. IN FRAMES
-
+    
     Exp.totalDuration = [];  % Block duration
     Exp.stimuli.randomTrials = 1; % 1 randomize, 0 do not randomize trials
-    Exp.stimuli.ITI = [21 42 63 85];   
-
-
+    Exp.stimuli.ITI = [21 42 63 85];
+    
+    
     %% Use Psychophysics
     %C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard
     
     %% Directories
     %locVars = localVariables;
-
+    
     %% INITIALYZE SCREEN
     Exp = InitializeScreen (Exp);
-
+    
+    %% Defining parameters
+    KbName('UnifyKeyNames');
+    
+    if Exp.Cfg.computer.linux == 1 || Exp.Cfg.computer.windows == 1
+        
+        %% IF RUNNING IN WINDOWS OR WINDOWS EMULATION FROM A WINDOWS/MAC MACHINE
+        Exp.addParams.escapeKey = 'esc';
+        Exp.addParams.upKey = 'up'; %38 in Windows, 82 in MAC
+        Exp.addParams.downKey = 'down'; %40 in Windows, 81 in MAC
+        Exp.addParams.exitKey = 'o'; %88 in Windows, 67 in MAC
+%         Exp.addParams.exitKey = 'o';
+        
+    elseif Exp.Cfg.computer.osx == 1
+        %%%IF RUNNING IN MAC FROM A MAC MACHINE
+%         Exp.addParams.escapeKey = KbName('ESCAPE');
+%         Exp.addParams.responseKey = KbName('Space');
+%         Exp.addParams.upKey = KbName('UpArrow'); %38 in Windows, 82 in MAC
+%         Exp.addParams.downKey = KbName('DownArrow'); %40 in Windows, 81 in MAC
+%         Exp.addParams.leftKey = Kbname('LeftArrow');
+%         Exp.addParams.rightKey = Kbname('RightArrow');
+%         Exp.addParams.exitKey = KbName('x'); %88 in Windows, 67 in MAC
+        
+        Exp.addParams.escapeKey = 'ESCAPE';
+        Exp.addParams.responseKey = 'Space';
+        Exp.addParams.upKey = 'UpArrow'; %38 in Windows, 82 in MAC
+        Exp.addParams.downKey = 'DownArrow'; %40 in Windows, 81 in MAC
+        Exp.addParams.leftKey = 'LeftArrow';
+        Exp.addParams.rightKey = 'RightArrow';
+        Exp.addParams.exitKey = 'x'; %88 in Windows, 67 in MAC
+        Exp.addParams.message='Calibration: Try to fixate on the points as they appear';
+        
+    end
+    
     %% Define Trials
     load(Exp.Gral.BlockName);
     % Add the two columns with block and subject information
     Trial(:, 1) = Exp.Gral.SubjectNumber; % subject number
-    Trial(:, 2) = Exp.Gral.SubjectBlock; % Block number    
-    Exp.Trial = Trial;    
+    Trial(:, 2) = Exp.Gral.SubjectBlock; % Block number
+    Exp.Trial = Trial;
     Exp.stimuli.stimDur = Mondrians.stimDur; %deleted 'Exp.stimuli.' since not loaded that way
     Exp.stimuli.mondrianStart = Mondrians.mondrianStart;
     Exp.stimuli.mondrianEnd = Mondrians.mondrianEnd;
@@ -76,23 +93,23 @@ try
     Exp.stimuli.mondrianEyeLocation = Mondrians.mondrianEyeLocation;
     Exp.stimuli.mondrianTiming = Mondrians.mondrianTiming; % now it must be a cell array of vectors
     clear Trial Mondrians
-   
+    
     % randomize trials
     if Exp.stimuli.randomTrials
         randi = randperm(length(Exp.Trial));
         Exp.Trial = Exp.Trial(randi, :);
         Exp.stimuli.mondrianRate = Exp.stimuli.mondrianRate(randi);
         Exp.stimuli.mondrianTiming = Exp.stimuli.mondrianTiming(randi);
-    end    
-
+    end
+    
     % Preallocate the timing matrix for all trials
     for tr=1: size(Exp.Trial, 1)
         Exp.expinfo(tr).timing = zeros(Exp.stimuli.stimDur,6);
     end
-
+    
     %% Stimuli & Textures creation
     Exp.stimuli.frameSize = ceil(Exp.stimuli.frameSize * Exp.Cfg.pixelsPerDegree); % frames in pixels
-
+    
     % Mondrians
     Exp.stimuli.NumberOfMondrians = 40;
     Exp.stimuli.ArrayOfMondrians = CreateMondrians(Exp.stimuli.NumberOfMondrians, Exp.stimuli.frameSize, Exp.stimuli.frameSize); %This creates 'NumberOfMondrians' of matrices, to be put into textures
@@ -100,19 +117,19 @@ try
     for m = 1:Exp.stimuli.NumberOfMondrians
         Exp.stimuli.mondrianTexVector(m) = Screen('MakeTexture', Exp.Cfg.win, Exp.stimuli.ArrayOfMondrians{m});
     end
-
+    
     %% Create and define frames
     % frameBackground = zeros(Exp.stimuli.frameSize,Exp.stimuli.frameSize,3);
     width = 25; % in pixels
     frame = rand(Exp.stimuli.frameSize + width) * 255;
     %Creating TEXTURE from Frame matrix
     Exp.stimuli.frameTex = Screen('MakeTexture', Exp.Cfg.win, frame);
-
+    
     %% Arrow texture
     arrow_image = imread('arrow.png');
     arrow_image( arrow_image(:,:,:) ~= 255) = Exp.Cfg.Color.inc;
     Exp.stimuli.arrow = Screen('MakeTexture', Exp.Cfg.win, arrow_image);
-
+    
     %% Define positions for the Frames, Masks, checherboard and arrows
     %Defining the two x and y coordinates on which both Frame Backgrounds and Masks
     %will be centered (first is Center Screen Left, second is Center Screen Right)
@@ -122,7 +139,7 @@ try
     Exp.stimuli.yLeft = Exp.Cfg.windowRect(4)/2;
     x = [Exp.stimuli.xLeft; Exp.stimuli.xRight];
     y = [Exp.stimuli.yLeft; Exp.stimuli.yRight];
-
+    
     %Create rectangles for (1)Frame Backgrounds and Masks, and (2)Frame TEXTURES
     %Feed them into 'CenterRectOnPoint' and get a handle to be fed into 'DrawTextures' to specify rectangle locations for both
     %On-screen rectangle size and location for Frame Backgrounds and Masks
@@ -133,7 +150,7 @@ try
     Exp.stimuli.newRect = CenterRectOnPoint(rect,x,y)';
     Exp.stimuli.destFrame_right = CenterRectOnPoint(rect, Exp.stimuli.xRight, Exp.stimuli.yRight)';
     Exp.stimuli.destFrame_left = CenterRectOnPoint(rect, Exp.stimuli.xLeft, Exp.stimuli.yLeft)';
-
+    
     % CHECKERBOARD positions
     Exp.stimuli.checkSize = Exp.stimuli.checkSize * Exp.Cfg.pixelsPerDegree;
     RectCheck = [0 0 Exp.stimuli.checkSize Exp.stimuli.checkSize];
@@ -149,12 +166,12 @@ try
     Exp.stimuli.RightCheck_Right = CenterRectOnPoint(RectCheck,Exp.stimuli.xRight+offCenter,Exp.stimuli.yRight);
     Exp.stimuli.RightCheck_Top = CenterRectOnPoint(RectCheck,Exp.stimuli.xRight,Exp.stimuli.yRight-offCenter);
     Exp.stimuli.RightCheck_Bottom = CenterRectOnPoint(RectCheck,Exp.stimuli.xRight,Exp.stimuli.yRight+offCenter);
-
+    
     % ARROWS position
     Exp.stimuli.arrowSize = Exp.stimuli.arrowSize * Exp.Cfg.pixelsPerDegree;
     RectArrow = [0 0 Exp.stimuli.arrowSize Exp.stimuli.arrowSize];
     offCenter = Exp.stimuli.arrowOffcenter * Exp.Cfg.pixelsPerDegree;
-
+    
     %Left frame
     Exp.stimuli.LeftArrow_Left = CenterRectOnPoint(RectArrow,Exp.stimuli.xLeft-offCenter,Exp.stimuli.yLeft);
     Exp.stimuli.LeftArrow_Right = CenterRectOnPoint(RectArrow,Exp.stimuli.xLeft+offCenter,Exp.stimuli.yLeft);
@@ -165,7 +182,7 @@ try
     Exp.stimuli.RightArrow_Right = CenterRectOnPoint(RectArrow,Exp.stimuli.xRight+offCenter,Exp.stimuli.yRight);
     Exp.stimuli.RightArrow_Top = CenterRectOnPoint(RectArrow,Exp.stimuli.xRight,Exp.stimuli.yRight-offCenter);
     Exp.stimuli.RightArrow_Bottom = CenterRectOnPoint(RectArrow,Exp.stimuli.xRight,Exp.stimuli.yRight+offCenter);
-
+    
     %% calibrate stereoscope
     %Draw the frames here:
     Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.frameTex, [], Exp.stimuli.destFrame);
@@ -177,17 +194,17 @@ try
     Screen('DrawDots', Exp.Cfg.win, xy, 7, [0 0 255], [], 2);
     Screen('TextSize', Exp.Cfg.win, 18);
     Screen('DrawText', Exp.Cfg.win, 'Fixate', x(1)- 45, y(1) + 5, [0 0 255]);
-
+    
     Screen('DrawText', Exp.Cfg.win, 'Fixate', x(2)- 45, y(2) + 5, [0 0 255]);
     Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
     kbwait();
-
+    
     %% Run main experiment
-
+    
     HideCursor;
     ListenChar(0);
     Priority(1); %Set Maximun Priority to Window win
-
+    
     time1 = GetSecs();
     for tr =1 : size(Exp.Trial, 1)
         Exp = showTrial(Exp, tr); % function to present each trial
@@ -197,14 +214,14 @@ try
             break;
         end
     end
-
+    
     time2 = GetSecs();
     Exp.totalDuration = time2 - time1; % total duration of the experiment in seconds
-
+    
     %Save results
-%     outDir = [pwd '/Data/'];
+    %     outDir = [pwd '/Data/'];
     save(Exp.Gral.SubjectName, 'Exp')
-
+    
     %% Plot timing control
     timing_diagnosis( Exp.expinfo, Exp.Cfg)
     
@@ -219,9 +236,9 @@ try
     Screen('CloseAll');
     sca
     ShowCursor;
-
     
-
+    
+    
 catch % ME1
     sca;
     %     rethrow(ME1);
@@ -255,21 +272,21 @@ end
 %14/06/2011     MS.     --1.Created 4 Block*.mat files, they contain specific
 %                        block parameters for both trial and stimuli. ShowTrial
 %                        lines 32-37 and 80-83 is how I make mondrians start
-%                        or not start, depending on which Block*.mat gets loaded. 
+%                        or not start, depending on which Block*.mat gets loaded.
 %                        3. Added analyze_firstBlock at the bottom of
-%                        runExp, it produces an accuracy plot only when Block 
+%                        runExp, it produces an accuracy plot only when Block
 %                        number ==1. 4.Created analyze_subjective.m to
 %                        measure accuracy for 'yes' and 'no' responses. Did not
 %                        finish.
-%                   
-%15/06/2011    LK.MS.    --Decided to have 3 *.mat files: 2 for practice(1 with 
-%                        (checkerboards, 1 with checkerboards(igher contrasts 
-%                        and mondrians), 1 for main block. 
-%                        --Seperated trials_definition from runExp. 
-%                        Now, when runExp run, must always provide mat file 
+%
+%15/06/2011    LK.MS.    --Decided to have 3 *.mat files: 2 for practice(1 with
+%                        (checkerboards, 1 with checkerboards(igher contrasts
+%                        and mondrians), 1 for main block.
+%                        --Seperated trials_definition from runExp.
+%                        Now, when runExp run, must always provide mat file
 %                        containing Trial(160x8 double, defining checkerboard
-%                        presentation and preallocates columns for subject data) 
-%                        and  Mondrians(structure with 6 variables, defining 
-%                        Mondrian presentation). Thus,runExp does not use 
-%                        trials_definition anymore. 
-%                  
+%                        presentation and preallocates columns for subject data)
+%                        and  Mondrians(structure with 6 variables, defining
+%                        Mondrian presentation). Thus,runExp does not use
+%                        trials_definition anymore.
+%

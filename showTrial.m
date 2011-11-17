@@ -210,13 +210,13 @@ end
 if isempty(Exp.responses.ActualResponse)
     Exp.Trial(tr, 7) = 0;
     % locations = 1: up; 2: down; 3: Left; 4: right;
-elseif strcmpi(Exp.responses.ActualResponse, 'Up')
+elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.upKey)
     Exp.Trial(tr, 7) = 1;
-elseif strcmpi(Exp.responses.ActualResponse, 'Down')
+elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.downKey)
     Exp.Trial(tr, 7) = 2;
-elseif strcmpi(Exp.responses.ActualResponse, 'Left')
+elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.leftKey)
     Exp.Trial(tr, 7) = 3;
-elseif strcmpi(Exp.responses.ActualResponse, 'Right')
+elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.rightKey)
     Exp.Trial(tr, 7) = 4;
 elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.exitKey)
     % just do nothing
@@ -269,13 +269,13 @@ while (RTflag==0)
             if isempty(Exp.responses.ActualResponse)
                 RTflag = 0;
                 % locations- 3: Left, means 'yes' ; 4: Right, means 'no';
-            elseif strcmpi(Exp.responses.ActualResponse, 'Up')
+            elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.upKey)
                 RTflag = 0;
-            elseif strcmpi(Exp.responses.ActualResponse, 'Down')
+            elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.downKey)
                 RTflag = 0;
-            elseif strcmpi(Exp.responses.ActualResponse, 'Left')
+            elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.leftKey)
                 Exp.Trial(tr, 8) = 3; 
-            elseif strcmpi(Exp.responses.ActualResponse, 'Right')
+            elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.rightKey)
                 Exp.Trial(tr, 8) = 4;
             elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.exitKey)
                 % just do nothing
