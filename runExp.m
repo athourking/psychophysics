@@ -2,6 +2,22 @@ function runExp
 
 try
     %% Defining parameters
+    KbName('UnifyKeyNames');
+    
+    %%% IF RUNNING IN WINDOWS OR WINDOWS EMULATION FROM A WINDOWS/MAC MACHINE
+    %escapeKey = KbName('esc');
+    %upKey = KbName('up'); %38 in Windows, 82 in MAC
+    %downKey = KbName('down'); %40 in Windows, 81 in MAC
+    %exitKey = KbName('x'); %88 in Windows, 67 in MAC
+
+    %%%IF RUNNING IN MAC FROM A MAC MACHINE
+    escapeKey = KbName('ESCAPE');
+    responseKey = KbName('Space'); 
+    upKey = KbName('UpArrow'); %38 in Windows, 82 in MAC
+    downKey = KbName('DownArrow'); %40 in Windows, 81 in MAC
+    exitKey = KbName('x'); %88 in Windows, 67 in MAC
+    message='Calibration: Try to fixate on the points as they appear';
+
 
     Exp.Gral.SubjectName= input('Please enter subject ID:\n', 's');
     Exp.Gral.SubjectNumber= input('Please enter subject number:\n');
