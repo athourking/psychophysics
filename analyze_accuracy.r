@@ -4,8 +4,9 @@
 #############################################################################
 
 # experimental data set
-setwd("../Data_results")
-dataset <- read.table('Data_12Subjects.txt',as.is=TRUE)
+#setwd("../Data_results")
+inDir <- "/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/"
+dataset <- read.table(paste(inDir,'Data_12Subjects.txt', sep=""),as.is=TRUE)
 str(dataset)
 library(sciplot)
 
@@ -51,12 +52,12 @@ contrastLin <- as.numeric(as.character(aggregatedData[,2]))
 subjMeans <- rep(tapply(aggregatedData[,4],list(aggregatedData[,3]),mean),rep(15,12))
 overallMean <- rep(mean(aggregatedData[,4]),length(subjMeans))
 plotData <- aggregatedData[,4]-(subjMeans-overallMean)
-lineplot.CI(aggregatedData[,2],plotData,group=aggregatedData[,1],x.cont=TRUE,
-            ci.fun = function(x) c( mean(x) + sd(x)/sqrt(12) , mean(x) - sd(x)/sqrt(12) ),
-            ylim=c(0.2,1),bty="n",axes=FALSE,x.leg=0.3,y.leg=0.5,xlim=c(0,0.7),
-            err.lty=c(1,2,3),lty=c(1,2,3),col=c("black","grey25","grey50"),pch=c(15,16,17)
-	    ,lwd=2,cex=2,cex.lab=1.5,cex.leg=2,
-	    xlab="",ylab="",leg.lab=c("Middle","Backward","Forward"))
+lineplot.CI(aggregatedData[,2], plotData, group=aggregatedData[,1],x.cont=TRUE,
+            ci.fun = function(x) c( mean (x) + sd(x)/sqrt(12) , mean(x) - sd(x)/sqrt(12) ),
+            ylim=c(0.2,1), bty="n", axes=FALSE,x.leg=0.3,y.leg=0.5, xlim=c(0,0.7),
+            err.lty=c(1,2,3), lty=c(1,2,3), col=c("black","grey25","grey50"),pch=c(15,16,17),
+	          lwd=2,cex=2,cex.lab=1.5,cex.leg=2,
+	          xlab="",ylab="",leg.lab=c("Middle","Backward","Forward"))
 title(xlab="Contrast",ylab="Accuracy",cex.lab=2)
 abline(h=0.25,lwd=1,lty=2)
 axis(2,seq(0.2,1,0.1),seq(0.2,1,0.1),las=1,cex.axis=1.4)
