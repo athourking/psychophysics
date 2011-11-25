@@ -1,29 +1,13 @@
 function runExp
 
 try
-
-    %% Defining parameters
-    KbName('UnifyKeyNames');
     
-    %%% IF RUNNING IN WINDOWS OR WINDOWS EMULATION FROM A WINDOWS/MAC MACHINE
-    %escapeKey = KbName('esc');
-    %upKey = KbName('up'); %38 in Windows, 82 in MAC
-    %downKey = KbName('down'); %40 in Windows, 81 in MAC
-    %exitKey = KbName('x'); %88 in Windows, 67 in MAC
-
-    %%%IF RUNNING IN MAC FROM A MAC MACHINE
-    escapeKey = KbName('ESCAPE');
-    responseKey = KbName('Space'); 
-    upKey = KbName('UpArrow'); %38 in Windows, 82 in MAC
-    downKey = KbName('DownArrow'); %40 in Windows, 81 in MAC
-    exitKey = KbName('x'); %88 in Windows, 67 in MAC
-    message='Calibration: Try to fixate on the points as they appear';
-
-
+    
     Exp.Gral.SubjectName= input('Please enter subject ID:\n', 's');
     Exp.Gral.SubjectNumber= input('Please enter subject number:\n');
     Exp.Gral.SubjectBlock= input('Please enter block number:\n');
     Exp.Gral.BlockName= input('Block name:\n','s');
+    Exp.Gral.Triggers.option= input('Do you want to send Triggers?:\n');
     
     PsychJavaTrouble; % Check there are no problems with Java
     Exp.Cfg.SkipSyncTest = 0; %This should be '0' on a properly working NVIDIA video card. '1' skips the SyncTest.
@@ -32,7 +16,7 @@ try
     AssertOpenGL;
     Screen('Preference','SkipSyncTests', Exp.Cfg.SkipSyncTest);
     
-    Exp.Cfg.WinSize= [0 0 500 500];  %Empty means whole screen
+    Exp.Cfg.WinSize= [];  %Empty means whole screen
     Exp.Cfg.WinColor= []; % empty for the middle gray of the screen.
     
     Exp.Cfg.xDimCm = 32.5; %Length in cm of the screen in X
@@ -96,6 +80,16 @@ try
         Exp.addParams.message='Calibration: Try to fixate on the points as they appear';
         
     end
+    
+    %% Initialize triggers
+    if Exp.Gral.Triggers.option
+        Exp.Gral.Triggers.dio = DaqDeviceIndex;
+        hdline = DaqDConfigPort(Exp.Gral.Triggers.dio, 0, 0);
+    end
+    
+    Exp.addParams.check1trigg = 2;
+    Exp.addParams.check2trigg = 4;
+    
     
     %% Define Trials
     load(Exp.Gral.BlockName);

@@ -19,7 +19,7 @@ indxs = Exp.stimuli.mondrianTexVector(indxs(1:length(Exp.stimuli.mondrianTexVect
 countMond = 1; % counter for the selection of mondrians
 
 for flp = 1 : Exp.stimuli.stimDur
-
+    
     % Draw frames for both eyes
     Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.frameTex, [], Exp.stimuli.destFrame);
     Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
@@ -68,9 +68,9 @@ for flp = 1 : Exp.stimuli.stimDur
                     Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.CheckTexs(randi(2)), ...
                         [], Exp.stimuli.RightCheck_Right);
             end
-
+            
         end
-
+        
     elseif Exp.stimuli.mondrianEyeLocation == 2
         
         % Draw the mondrians
@@ -78,8 +78,8 @@ for flp = 1 : Exp.stimuli.stimDur
         % mondrians on each trial)
         if flp >= Exp.stimuli.mondrianTiming{tr}(1) && flp <= Exp.stimuli.mondrianTiming{tr}(end)
             Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_left)
-        end        
-               
+        end
+        
         if flp == Exp.Trial(tr, 4)
             
             % Draw the checkerboard on the correct location
@@ -114,33 +114,51 @@ for flp = 1 : Exp.stimuli.stimDur
                     Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.CheckTexs(randi(2)), ...
                         [], Exp.stimuli.LeftCheck_Right);
             end
-
+            
         end
-
+        
     end
     
     %Draw fixation point
     FixdotDims = [Exp.stimuli.xLeft-4, Exp.stimuli.xRight-4; Exp.stimuli.yLeft-4, Exp.stimuli.yRight-4; ...
-    Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;]; 
+        Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;];
     Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
-
-
+    
+    
     % Flip stimuli on the screen
     [VBLTimestamp StimulusOnsetTime FlipTimestamp Missed Beampos]= ...
         Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
     
+    if Exp.Gral.Triggers.option == 1
+        % Send triggers for the Mondrians
+        if flp >= Exp.stimuli.mondrianTiming{tr}(1) && flp <= Exp.stimuli.mondrianTiming{tr}(end)
+            
+        end
         
+        % Send trigger for the checkerboards
+        if flp == Exp.Trial(tr, 4)
+            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, Exp.addParams.check1trigg);
+            WaitSecs(0.002)
+            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, 0);
+            
+        elseif flp == Exp.Trial(tr, 4) + 1
+            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, Exp.addParams.check2trigg);
+            WaitSecs(0.002)
+            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, 0);
+        end
+    end
+    
     % Keep all timing information for posterior check
     Exp.expinfo(tr).timing(flp,1:6)= [1, VBLTimestamp, ...
         StimulusOnsetTime, FlipTimestamp, Missed, Beampos];
-
+    
     % Use the mod function for presenting the mondrians
     if  flp >= Exp.stimuli.mondrianTiming{tr}(1) && flp <= Exp.stimuli.mondrianTiming{tr}(end)
         if mod(flp, Exp.stimuli.mondrianRate{tr}) == 0
             countMond = countMond +1;
         end
     end
-
+    
 end
 
 
@@ -151,12 +169,12 @@ for flp =1 : Exp.addParams.blankInterval
     Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
     %Draw fixation point
     FixdotDims = [Exp.stimuli.xLeft-4, Exp.stimuli.xRight-4; Exp.stimuli.yLeft-4, Exp.stimuli.yRight-4; ...
-    Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;]; 
+        Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;];
     Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
     
     % Flip stimuli on the screen
     Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
-
+    
 end
 
 %% OBJECTIVE RESPONSES: POSITION
@@ -173,9 +191,9 @@ Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.arrow, [], ...
     Exp.stimuli.RightArrow_Top; Exp.stimuli.RightArrow_Bottom]', [270 90 0 180 270 90 0 180]);
 
 %Draw fixation point
-    FixdotDims = [Exp.stimuli.xLeft-4, Exp.stimuli.xRight-4; Exp.stimuli.yLeft-4, Exp.stimuli.yRight-4; ...
-    Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;]; 
-    Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
+FixdotDims = [Exp.stimuli.xLeft-4, Exp.stimuli.xRight-4; Exp.stimuli.yLeft-4, Exp.stimuli.yRight-4; ...
+    Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;];
+Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
 
 vbl= Screen('Flip', Exp.Cfg.win,  [], Exp.Cfg.AuxBuffers);
 
@@ -274,7 +292,7 @@ while (RTflag==0)
             elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.downKey)
                 RTflag = 0;
             elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.leftKey)
-                Exp.Trial(tr, 8) = 3; 
+                Exp.Trial(tr, 8) = 3;
             elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.rightKey)
                 Exp.Trial(tr, 8) = 4;
             elseif strcmpi(Exp.responses.ActualResponse, Exp.addParams.exitKey)
@@ -283,7 +301,7 @@ while (RTflag==0)
                 display('Error in coding responses!!!!')
                 return
             end
-
+            
             break;
         end
         %wait 5ms in between each Check to avoid 'overheating'
