@@ -7,7 +7,9 @@ files = dir([locVars.rawDataDir locVars.fileNamesIn]);
 [subjectNums Data] = analyze_concatenateData (files, locVars);
 data = analyze_freqAccuracy (Data);
 save([locVars.resultsDir locVars.expName '_Subjects_' subjectNums], 'Data', 'data');
-%% Analyze all specified subjects individually, save to individual files.
+dlmwrite([locVars.resultsDir locVars.expName '_Subjects_' subjectNums '.txt'], Data, 'delimiter', '\t');
+
+%% Analyze all specified subjects individually, save to individual files.dlmwrite([locVars.resultsDir locVars.expName '_Subjects_' subjectNums], Data);'
 for subj = 1: length(locVars.subjFilter)
     singleSubjMx = Data( ismember (Data(:,1) == locVars.subjFilter(subj), Data),:);
     data = analyze_freqAccuracy(singleSubjMx);

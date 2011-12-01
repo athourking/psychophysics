@@ -135,10 +135,7 @@ t.test(fw,md,paired=TRUE,alternative=("two.sided"))
 #t.test(md,ct,paired=TRUE,alternative=("two.sided"))
 
 
-
 # boxplot(aggregatedData$acc ~ aggregatedData$maskCode)
-
-
 
 
 #############################################################################
@@ -148,7 +145,8 @@ t.test(fw,md,paired=TRUE,alternative=("two.sided"))
 
 # experimental data set
 setwd("/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results")
-dataset <- read.table('freqExp_allData.txt',as.is=TRUE)
+# dataset <- read.table('freqExp_allData.txt',as.is=TRUE) # frequency experiment
+dataset <- read.table('freqExp_Control_Subjects_1  2  3  6  7  8  9.txt',as.is=TRUE) # frequency control experiment
 str(dataset)
 library(sciplot)
 
@@ -167,6 +165,9 @@ nomi <- c("subject",
 names(dataset) <- nomi  
 str(dataset)
 
+# nsubjects
+nSubjs <- length(unique(dataset$subject))
+
 # Calculate accuracies
 dataset$acc <- ifelse(dataset$location == dataset$response, 1, 0)
 
@@ -183,7 +184,7 @@ aggregatedData$contrast <- factor(aggregatedData$contrast)
 aggregatedData$subject <- factor(aggregatedData$subject)
 
 # Sciplot
-subjMeans <- rep(tapply(aggregatedData[,4],list(aggregatedData[,3]),mean),rep(15,12))
+subjMeans <- rep(tapply(aggregatedData[,4],list(aggregatedData[,3]),mean),rep(15,nSubjs))
 overallMean <- rep(mean(aggregatedData[,4]),length(subjMeans))
 plotData <- aggregatedData[,4]-(subjMeans-overallMean)
 lineplot.CI(aggregatedData[,1], plotData, group=aggregatedData[,2], x.cont=FALSE, legend=TRUE,
@@ -192,27 +193,19 @@ lineplot.CI(aggregatedData[,1], plotData, group=aggregatedData[,2], x.cont=FALSE
             err.lty=c(1,2,3), lty = c(1,2,3), col=c("blue","black","red"), pch=c(15,16,17),
             lwd=2, cex=2, cex.lab=1.5, cex.leg=1.5,
             xlab="", ylab="", leg.lab = c("64% contrast", "16% contrast", "12% contrast"), 
-            x.leg= 1, y.leg= 0.45)
+            x.leg= 1, y.leg= 0.85)
 
 title(xlab="Frequency",ylab="Accuracy",cex.lab=2)
 abline(h=0.25,lwd=1,lty=2)
 axis(2,seq(0.2,1,0.1), seq(0.2,1,0.1), las=1, cex.axis=1.4)
 axis(1,unique(aggregatedData[,1]), unique(aggregatedData[,1]),cex.axis=1.4)
 
-smartlegend(x = c("left", y = c("bottom"), inset = 0.05)
+# outDir <- "/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Figures/Final_Subjects_Frequency_Control/"
+# dev.copy2pdf(file = paste(outDir, figureName, "AllSubjects.tiff", sep="") ,height = 8, width = 6)
+# dev.copy2eps(file = paste(outDir, figureName, "AllSubjects.eps", sep="") ,height = 8, width = 6)
+# dev.off()
 
- xlim = c(3,30),
-
-# lineplot.CI(aggregatedData[,2],plotData,group=aggregatedData[,1],x.cont=TRUE,
-#             ci.fun = function(x) c( mean(x) + sd(x)/sqrt(12) , mean(x) - sd(x)/sqrt(12) ),
-#             ylim=c(0.2,1),bty="n",axes=FALSE,x.leg=0.3,y.leg=0.5,xlim=c(0,0.7),
-#             err.lty=c(1,2,3),lty=c(1,2,3),col=c("black","grey25","grey50"),pch=c(15,16,17)
-#       ,lwd=2,cex=2,cex.lab=1.5,cex.leg=2,
-# 	    xlab="",ylab="",leg.lab=c("Middle","Backward","Forward"))
-# title(xlab="Contrast",ylab="Accuracy",cex.lab=2)
-# abline(h=0.25,lwd=1,lty=2)
-# axis(2,seq(0.2,1,0.1),seq(0.2,1,0.1),las=1,cex.axis=1.4)
-# axis(1,unique(contrastLin),unique(contrastLin),cex.axis=1.4)
+# smartlegend(x = c("left", y = c("top"), inset = 0.05))
 
 # Two-ways repeated measures Anova 
 mod.withinAnova <- aov(acc ~ (frequency * contrast ) +
@@ -222,12 +215,14 @@ summary(mod.withinAnova)
 
 # One-way repeated measures anova for each contrast condition
 mod <- list(0)
+conditions <- list(0)
 i <- 1
 for (cond in levels(aggregatedData$contrast)){  
   idxs <- aggregatedData$contrast == cond
   mod[[i]] <- aov(acc ~  frequency +
                        Error(subject /  frequency) ,data=aggregatedData[idxs,])
-   # mod[[i]].cond <- cond
+  # mod[[i]].cond <- cond
+  conditions[i] <- cond
   i <- i + 1
 }
 
@@ -259,7 +254,7 @@ idxs <- aggregatedData$contrast == 0.16
 
 hz_5 <- aggregatedData$acc[idxs & aggregatedData$frequency == 5]
 hz_8 <- aggregatedData$acc[idxs & aggregatedData$frequency == 8.5]
-hz_10 <- aggregatedData$acc[idxs & aggregatedData$frequency == 10]
+hz_10 <- aggregatedData$acc[idxs & aggregatedData$frequency == 10.6]
 hz_16 <- aggregatedData$acc[idxs & aggregatedData$frequency == 16.6]
 hz_28 <- aggregatedData$acc[idxs & aggregatedData$frequency == 28.5]
 

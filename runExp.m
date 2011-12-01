@@ -84,7 +84,7 @@ try
     %% Initialize triggers
     if Exp.Gral.Triggers.option
         Exp.Gral.Triggers.dio = DaqDeviceIndex;
-        hdline = DaqDConfigPort(Exp.Gral.Triggers.dio, 0, 0);
+        hdline = DaqDConfigPort(Exp.Gral.Triggers.dio, 0, 0); %#ok
     end
     
     Exp.addParams.check1trigg = 2;
@@ -250,10 +250,10 @@ try
     
     
     
-catch % ME1
+catch ME1
     sca;
-    %     rethrow(ME1);
-    rethrow(psychlasterror);
+    rethrow(ME1);
+%     rethrow(psychlasterror);
 end
 
 %% HISTORY
