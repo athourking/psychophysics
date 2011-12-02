@@ -3,11 +3,17 @@ function runExp
 try
     
     
-    Exp.Gral.SubjectName= input('Please enter subject ID:\n', 's');
-    Exp.Gral.SubjectNumber= input('Please enter subject number:\n');
-    Exp.Gral.SubjectBlock= input('Please enter block number:\n');
-    Exp.Gral.BlockName= input('Block name:\n','s');
-    Exp.Gral.Triggers.option= input('Do you want to send Triggers?:\n');
+%     Exp.Gral.SubjectName= input('Please enter subject ID:\n', 's');
+%     Exp.Gral.SubjectNumber= input('Please enter subject number:\n');
+%     Exp.Gral.SubjectBlock= input('Please enter block number:\n');
+%     Exp.Gral.BlockName= input('Block name:\n','s');
+%     Exp.Gral.Triggers.option= input('Do you want to send Triggers and Photodiode?:\n');
+    
+    Exp.Gral.SubjectName= 'p';
+    Exp.Gral.SubjectNumber= 1;
+    Exp.Gral.SubjectBlock= 1;
+    Exp.Gral.BlockName= 'Block_Control_16Hz';
+    Exp.Gral.Triggers.option= 1;
     
     PsychJavaTrouble; % Check there are no problems with Java
     Exp.Cfg.SkipSyncTest = 0; %This should be '0' on a properly working NVIDIA video card. '1' skips the SyncTest.
@@ -16,7 +22,7 @@ try
     AssertOpenGL;
     Screen('Preference','SkipSyncTests', Exp.Cfg.SkipSyncTest);
     
-    Exp.Cfg.WinSize= [];  %Empty means whole screen
+    Exp.Cfg.WinSize= [0 0 1024 768];  %Empty means whole screen
     Exp.Cfg.WinColor= []; % empty for the middle gray of the screen.
     
     Exp.Cfg.xDimCm = 32.5; %Length in cm of the screen in X
