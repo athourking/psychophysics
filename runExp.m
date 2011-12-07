@@ -91,12 +91,20 @@ try
     if Exp.Gral.Triggers.option
         Exp.Gral.Triggers.dio = DaqDeviceIndex;
         hdline = DaqDConfigPort(Exp.Gral.Triggers.dio, 0, 0); %#ok
+        
+        Exp.addParams.check1trigg = 2;
+        Exp.addParams.check2trigg = 4;
+        
+%         % Position of the square for the photodiode
+%         [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 ...
+%             Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]'; % bottom rigth
+%         [0 Exp.Cfg.windowRect(4)-30 30 Exp.Cfg.windowRect(4)]'; % bottom
+%         left        
+        Exp.addParams.squarePos = [0 Exp.Cfg.windowRect(4)-30 30 Exp.Cfg.windowRect(4)]'; % bottom LEFT
+        
     end
     
-    Exp.addParams.check1trigg = 2;
-    Exp.addParams.check2trigg = 4;
-    
-    
+        
     %% Define Trials
     load(Exp.Gral.BlockName);
     % Add the two columns with block and subject information
@@ -213,6 +221,11 @@ try
     Screen('DrawText', Exp.Cfg.win, 'Fixate', x(1)- 45, y(1) + 5, [0 0 255]);
     
     Screen('DrawText', Exp.Cfg.win, 'Fixate', x(2)- 45, y(2) + 5, [0 0 255]);
+    
+    if Exp.Gral.Triggers.option == 1
+        % Keep the black square in the corner
+        Screen('FillRect', Exp.Cfg.win , 0 , Exp.addParams.squarePos );
+    end
     Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
     kbwait();
     
