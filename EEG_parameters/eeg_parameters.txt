@@ -1,0 +1,28 @@
+
+One short training session of 30 trials
+
+Forward masking at 5 Hz with 15% of Michelson contrast.
+150 trials in each position + 150 blank trials.
+600 trials with checkerboard, 150 blank trials = 750 trials.
+
+After the experiment run a condition to assess only the RTs from the presentation of the stimuli. Let's evaluate how fast people are at detecting the checkerboard.
+
+
+Analysis:
+
+Behavioral figure with the 4AFC accuracy, the subjective visibility and the d primes, also we could add here the RTs of subjects for the detection of the dots
+
+Main figure to assess P1. We will subtract the blank trials from the trials containing Checkerboards. The compare seen vs unseen.
+
+
+
+EEG triggers:
+
+Beginning of first mask: 100
+Checkerboard presentation: 1-4 (corresponding to the locations, as in the trial_generator)
+End of last mask: 200 
+
+
+
+
+
