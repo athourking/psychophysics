@@ -13,7 +13,7 @@ try
     Exp.Gral.SubjectNumber= 1;
     Exp.Gral.SubjectBlock= 1;
     Exp.Gral.BlockName= 'Block_Control_16Hz';
-    Exp.Gral.Triggers.option= 1;
+    Exp.Gral.Triggers.option= 1; % EEG triggers
     
     PsychJavaTrouble; % Check there are no problems with Java
     Exp.Cfg.SkipSyncTest = 0; %This should be '0' on a properly working NVIDIA video card. '1' skips the SyncTest.
@@ -25,9 +25,9 @@ try
     Exp.Cfg.WinSize= [0 0 1024 768];  %Empty means whole screen
     Exp.Cfg.WinColor= []; % empty for the middle gray of the screen.
     
-    Exp.Cfg.xDimCm = 32.5; %Length in cm of the screen in X
-    Exp.Cfg.yDimCm = 24.5; %Length in cm of the screen in Y
-    Exp.Cfg.distanceCm = 60; %Viewing distance
+    Exp.Cfg.xDimCm = 40; %Length in cm of the screen in X
+    Exp.Cfg.yDimCm = 30; %Length in cm of the screen in Y
+    Exp.Cfg.distanceCm = 75; %Viewing distance
     
     Exp.addParams.textSize = 30;
     Exp.addParams.textColor = [0 0 255];
@@ -200,7 +200,7 @@ try
     Exp.stimuli.RightArrow_Top = CenterRectOnPoint(RectArrow,Exp.stimuli.xRight,Exp.stimuli.yRight-offCenter);
     Exp.stimuli.RightArrow_Bottom = CenterRectOnPoint(RectArrow,Exp.stimuli.xRight,Exp.stimuli.yRight+offCenter);
     
-    %% calibrate stereoscope
+    %% Calibrate stereoscope
     %Draw the frames here:
     Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.frameTex, [], Exp.stimuli.destFrame);
     Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);

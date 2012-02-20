@@ -291,8 +291,8 @@ blank_trials = Trial(rand_idxs(1:30), :);
 blank_trials(:,3) = 0; blank_trials(:,4) = 150;
 Trial = cat(1, Trial, blank_trials); %#ok
 
-Mondrians.mondrianTiming = repmat(Mondrians.mondrianTiming, repetitions, 1);
-Mondrians.mondrianRate = repmat(Mondrians.mondrianRate, repetitions, 1);
+Mondrians.mondrianTiming = repmat(Mondrians.mondrianTiming, length(Trial), 1);
+Mondrians.mondrianRate = repmat(Mondrians.mondrianRate, length(Trial), 1);
 save(blockName, 'Trial', 'Mondrians')
 
 
