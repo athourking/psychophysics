@@ -35,6 +35,6 @@ Checkerboard presentation: 1-4 (corresponding to the locations, as in the trial_
 End of last mask: 200 
 
 
-- Set the experiment for Mark: Create the practice trials, test that practice and main are working, set the proper triggers inside showTrial, test that the script to assess visibility after each block is working
+- Set the experiment for Mark: Create the practice trials with and without mondrians, test that the script to assess visibility after each block is working
 
 

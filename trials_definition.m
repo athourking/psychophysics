@@ -1,6 +1,6 @@
 function trials_definition
 
-blockName = 'Block_Main_EEG';
+blockName = 'Block_Practice_With_Mondrians';
 
 % trials_definition_maskConditions (blockName)
 %
@@ -217,6 +217,9 @@ save(blockName, 'Trial', 'Mondrians')
 function trials_definition_EEG (blockName)
 
 
+stimuliDuration = 130; % total duration of the trial, in frames
+
+
 %% parameters for mondrians
 Mondrians.stimDur = 130; %total number of frames for the stimuli presentation period
 Mondrians.mondrianStart= 1; % 1: means start from from frame 1; 0: without mondrians
@@ -225,8 +228,9 @@ Mondrians.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians 
 
 %% Parameters for the checkerboard
 
+
 % 0.04 0.12 0.16 0.24 0.64 0.96
-contrast = 0.15 ; % michelson contrast
+contrast = 0.16; % michelson contrast
 checkLocation = [1 2 3 4]; % locations = 1: up; 2: down; 3: Left; 4: right;
 
 % With 85 Hz refresh rate. Frames rate:
@@ -288,12 +292,12 @@ end
 % and the timing to 150
 rand_idxs =randperm(length(Trial));
 blank_trials = Trial(rand_idxs(1:30), :);
-blank_trials(:,3) = 0; blank_trials(:,4) = 150;
-Trial = cat(1, Trial, blank_trials); %#ok
+blank_trials(:,3) = 0; blank_trials(:,6) = 5;
+Trial = cat(1, Trial, blank_trials); 
 
 Mondrians.mondrianTiming = repmat(Mondrians.mondrianTiming, length(Trial), 1);
 Mondrians.mondrianRate = repmat(Mondrians.mondrianRate, length(Trial), 1);
-save(blockName, 'Trial', 'Mondrians')
+save(blockName, 'Trial', 'Mondrians', 'stimuliDuration')
 
 
 

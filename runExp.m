@@ -3,17 +3,17 @@ function runExp
 try
     
     
-%     Exp.Gral.SubjectName= input('Please enter subject ID:\n', 's');
-%     Exp.Gral.SubjectNumber= input('Please enter subject number:\n');
-%     Exp.Gral.SubjectBlock= input('Please enter block number:\n');
-%     Exp.Gral.BlockName= input('Block name:\n','s');
-%     Exp.Gral.Triggers.option= input('Do you want to send Triggers and Photodiode?:\n');
+    Exp.Gral.SubjectName= input('Please enter subject ID:\n', 's');
+    Exp.Gral.SubjectNumber= input('Please enter subject number:\n');
+    Exp.Gral.SubjectBlock= input('Please enter block number:\n');
+    Exp.Gral.BlockName= input('Block name:\n','s');
+    Exp.Gral.Triggers.option= input('Do you want to send Triggers and Photodiode?:\n');
     
-    Exp.Gral.SubjectName= 'p';
-    Exp.Gral.SubjectNumber= 1;
-    Exp.Gral.SubjectBlock= 1;
-    Exp.Gral.BlockName= 'Block_Control_16Hz';
-    Exp.Gral.Triggers.option= 1; % EEG triggers
+%     Exp.Gral.SubjectName= 'p';
+%     Exp.Gral.SubjectNumber= 1;
+%     Exp.Gral.SubjectBlock= 1;
+%     Exp.Gral.BlockName= 'Block_Control_16Hz';
+%     Exp.Gral.Triggers.option= 1; % EEG triggers
     
     PsychJavaTrouble; % Check there are no problems with Java
     Exp.Cfg.SkipSyncTest = 0; %This should be '0' on a properly working NVIDIA video card. '1' skips the SyncTest.
@@ -22,12 +22,12 @@ try
     AssertOpenGL;
     Screen('Preference','SkipSyncTests', Exp.Cfg.SkipSyncTest);
     
-    Exp.Cfg.WinSize= [0 0 1024 768];  %Empty means whole screen
+    Exp.Cfg.WinSize= [];  %Empty means whole screen
     Exp.Cfg.WinColor= []; % empty for the middle gray of the screen.
     
     Exp.Cfg.xDimCm = 40; %Length in cm of the screen in X
     Exp.Cfg.yDimCm = 30; %Length in cm of the screen in Y
-    Exp.Cfg.distanceCm = 75; %Viewing distance
+    Exp.Cfg.distanceCm = 77; %Viewing distance
     
     Exp.addParams.textSize = 30;
     Exp.addParams.textColor = [0 0 255];
@@ -93,9 +93,9 @@ try
         hdline = DaqDConfigPort(Exp.Gral.Triggers.dio, 0, 0); %#ok
     end
     
-    Exp.addParams.check1trigg = 2;
-    Exp.addParams.check2trigg = 4;
-    
+    Exp.addParams.mondrianStartTrigger = 100;
+    Exp.addParams.mondrianEndTrigger = 200;
+
     
     %% Define Trials
     load(Exp.Gral.BlockName);
@@ -103,7 +103,7 @@ try
     Trial(:, 1) = Exp.Gral.SubjectNumber; % subject number
     Trial(:, 2) = Exp.Gral.SubjectBlock; % Block number
     Exp.Trial = Trial;
-    Exp.stimuli.stimDur = Mondrians.stimDur; %deleted 'Exp.stimuli.' since not loaded that way
+    Exp.stimuli.stimDur = stimuliDuration; %deleted 'Exp.stimuli.' since not loaded that way
     Exp.stimuli.mondrianStart = Mondrians.mondrianStart;
     Exp.stimuli.mondrianEnd = Mondrians.mondrianEnd;
     Exp.stimuli.mondrianRate = Mondrians.mondrianRate; % now it must be a cell array of vectors

@@ -139,19 +139,23 @@ for flp = 1 : Exp.stimuli.stimDur
         Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
     
     if Exp.Gral.Triggers.option == 1
-%         % Send triggers for the Mondrians
-%         if flp >= Exp.stimuli.mondrianTiming{tr}(1) && flp <= Exp.stimuli.mondrianTiming{tr}(end)
-%             
-%         end
-        
-        % Send trigger for the checkerboards
-        if flp == Exp.Trial(tr, 4)
-            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, Exp.addParams.check1trigg);
+
+        % Send trigger for the firt Mondrian
+        if flp == Exp.stimuli.mondrianTiming{tr}(1) 
+            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, Exp.addParams.mondrianStartTrigger);
+            WaitSecs(0.002)
+            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, 0);
+            % send trigger for the last mondrian
+        elseif flp == Exp.stimuli.mondrianTiming{tr}(end)
+            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, Exp.addParams.mondrianEndTrigger);
             WaitSecs(0.002)
             err_on = DaqDout(Exp.Gral.Triggers.dio, 0, 0);
             
-        elseif flp == Exp.Trial(tr, 4) + 1
-            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, Exp.addParams.check2trigg);
+        end
+        
+        % Send trigger for the checkerboards
+        if flp == Exp.Trial(tr, 4)
+            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, Exp.Trial(tr, 6));
             WaitSecs(0.002)
             err_on = DaqDout(Exp.Gral.Triggers.dio, 0, 0);
         end
