@@ -125,12 +125,14 @@ for flp = 1 : Exp.stimuli.stimDur
     Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
     
     % Draw square for the photodiode 
-    if flp == Exp.Trial(tr, 4)
-        %         Screen('FillRect', Exp.Cfg.win ,[] , [ Exp.Cfg.WinSize(3)-30
-        %         Exp.Cfg.WinSize(4)-30 Exp.Cfg.WinSize(3) Exp.Cfg.WinSize(4)]' );
-        Screen('FillRect', Exp.Cfg.win ,[] , [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]' );
-    elseif flp == Exp.Trial(tr, 4) + 1
-        Screen('FillRect', Exp.Cfg.win ,Exp.Cfg.Color.inc , [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]' );
+    if Exp.Gral.Triggers.option == 1
+        if flp == Exp.Trial(tr, 4)
+            %         Screen('FillRect', Exp.Cfg.win ,[] , [ Exp.Cfg.WinSize(3)-30
+            %         Exp.Cfg.WinSize(4)-30 Exp.Cfg.WinSize(3) Exp.Cfg.WinSize(4)]' );
+            Screen('FillRect', Exp.Cfg.win ,[] , [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]' );
+        elseif flp == Exp.Trial(tr, 4) + 1
+            Screen('FillRect', Exp.Cfg.win ,Exp.Cfg.Color.inc , [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]' );
+        end
     end
     
     

@@ -1,6 +1,6 @@
 function trials_definition
 
-blockName = 'Block_Practice_With_Mondrians';
+blockName = 'Block_Practice_With_Mondrians_high_c';
 
 % trials_definition_maskConditions (blockName)
 %
@@ -219,6 +219,9 @@ function trials_definition_EEG (blockName)
 
 stimuliDuration = 130; % total duration of the trial, in frames
 
+repetitions= 3; % repetition of the minimun design -one trial per condition-
+
+add_blanks = 0; % '1' add blanks at the end, '0' do not add blank trials
 
 %% parameters for mondrians
 Mondrians.stimDur = 130; %total number of frames for the stimuli presentation period
@@ -230,7 +233,7 @@ Mondrians.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians 
 
 
 % 0.04 0.12 0.16 0.24 0.64 0.96
-contrast = 0.16; % michelson contrast
+contrast = [0.12 0.16 0.24 0.64]; % michelson contrast
 checkLocation = [1 2 3 4]; % locations = 1: up; 2: down; 3: Left; 4: right;
 
 % With 85 Hz refresh rate. Frames rate:
@@ -258,7 +261,7 @@ frequencyCodes = {5};%{5 8.5 10.6 16.6 20.3 28.5};
 % timingConds = { 'backwardMasking'};  % 1
 timing = {[66 82 98]};
 
-repetitions= 30; % repetition of the minimun design -one trial per condition-
+
 
 % Create the block trials: set one trial in each condition / location
 Trial = zeros(length(contrast) * length(frequency) * length (checkLocation), 8);
@@ -290,10 +293,13 @@ end
 
 % Add 30 blank trials taking 30 samples randomly and setting contrast to 0
 % and the timing to 150
-rand_idxs =randperm(length(Trial));
-blank_trials = Trial(rand_idxs(1:30), :);
-blank_trials(:,3) = 0; blank_trials(:,6) = 5;
-Trial = cat(1, Trial, blank_trials); 
+if add_blanks
+    rand_idxs = randperm(length(Trial));
+    blank_trials = Trial(rand_idxs(1:30), :);
+    blank_trials(:,3) = 0; blank_trials(:,6) = 5;
+    Trial = cat(1, Trial, blank_trials);
+end
+
 
 Mondrians.mondrianTiming = repmat(Mondrians.mondrianTiming, length(Trial), 1);
 Mondrians.mondrianRate = repmat(Mondrians.mondrianRate, length(Trial), 1);

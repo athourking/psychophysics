@@ -35,8 +35,7 @@ try
     Exp.stimuli.checkOffcenter = 2;
     Exp.stimuli.arrowSize = 2;% IN DEGREES
     Exp.stimuli.arrowOffcenter = 1.5; %IN DEGREES
-    Exp.stimuli.frameSize = 8;
-    
+    Exp.stimuli.frameSize = 8;    
     
     Exp.addParams.blankInterval = 15; % interval between the last mondrian and the question. IN FRAMES
     
@@ -243,9 +242,10 @@ try
     timing_diagnosis( Exp.expinfo, Exp.Cfg)
     
     %% Accuracy check
-    load ([pwd '\' Exp.Gral.SubjectName]);
+    assess_visibility(Exp)
     
-    analyze_freqFirstBlock(Exp.Trial) % For the frequencies exp
+%     load ([pwd '\' Exp.Gral.SubjectName]);    
+%     analyze_freqFirstBlock(Exp.Trial) % For the frequencies exp
     %analyze_maskFirstBlock(Exp.Trial)    % For the masking conditions exp
     
     %% Shut down
@@ -261,6 +261,30 @@ catch ME1
     rethrow(ME1);
 %     rethrow(psychlasterror);
 end
+
+
+function assess_visibility(Exp)
+
+contrs = unique(Exp.Trial(:,3));
+
+for con = 1 : length(contrs)
+    
+    % 3 yes (seen), 4 no (unseen)
+    total_trials = length( Exp.Trial( Exp.Trial(:,end) > 0 ...
+        & Exp.Trial(:,3) == contrs(con), end ));
+    seen_trials = sum(Exp.Trial( Exp.Trial(:,end) > 0 ...
+        & Exp.Trial(:,3) == contrs(con), end ) == 3);
+    % unseen_trials = sum(Exp.Trial( Exp.Trial(:,end) > 0, end ) == 4);
+    
+    figure()
+    imagesc(Exp.Trial( Exp.Trial(:,end) > 0, end )' )
+    colorbar
+    tit = sprintf('Seen %2.1f%%, contrast %2.0f%%', seen_trials / total_trials * 100, contrs(con) * 100);
+    title(tit)
+    
+end
+
+
 
 %% HISTORY
 
