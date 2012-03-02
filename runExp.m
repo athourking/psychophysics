@@ -94,10 +94,7 @@ try
         hdline = DaqDConfigPort(Exp.Gral.Triggers.dio, 0, 0); %#ok
     end
     
-    Exp.addParams.mondrianStartTrigger = 100;
-    Exp.addParams.mondrianEndTrigger = 200;
-
-    
+        
     %% Define Trials
     load(Exp.Gral.BlockName);
     % Add the two columns with block and subject information
