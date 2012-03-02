@@ -88,6 +88,10 @@ try
         
     end
     
+     Exp.addParams.mondrianStartTrigger = 100;
+     Exp.addParams.mondrianEndTrigger = 200;
+
+
     %% Initialize triggers
     if Exp.Gral.Triggers.option
         Exp.Gral.Triggers.dio = DaqDeviceIndex;
