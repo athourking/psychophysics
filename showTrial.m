@@ -124,14 +124,14 @@ for flp = 1 : Exp.stimuli.stimDur
         Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;];
     Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
     
+    % Draw square for the photodiode 
     if Exp.Gral.Triggers.option == 1
-        % Draw square for the photodiode
         if flp == Exp.Trial(tr, 4)
             %         Screen('FillRect', Exp.Cfg.win ,[] , [ Exp.Cfg.WinSize(3)-30
             %         Exp.Cfg.WinSize(4)-30 Exp.Cfg.WinSize(3) Exp.Cfg.WinSize(4)]' );
-            Screen('FillRect', Exp.Cfg.win , [] , Exp.addParams.squarePos);
+            Screen('FillRect', Exp.Cfg.win ,[] , [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]' );
         elseif flp == Exp.Trial(tr, 4) + 1
-            Screen('FillRect', Exp.Cfg.win , 0 , Exp.addParams.squarePos );
+            Screen('FillRect', Exp.Cfg.win ,Exp.Cfg.Color.inc , [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]' );
         end
     end
     
@@ -141,19 +141,23 @@ for flp = 1 : Exp.stimuli.stimDur
         Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
     
     if Exp.Gral.Triggers.option == 1
-%         % Send triggers for the Mondrians
-%         if flp >= Exp.stimuli.mondrianTiming{tr}(1) && flp <= Exp.stimuli.mondrianTiming{tr}(end)
-%             
-%         end
-        
-        % Send trigger for the checkerboards
-        if flp == Exp.Trial(tr, 4)
-            DaqDout(Exp.Gral.Triggers.dio, 0, Exp.addParams.check1trigg);
+
+        % Send trigger for the firt Mondrian
+        if flp == Exp.stimuli.mondrianTiming{tr}(1) 
+            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, Exp.addParams.mondrianStartTrigger);
+            WaitSecs(0.002)
+            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, 0);
+            % send trigger for the last mondrian
+        elseif flp == Exp.stimuli.mondrianTiming{tr}(end)
+            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, Exp.addParams.mondrianEndTrigger);
             WaitSecs(0.002)
             DaqDout(Exp.Gral.Triggers.dio, 0, 0);
             
-        elseif flp == Exp.Trial(tr, 4) + 1
-            DaqDout(Exp.Gral.Triggers.dio, 0, Exp.addParams.check2trigg);
+        end
+        
+        % Send trigger for the checkerboards
+        if flp == Exp.Trial(tr, 4)
+            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, Exp.Trial(tr, 6));
             WaitSecs(0.002)
             DaqDout(Exp.Gral.Triggers.dio, 0, 0);
         end

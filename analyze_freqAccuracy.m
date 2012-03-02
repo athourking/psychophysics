@@ -50,6 +50,7 @@ data.accuracies_means = mean(data.accuracies, 3);
 data.accuracies_std = std(data.accuracies, 0, 3);
 data.accuracies_sems = std(data.accuracies,0, 3) ./ sqrt(size(data.accuracies, 3));
 
+
 for m=1: size(data.accuracies, 3)
     vector_accuracies = zscore(reshape(data.accuracies(:,:,m), length(data.frequencies) * length(data.all_contrasts), 1));
     data.accuracies_zscored(:,:,m) = reshape(vector_accuracies, length(data.all_contrasts), length(data.frequencies)); 

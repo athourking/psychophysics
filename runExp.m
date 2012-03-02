@@ -3,17 +3,17 @@ function runExp
 try
     
     
-%     Exp.Gral.SubjectName= input('Please enter subject ID:\n', 's');
-%     Exp.Gral.SubjectNumber= input('Please enter subject number:\n');
-%     Exp.Gral.SubjectBlock= input('Please enter block number:\n');
-%     Exp.Gral.BlockName= input('Block name:\n','s');
-%     Exp.Gral.Triggers.option= input('Do you want to send Triggers and Photodiode?:\n');
+    Exp.Gral.SubjectName= input('Please enter subject ID:\n', 's');
+    Exp.Gral.SubjectNumber= input('Please enter subject number:\n');
+    Exp.Gral.SubjectBlock= input('Please enter block number:\n');
+    Exp.Gral.BlockName= input('Block name:\n','s');
+    Exp.Gral.Triggers.option= input('Do you want to send Triggers and Photodiode?:\n');
     
-    Exp.Gral.SubjectName= 'p';
-    Exp.Gral.SubjectNumber= 1;
-    Exp.Gral.SubjectBlock= 1;
-    Exp.Gral.BlockName= 'Block_Control_16Hz';
-    Exp.Gral.Triggers.option= 1;
+%     Exp.Gral.SubjectName= 'p';
+%     Exp.Gral.SubjectNumber= 1;
+%     Exp.Gral.SubjectBlock= 1;
+%     Exp.Gral.BlockName= 'Block_Control_16Hz';
+%     Exp.Gral.Triggers.option= 1; % EEG triggers
     
     PsychJavaTrouble; % Check there are no problems with Java
     Exp.Cfg.SkipSyncTest = 0; %This should be '0' on a properly working NVIDIA video card. '1' skips the SyncTest.
@@ -22,12 +22,12 @@ try
     AssertOpenGL;
     Screen('Preference','SkipSyncTests', Exp.Cfg.SkipSyncTest);
     
-    Exp.Cfg.WinSize= [0 0 1024 768];  %Empty means whole screen
+    Exp.Cfg.WinSize= [];  %Empty means whole screen
     Exp.Cfg.WinColor= []; % empty for the middle gray of the screen.
     
-    Exp.Cfg.xDimCm = 32.5; %Length in cm of the screen in X
-    Exp.Cfg.yDimCm = 24.5; %Length in cm of the screen in Y
-    Exp.Cfg.distanceCm = 60; %Viewing distance
+    Exp.Cfg.xDimCm = 40; %Length in cm of the screen in X
+    Exp.Cfg.yDimCm = 30; %Length in cm of the screen in Y
+    Exp.Cfg.distanceCm = 77; %Viewing distance
     
     Exp.addParams.textSize = 30;
     Exp.addParams.textColor = [0 0 255];
@@ -35,8 +35,7 @@ try
     Exp.stimuli.checkOffcenter = 2;
     Exp.stimuli.arrowSize = 2;% IN DEGREES
     Exp.stimuli.arrowOffcenter = 1.5; %IN DEGREES
-    Exp.stimuli.frameSize = 8;
-    
+    Exp.stimuli.frameSize = 8;    
     
     Exp.addParams.blankInterval = 15; % interval between the last mondrian and the question. IN FRAMES
     
@@ -104,14 +103,14 @@ try
         
     end
     
-        
+
     %% Define Trials
     load(Exp.Gral.BlockName);
     % Add the two columns with block and subject information
     Trial(:, 1) = Exp.Gral.SubjectNumber; % subject number
     Trial(:, 2) = Exp.Gral.SubjectBlock; % Block number
     Exp.Trial = Trial;
-    Exp.stimuli.stimDur = Mondrians.stimDur; %deleted 'Exp.stimuli.' since not loaded that way
+    Exp.stimuli.stimDur = stimuliDuration; %deleted 'Exp.stimuli.' since not loaded that way
     Exp.stimuli.mondrianStart = Mondrians.mondrianStart;
     Exp.stimuli.mondrianEnd = Mondrians.mondrianEnd;
     Exp.stimuli.mondrianRate = Mondrians.mondrianRate; % now it must be a cell array of vectors
@@ -208,7 +207,7 @@ try
     Exp.stimuli.RightArrow_Top = CenterRectOnPoint(RectArrow,Exp.stimuli.xRight,Exp.stimuli.yRight-offCenter);
     Exp.stimuli.RightArrow_Bottom = CenterRectOnPoint(RectArrow,Exp.stimuli.xRight,Exp.stimuli.yRight+offCenter);
     
-    %% calibrate stereoscope
+    %% Calibrate stereoscope
     %Draw the frames here:
     Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.frameTex, [], Exp.stimuli.destFrame);
     Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
@@ -256,9 +255,10 @@ try
     timing_diagnosis( Exp.expinfo, Exp.Cfg)
     
     %% Accuracy check
-    load ([pwd '\' Exp.Gral.SubjectName]);
+    assess_visibility(Exp)
     
-    analyze_freqFirstBlock(Exp.Trial) % For the frequencies exp
+%     load ([pwd '\' Exp.Gral.SubjectName]);    
+%     analyze_freqFirstBlock(Exp.Trial) % For the frequencies exp
     %analyze_maskFirstBlock(Exp.Trial)    % For the masking conditions exp
     
     %% Shut down
@@ -274,6 +274,30 @@ catch ME1
     rethrow(ME1);
 %     rethrow(psychlasterror);
 end
+
+
+function assess_visibility(Exp)
+
+contrs = unique(Exp.Trial(:,3));
+
+for con = 1 : length(contrs)
+    
+    % 3 yes (seen), 4 no (unseen)
+    total_trials = length( Exp.Trial( Exp.Trial(:,end) > 0 ...
+        & Exp.Trial(:,3) == contrs(con), end ));
+    seen_trials = sum(Exp.Trial( Exp.Trial(:,end) > 0 ...
+        & Exp.Trial(:,3) == contrs(con), end ) == 3);
+    % unseen_trials = sum(Exp.Trial( Exp.Trial(:,end) > 0, end ) == 4);
+    
+    figure()
+    imagesc(Exp.Trial( Exp.Trial(:,end) > 0, end )' )
+    colorbar
+    tit = sprintf('Seen %2.1f%%, contrast %2.0f%%', seen_trials / total_trials * 100, contrs(con) * 100);
+    title(tit)
+    
+end
+
+
 
 %% HISTORY
 

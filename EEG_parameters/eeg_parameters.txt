@@ -1,0 +1,40 @@
+
+Main Parameters:
+One short training session of 48 trials
+
+CFS, Forward masking at 5 Hz with 15% of Michelson contrast.
+150 trials in each position + 150 blank trials.
+600 trials with checkerboard, 150 blank trials = 750 trials.
+
+Before and After the experiment run a condition to assess only the RTs from the presentation of the stimuli. Let's evaluate how fast people are at detecting the checkerboard. 100 trials with checkerboard (25 per location) and 100 trials blank.
+
+We present the Mondrians only to the dominant eye of subjects
+
+5 Blocks of 150 trials = 120 checkerboards (30 on each location) + 30 blanks.
+
+Monitor:
+Refresh rate: 85Hz, 1280x1024
+Frequency of masks: 5 Hz
+Distance to the screen, monitor dimensions
+
+
+Analysis:
+
+Behavioral figure with the 4AFC accuracy, the subjective visibility and the d primes, also we could add here the RTs of subjects for the detection of the dots
+
+A suplemental figure to show that the visibility does not change with the evolution of trials 
+
+Main figure to assess P1. We will subtract the blank trials from the trials containing Checkerboards. Then compare seen vs unseen.
+
+
+
+EEG triggers:
+
+Beginning of first mask: 100
+Checkerboard presentation: 1-4 (corresponding to the locations, as in the trial_generator), 5 for the blanks
+End of last mask: 200 
+
+
+- Set the experiment for Mark: Create the practice trials with and without mondrians, test that the script to assess visibility after each block is working
+
+
