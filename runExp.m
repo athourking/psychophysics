@@ -8,6 +8,8 @@ try
     Exp.Gral.SubjectBlock= input('Please enter block number:\n');
     Exp.Gral.BlockName= input('Block name:\n','s');
     Exp.Gral.Triggers.option= input('Do you want to send Triggers and Photodiode?:\n');
+    % '1' checkerboard presented to the righ, '2' checkerboard presented to the left eye 
+    Exp.stimuli.mondrianEyeLocation = input('Checkerboard to the right(1) or to the left(2)? \n');
     
 %     Exp.Gral.SubjectName= 'p';
 %     Exp.Gral.SubjectNumber= 1;
@@ -86,6 +88,10 @@ try
         
     end
     
+     Exp.addParams.mondrianStartTrigger = 100;
+     Exp.addParams.mondrianEndTrigger = 200;
+
+
     %% Initialize triggers
     if Exp.Gral.Triggers.option
         Exp.Gral.Triggers.dio = DaqDeviceIndex;
@@ -114,7 +120,6 @@ try
     Exp.stimuli.mondrianStart = Mondrians.mondrianStart;
     Exp.stimuli.mondrianEnd = Mondrians.mondrianEnd;
     Exp.stimuli.mondrianRate = Mondrians.mondrianRate; % now it must be a cell array of vectors
-    Exp.stimuli.mondrianEyeLocation = Mondrians.mondrianEyeLocation;
     Exp.stimuli.mondrianTiming = Mondrians.mondrianTiming; % now it must be a cell array of vectors
     clear Trial Mondrians
     

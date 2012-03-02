@@ -77,7 +77,7 @@ for flp = 1 : Exp.stimuli.stimDur
         % Draw every n frames a different mask (picked up randomly from the 40
         % mondrians on each trial)
         if flp >= Exp.stimuli.mondrianTiming{tr}(1) && flp <= Exp.stimuli.mondrianTiming{tr}(end)
-            Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_left)
+            Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_right)
         end
         
         if flp == Exp.Trial(tr, 4)

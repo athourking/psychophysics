@@ -1,6 +1,6 @@
 function trials_definition
 
-blockName = 'Block_Practice_With_Mondrians_high_c';
+blockName = 'Block_Main_Without_Mondrians_16c';
 
 % trials_definition_maskConditions (blockName)
 %
@@ -219,21 +219,21 @@ function trials_definition_EEG (blockName)
 
 stimuliDuration = 130; % total duration of the trial, in frames
 
-repetitions= 3; % repetition of the minimun design -one trial per condition-
+repetitions= 38; % repetition of the minimun design -one trial per condition-
 
 add_blanks = 0; % '1' add blanks at the end, '0' do not add blank trials
 
 %% parameters for mondrians
 Mondrians.stimDur = 130; %total number of frames for the stimuli presentation period
-Mondrians.mondrianStart= 1; % 1: means start from from frame 1; 0: without mondrians
-Mondrians.mondrianEnd= 130; % frame number to stop showing mondrians
+Mondrians.mondrianStart= 131; % 1: means start from from frame 1; 0: without mondrians
+Mondrians.mondrianEnd= 150; % frame number to stop showing mondrians
 Mondrians.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians to the righ eye
 
 %% Parameters for the checkerboard
 
 
 % 0.04 0.12 0.16 0.24 0.64 0.96
-contrast = [0.12 0.16 0.24 0.64]; % michelson contrast
+contrast = [0.16]; % michelson contrast
 checkLocation = [1 2 3 4]; % locations = 1: up; 2: down; 3: Left; 4: right;
 
 % With 85 Hz refresh rate. Frames rate:
