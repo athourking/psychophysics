@@ -1,6 +1,6 @@
 function trials_definition
 
-blockName = 'Block_Main_Without_Mondrians_16c';
+blockName = 'Block_Main_Without_Mondrians_20c';
 
 % trials_definition_maskConditions (blockName)
 %
@@ -233,7 +233,7 @@ Mondrians.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians 
 
 
 % 0.04 0.12 0.16 0.24 0.64 0.96
-contrast = [0.16]; % michelson contrast
+contrast = [0.2]; % michelson contrast
 checkLocation = [1 2 3 4]; % locations = 1: up; 2: down; 3: Left; 4: right;
 
 % With 85 Hz refresh rate. Frames rate:
