@@ -129,7 +129,7 @@ for flp = 1 : Exp.stimuli.stimDur
         if flp == Exp.Trial(tr, 4)
             %         Screen('FillRect', Exp.Cfg.win ,[] , [ Exp.Cfg.WinSize(3)-30
             %         Exp.Cfg.WinSize(4)-30 Exp.Cfg.WinSize(3) Exp.Cfg.WinSize(4)]' );
-            Screen('FillRect', Exp.Cfg.win ,[] , [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]' );
+%             Screen('FillRect', Exp.Cfg.win ,[] , [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]' );
         elseif flp == Exp.Trial(tr, 4) + 1
             Screen('FillRect', Exp.Cfg.win ,Exp.Cfg.Color.inc , [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]' );
         end
@@ -357,11 +357,6 @@ for flp =1 : Exp.stimuli.ITI(randi(1))
     Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
     % Flip stimuli on the screen
     
-    if Exp.Gral.Triggers.option == 1
-    % Keep the black square in the corner
-    Screen('FillRect', Exp.Cfg.win , 0 , Exp.addParams.squarePos );
-    end
-
     Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
 end
 
