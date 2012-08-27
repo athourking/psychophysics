@@ -129,7 +129,7 @@ for flp = 1 : Exp.stimuli.stimDur
         if flp == Exp.Trial(tr, 4)
             %         Screen('FillRect', Exp.Cfg.win ,[] , [ Exp.Cfg.WinSize(3)-30
             %         Exp.Cfg.WinSize(4)-30 Exp.Cfg.WinSize(3) Exp.Cfg.WinSize(4)]' );
-            Screen('FillRect', Exp.Cfg.win ,[] , [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]' );
+%             Screen('FillRect', Exp.Cfg.win ,[] , [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]' );
         elseif flp == Exp.Trial(tr, 4) + 1
             Screen('FillRect', Exp.Cfg.win ,Exp.Cfg.Color.inc , [ Exp.Cfg.windowRect(3)-30 Exp.Cfg.windowRect(4)-30 Exp.Cfg.windowRect(3) Exp.Cfg.windowRect(4)]' );
         end
@@ -151,7 +151,7 @@ for flp = 1 : Exp.stimuli.stimDur
         elseif flp == Exp.stimuli.mondrianTiming{tr}(end)
             err_on = DaqDout(Exp.Gral.Triggers.dio, 0, Exp.addParams.mondrianEndTrigger);
             WaitSecs(0.002)
-            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, 0);
+            DaqDout(Exp.Gral.Triggers.dio, 0, 0);
             
         end
         
@@ -159,7 +159,7 @@ for flp = 1 : Exp.stimuli.stimDur
         if flp == Exp.Trial(tr, 4)
             err_on = DaqDout(Exp.Gral.Triggers.dio, 0, Exp.Trial(tr, 6));
             WaitSecs(0.002)
-            err_on = DaqDout(Exp.Gral.Triggers.dio, 0, 0);
+            DaqDout(Exp.Gral.Triggers.dio, 0, 0);
         end
     end
     
@@ -187,6 +187,11 @@ for flp =1 : Exp.addParams.blankInterval
         Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;];
     Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
     
+    if Exp.Gral.Triggers.option == 1
+        % Keep the black square in the corner
+        Screen('FillRect', Exp.Cfg.win , 0 , Exp.addParams.squarePos );
+    end
+    
     % Flip stimuli on the screen
     Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
     
@@ -209,6 +214,12 @@ Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.arrow, [], ...
 FixdotDims = [Exp.stimuli.xLeft-4, Exp.stimuli.xRight-4; Exp.stimuli.yLeft-4, Exp.stimuli.yRight-4; ...
     Exp.stimuli.xLeft+4, Exp.stimuli.xRight+4; Exp.stimuli.yLeft+4, Exp.stimuli.yRight+4;];
 Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
+
+
+if Exp.Gral.Triggers.option == 1
+    % Keep the black square in the corner
+    Screen('FillRect', Exp.Cfg.win , 0 , Exp.addParams.squarePos );
+end
 
 vbl= Screen('Flip', Exp.Cfg.win,  [], Exp.Cfg.AuxBuffers);
 
@@ -280,6 +291,12 @@ Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xLeft + 50, Exp.stimuli.yLeft, 
 Screen('DrawText',Exp.Cfg.win, 'Yes', Exp.stimuli.xRight - 70, Exp.stimuli.yRight, [0 0 255]);
 Screen('DrawText',Exp.Cfg.win, 'No', Exp.stimuli.xRight + 50, Exp.stimuli.yRight, [0 0 255]);
 
+
+if Exp.Gral.Triggers.option == 1
+    % Keep the black square in the corner
+    Screen('FillRect', Exp.Cfg.win , 0 , Exp.addParams.squarePos );
+end
+
 vbl= Screen('Flip', Exp.Cfg.win,  [], Exp.Cfg.AuxBuffers);
 
 RTflag=0; %Flag to collect only the first response for the trial
@@ -339,6 +356,7 @@ for flp =1 : Exp.stimuli.ITI(randi(1))
     Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.frameTex, [], Exp.stimuli.destFrame);
     Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
     % Flip stimuli on the screen
+    
     Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
 end
 
