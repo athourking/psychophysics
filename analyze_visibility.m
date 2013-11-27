@@ -22,14 +22,13 @@ data_main = data.Data;
 % (5) mask frequencies; (6) location of the checkerboard
 % (7) responses for locations ; (8) responses for subjective visibility
 data_freq = load([inDir 'freqExp_Subjects_1   2   3   4   5   6   7   8   9  10  11  12.mat']);
+data_frq = data_freq.Data;
 
 data_control = load([inDir 'freqExp_Control_Subjects_1  2  3  6  7  8  9.mat']);
-
-data_frq = data_freq.Data;
 data_ctr = data_control.Data;
 
 
-%% Type II d prime
+%% Type II d prime experiment 1
 
 %  timingConds = { 'backwardMasking' 'forwardMasking' 'middleMasking'}; %
 %  1, 2, 3
@@ -105,38 +104,279 @@ semDprimeII = std(dPrimeII, [], 3) / sqrt(length(subjects));
 
 figure(1); clf;
 hold on
-plot(all_contrasts', mAuc_II(1,:), 's-', 'MarkerFaceColor', [0.1 0.1 0.1], 'Color', 'k')
-errorbar(all_contrasts', mAuc_II(1,:), semAUCII(1,:), 'Color', 'k');
+plot(all_contrasts', mAuc_II(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k')
+errorbar(all_contrasts', mAuc_II(1,:), semAUCII(1,:), 'Color', [0 0 0]);
 
-plot(all_contrasts', mAuc_II(2,:), 'o-',  'MarkerFaceColor', [0.1 0.1 0.1], 'Color', 'k')
-errorbar(all_contrasts', mAuc_II(2,:), semAUCII(2,:), 'Color', 'k' );
+plot(all_contrasts', mAuc_II(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k')
+errorbar(all_contrasts', mAuc_II(2,:), semAUCII(2,:), 'Color', [0.5 0.5 0.5] );
 
-plot(all_contrasts', mAuc_II(3,:), '^-', 'MarkerFaceColor', [0.1 0.1 0.1], 'Color', 'k')
-errorbar(all_contrasts', mAuc_II(3,:), semAUCII(3,:), 'Color', 'k' );
+plot(all_contrasts', mAuc_II(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k')
+errorbar(all_contrasts', mAuc_II(3,:), semAUCII(3,:), 'Color', [0.75 0.75 0.75] );
 
+ylim([0.45 1])
 set(gca, 'XTick', all_contrasts)
-
-
-
+title('Exp 1')
+xlabel('Contrast')
+ylabel('Type II AUC')
+legend('Backward', 'Forward', 'Middle', 'Location', 'SouthEast')
+legend boxoff
+print(gcf, '-dpng', [figsDir 'Exp1_AUC.png'])
 
 figure(2); clf;
 hold on
-plot(all_contrasts', mDprimeII(1,:), 's-', 'MarkerFaceColor', [0.1 0.1 0.1], 'Color', 'k')
-errorbar(all_contrasts',mDprimeII(1,:), semDprimeII(1,:), 'Color', 'k');
+plot(all_contrasts', mDprimeII(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k')
+errorbar(all_contrasts',mDprimeII(1,:), semDprimeII(1,:), 'Color', [0 0 0]);
 
-plot(all_contrasts', mDprimeII(2,:), 'o-',  'MarkerFaceColor', [0.1 0.1 0.1], 'Color', 'k')
-errorbar(all_contrasts', mDprimeII(2,:), semDprimeII(2,:), 'Color', 'k' );
+plot(all_contrasts', mDprimeII(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k')
+errorbar(all_contrasts', mDprimeII(2,:), semDprimeII(2,:), 'Color', [0.5 0.5 0.5] );
 
-plot(all_contrasts', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.1 0.1 0.1], 'Color', 'k')
-errorbar(all_contrasts', mDprimeII(3,:), semDprimeII(3,:), 'Color', 'k' );
+plot(all_contrasts', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k')
+errorbar(all_contrasts', mDprimeII(3,:), semDprimeII(3,:), 'Color', [0.75 0.75 0.75] );
 
 set(gca, 'XTick', all_contrasts)
+title('Exp 1')
+xlabel('Contrast')
+ylabel('Type II d Prime')
+legend('Backward', 'Forward', 'Middle', 'Location', 'SouthEast')
+legend boxoff
+print(gcf, '-dpng', [figsDir 'Exp1_dPrime.png'])
+
+close all
+clear accuracies phit pfa dPrimeII auc_II
+
+%% Type II d prime experiment 2
+
+% (1) subject number ; (2) Block number; (3) contrast value ; (4) timing of checkerboard;
+% (5) mask frequencies; (6) location of the checkerboard
+% (7) responses for locations ; (8) responses for subjective visibility
 
 
+%Visibility
+mask_freq     = unique(data_frq(:,5)); 
+all_contrasts = unique(data_frq(:,3)); 
+subjects      = unique(data_frq(:,1)); 
 
 
+for subj = 1: length(subjects)
+    for contrast =1 :length(all_contrasts)
+        for cond =1 : length(mask_freq)
+        
+            
+            % Filter by subject, contrast and condition
+            aux_data = data_frq( data_frq(:,1) == subjects(subj) & data_frq(:,5) ==mask_freq(cond)...
+                & data_frq(:,3)== all_contrasts(contrast), :) ; 
+            
+            % just a sanity check
+            if size(aux_data, 1) ~= 40
+                display ('ERROR IN THE NUMBER OF TRIALS')
+                return
+            end
+            
+            % Correct responses
+            correct = aux_data( aux_data(:,6) == aux_data(:,7), :);
+            nCorrect = size( correct, 1);
+            prop_correct = nCorrect / size(aux_data, 1); 
+            nCorrect_seen = size(correct(correct(:,8) == 3), 1);
+            
+            % Incorrect responses
+            incorrect = aux_data( aux_data(:,6) ~= aux_data(:,7), :);
+            nIncorrect = size(incorrect, 1);
+            nIncorrect_seen = size(incorrect(incorrect(:,8) == 3), 1);
+            
+            
+            % Collect data
+            accuracies(contrast, cond, subj) = prop_correct;            
+            
+            if nCorrect == 0
+                phit(contrast, cond, subj) = 0;
+            else
+                phit(contrast, cond, subj) = nCorrect_seen / nCorrect;
+            end
+            
+            if nIncorrect == 0 
+                pfa(contrast, cond, subj) = 0;
+            else
+                pfa(contrast, cond, subj) = nIncorrect_seen / nIncorrect;
+            end
+            
+            
+            phit(phit == 0) = 0.01; phit(phit == 1) = 0.99;
+            pfa(pfa == 0) = 0.01; pfa(pfa == 1) = 0.99;
+            
+            dPrimeII(contrast, cond, subj) = dprime( phit(contrast, cond, subj),...
+                pfa(contrast, cond, subj) );
+            
+            auc_II(contrast, cond, subj) = AreaUnderROC([0 phit(contrast, cond, subj) 1; ...
+                0 pfa(contrast, cond, subj) 1; ]');            
+            
+        end
+    end
+end
+
+mAuc_II     = mean(auc_II, 3);
+semAUCII    = std(auc_II, [],3) / sqrt(length(subjects));
+mDprimeII   = mean(dPrimeII, 3);
+semDprimeII = std(dPrimeII, [], 3) / sqrt(length(subjects));
+
+figure(1); clf;
+hold on
+p1= plot(mask_freq', mAuc_II(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k');
+errorbar(mask_freq', mAuc_II(1,:), semAUCII(1,:), 'Color', [0 0 0]);
+
+p2= plot(mask_freq', mAuc_II(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k');
+errorbar(mask_freq', mAuc_II(2,:), semAUCII(2,:), 'Color', [0.5 0.5 0.5] );
+
+p3= plot(mask_freq', mAuc_II(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
+errorbar(mask_freq', mAuc_II(3,:), semAUCII(3,:), 'Color', [0.75 0.75 0.75] );
+
+ylim([0.45 1])
+set(gca, 'XTick', mask_freq)
+title('Exp 2')
+xlabel('Contrast')
+ylabel('Type II AUC')
+legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend boxoff
+print(gcf, '-dpng', [figsDir 'Exp2_AUC.png'])
+
+figure(2); clf;
+hold on
+p1= plot(mask_freq', mDprimeII(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k');
+errorbar(mask_freq',mDprimeII(1,:), semDprimeII(1,:), 'Color', [0 0 0]);
+
+p2= plot(mask_freq', mDprimeII(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k');
+errorbar(mask_freq', mDprimeII(2,:), semDprimeII(2,:), 'Color', [0.5 0.5 0.5] );
+
+p3= plot(mask_freq', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
+errorbar(mask_freq', mDprimeII(3,:), semDprimeII(3,:), 'Color', [0.75 0.75 0.75] );
+
+set(gca, 'XTick', mask_freq)
+title('Exp 2')
+xlabel('Contrast')
+ylabel('Type II d Prime')
+legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend boxoff
+print(gcf, '-dpng', [figsDir 'Exp2_dPrime.png'])
+
+close all
+clear accuracies phit pfa dPrimeII auc_II
 
 
+%% Type II d prime experiment 3
+
+%  timingConds = { 'backwardMasking' 'forwardMasking' 'middleMasking'}; %
+%  1, 2, 3
+
+%Visibility
+mask_freq       = unique(data_ctr(:,5)); 
+all_contrasts   = unique(data_ctr(:,3)); 
+subjects        = unique(data_ctr(:,1)); 
+
+
+for subj = 1: length(subjects)
+    for contrast = 1 :length(all_contrasts)
+        for cond =1 : length(mask_freq)
+        
+            
+            % Filter by subject, contrast and condition
+            aux_data = data_ctr( data_ctr(:,1) == subjects(subj) & data_ctr(:,5) ==mask_freq(cond)...
+                & data_ctr(:,3)== all_contrasts(contrast), :) ; 
+            
+            % just a sanity check
+            if size(aux_data, 1) ~= 40
+                display ('ERROR IN THE NUMBER OF TRIALS')
+                return
+            end
+            
+            % Correct responses
+            correct = aux_data( aux_data(:,6) == aux_data(:,7), :);
+            nCorrect = size( correct, 1);
+            prop_correct = nCorrect / size(aux_data, 1); 
+            nCorrect_seen = size(correct(correct(:,8) == 3), 1);
+            
+            % Incorrect responses
+            incorrect = aux_data( aux_data(:,6) ~= aux_data(:,7), :);
+            nIncorrect = size(incorrect, 1);
+            nIncorrect_seen = size(incorrect(incorrect(:,8) == 3), 1);
+            
+            
+            % Collect data
+            accuracies(contrast, cond, subj) = prop_correct;            
+            
+            if nCorrect == 0
+                phit(contrast, cond, subj) = 0;
+            else
+                phit(contrast, cond, subj) = nCorrect_seen / nCorrect;
+            end
+            
+            if nIncorrect == 0 
+                pfa(contrast, cond, subj) = 0;
+            else
+                pfa(contrast, cond, subj) = nIncorrect_seen / nIncorrect;
+            end
+            
+            
+            phit(phit == 0) = 0.01; phit(phit == 1) = 0.99;
+            pfa(pfa == 0) = 0.01; pfa(pfa == 1) = 0.99;
+            
+            dPrimeII(contrast, cond, subj) = dprime( phit(contrast, cond, subj),...
+                pfa(contrast, cond, subj) );
+            
+            auc_II(contrast, cond, subj) = AreaUnderROC([0 phit(contrast, cond, subj) 1; ...
+                0 pfa(contrast, cond, subj) 1; ]');            
+            
+        end
+    end
+end
+
+% d_primes_type1(su, bi) = dprime( hit_rate(su, bi), falseAlarm_rate(su, bi)); %#ok / sqrt(2);       
+         
+
+mAuc_II     = mean(auc_II, 3);
+semAUCII    = std(auc_II, [],3) / sqrt(length(subjects));
+mDprimeII   = mean(dPrimeII, 3);
+semDprimeII = std(dPrimeII, [], 3) / sqrt(length(subjects));
+
+
+figure(1); clf;
+hold on
+p1= plot(mask_freq', mAuc_II(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k');
+errorbar(mask_freq', mAuc_II(1,:), semAUCII(1,:), 'Color', [0 0 0]);
+
+p2= plot(mask_freq', mAuc_II(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k');
+errorbar(mask_freq', mAuc_II(2,:), semAUCII(2,:), 'Color', [0.5 0.5 0.5] );
+
+p3= plot(mask_freq', mAuc_II(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
+errorbar(mask_freq', mAuc_II(3,:), semAUCII(3,:), 'Color', [0.75 0.75 0.75] );
+
+ylim([0.45 1])
+set(gca, 'XTick', mask_freq)
+title('Exp 3')
+xlabel('Contrast')
+ylabel('Type II AUC')
+legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend boxoff
+print(gcf, '-dpng', [figsDir 'Exp3_AUC.png'])
+
+figure(2); clf;
+hold on
+p1= plot(mask_freq', mDprimeII(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k');
+errorbar(mask_freq',mDprimeII(1,:), semDprimeII(1,:), 'Color', [0 0 0]);
+
+p2= plot(mask_freq', mDprimeII(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k');
+errorbar(mask_freq', mDprimeII(2,:), semDprimeII(2,:), 'Color', [0.5 0.5 0.5] );
+
+p3= plot(mask_freq', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
+errorbar(mask_freq', mDprimeII(3,:), semDprimeII(3,:), 'Color', [0.75 0.75 0.75] );
+
+set(gca, 'XTick', mask_freq)
+title('Exp 3')
+xlabel('Contrast')
+ylabel('Type II d Prime')
+legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend boxoff
+print(gcf, '-dpng', [figsDir 'Exp3_dPrime.png'])
+
+close all
 
 
 
