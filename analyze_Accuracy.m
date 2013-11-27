@@ -18,7 +18,7 @@ function analyze_Accuracy (Data, fileName, outDir)
 
 
 % Filter the less than 5 masks condition
-Data = Data(Data(:,4) < 10 || 
+% Data = Data(Data(:,4) < 10 || 
 
 %  timingConds = { 'backwardMasking' 'forwardMasking' 'middleMasking'}; %
 %  1, 2, 3
