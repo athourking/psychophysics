@@ -5,7 +5,7 @@
 
 # experimental data set
 #setwd("../Data_results")
-inDir <- "/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/"
+inDir <- "/home/lisandro/Work/CFS_Checkerboard/Data_results/"
 dataset <- read.table(paste(inDir,'Data_12Subjects.txt', sep=""),as.is=TRUE)
 str(dataset)
 library(sciplot)
@@ -29,7 +29,7 @@ str(dataset)
 dataset$acc <- ifelse(dataset$location == dataset$response, 1, 0)
 
 # FILTER OUT THE TRIALS WITH LESS THAN 4 INITIAL FLASHES
-dataset <- dataset[ dataset[,4] < 10 | dataset[,4] > 40 , ]                                                             
+dataset <- dataset[ dataset[,4] < 10 | dataset[,4] > 30 , ]                                                             
 
 # Data sanity check: prints only the first 6 rows
 head(data.frame(dataset$acc,dataset$location,dataset$response))
