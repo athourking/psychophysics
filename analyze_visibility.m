@@ -185,6 +185,15 @@ FACTNAMES = {'contrast', 'condition'};
 stats = rm_anova2(Y, subjs, contrast, condition, FACTNAMES);
 disp(stats)
 
+% rows participants, cols factors
+% mid = squeeze(accuracies(3, :, :))
+% 
+% O = teg_repeated_measures_ANOVA(M, levels, varnames)
+
+% where M is an N x k matrix of N observations of k nested combinations of factors, 
+% as ordered in SPSS. levels is a vector of number-of-levels per factor, from highest 
+% to lowest level. varnames is a cell array of variable names.
+
 
 clear accuracies mAccuracy semAccuracy prop_seen mProp_seen  semProp_seen
 
@@ -316,20 +325,20 @@ print(gcf, '-dpng', [figsDir 'Exp1_AUC.png'])
 
 figure(2); clf;
 hold on
-plot(all_contrasts', mDprimeII(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k')
+p1= plot(all_contrasts', mDprimeII(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k')
 errorbar(all_contrasts',mDprimeII(1,:), semDprimeII(1,:), 'Color', [0 0 0]);
 
-plot(all_contrasts', mDprimeII(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k')
+p2= plot(all_contrasts', mDprimeII(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k')
 errorbar(all_contrasts', mDprimeII(2,:), semDprimeII(2,:), 'Color', [0.5 0.5 0.5] );
 
-plot(all_contrasts', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k')
+p3= plot(all_contrasts', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k')
 errorbar(all_contrasts', mDprimeII(3,:), semDprimeII(3,:), 'Color', [0.75 0.75 0.75] );
 
 set(gca, 'XTick', all_contrasts, 'XTickLabel', all_contrasts * 100)
 xlabel('Contrast', 'FontSize', 20, 'FontWeight', 'Bold')
 set(gca, 'FontSize', 15)
 ylabel('Type II d Prime', 'FontSize', 20, 'FontWeight', 'Bold')
-legend('Backward', 'Forward', 'Middle', 'Location', 'SouthEast')
+legend([p1 p2 p3], 'Backward', 'Forward', 'Middle', 'Location', 'SouthEast')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp1_dPrime.png'])
 
