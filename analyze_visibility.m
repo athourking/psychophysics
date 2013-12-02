@@ -5,6 +5,7 @@ inDir = './Data_results/';
 outDir = './Data_results/';
 figsDir = './Figures/';
 
+close all
 
 addpath(genpath('../Programs/eeglab11_0_4_3b/'))
 addpath(genpath('./rm_anova2/'))
@@ -68,10 +69,36 @@ for subj = 1: length(subjects)
             % Collect data
             accuracies(cond, contrast, subj) = prop_correct; %#ok
             
-            
+            prop_seen(cond, contrast, subj) = size(aux_data(aux_data(:,8) == 3), 1) / size(aux_data,1);
         end
     end
 end
+
+mProp_seen = mean(prop_seen,3);
+semProp_seen = std(prop_seen, [], 3) / sqrt(length(subjects));
+
+figure(101); clf;
+markerSize = 8;
+hold on
+p1 = plot(all_contrasts', mProp_seen(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(all_contrasts', mProp_seen(1,:), semProp_seen(1,:), 'Color', [0 0 0]);
+
+p2 = plot(all_contrasts', mProp_seen(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(all_contrasts', mProp_seen(2,:), semProp_seen(2,:), 'Color', [0.5 0.5 0.5] );
+
+p3 = plot(all_contrasts', mProp_seen(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(all_contrasts', mProp_seen(3,:), semProp_seen(3,:), 'Color', [0.75 0.75 0.75] );
+
+ylim([0 1])
+set(gca, 'XTick', all_contrasts, 'XTickLabel', all_contrasts * 100)
+% title('Exp 1')
+xlabel('Contrast', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('p(seen)','FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
+legend([p1 p2 p3],'Backward', 'Forward', 'Middle', 'Location', 'SouthEast')
+legend boxoff
+print(gcf, '-dpng', [figsDir 'Exp1_propSeen.png'])
+
 
 acc = accuracies(1:3,:, :); % we don't take into acount the control condition (row 4)
 overall_mean = mean(acc(:));
@@ -82,9 +109,10 @@ end
 
 mAccuracy = mean(accuracies, 3);
 semAccuracy = std(accuracies, [], 3) / sqrt(length(subjects));
-markerSize = 8;
+
 
 figure(1); clf;
+markerSize = 8;
 hold on
 p1 = plot(all_contrasts', mAccuracy(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k', 'MarkerSize', markerSize);
 errorbar(all_contrasts', mAccuracy(1,:), semAccuracy(1,:), 'Color', [0 0 0]);
@@ -96,13 +124,15 @@ p3 = plot(all_contrasts', mAccuracy(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.
 errorbar(all_contrasts', mAccuracy(3,:), semAccuracy(3,:), 'Color', [0.75 0.75 0.75] );
 
 ylim([0.15 1.05])
-set(gca, 'XTick', all_contrasts)
-title('Exp 1')
-xlabel('Contrast')
-ylabel('p(correct)')
+set(gca, 'XTick', all_contrasts, 'XTickLabel', all_contrasts * 100)
+xlabel('Contrast', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('p(correct)', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
 legend([p1 p2 p3],'Backward', 'Forward', 'Middle', 'Location', 'SouthEast')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp1_accuracies.png'])
+
+
 
 
 
@@ -116,15 +146,14 @@ errorbar( (1:5) + 0.15,  mAccuracy(4,:), semAccuracy(4,:), 'Color', [0 0 0], 'Li
 
 set(bh(1), 'FaceColor', [0.2 0.2 0.2])
 set(bh(2), 'FaceColor', [0.5 0.5 0.5])
-set(gca, 'XTick', 1:5)
-set(gca, 'XTickLabel', all_contrasts)
+set(gca, 'XTick', 1:5, 'XTickLabel', all_contrasts * 100)
 ylim([0 1])
-xlabel('Contrast')
-ylabel('p(correct)')
+xlabel('Contrast', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('p(correct)', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
 legend('Middle', 'Control', 'Location', 'NorthWest')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp1_middleVsControl.png'])
-
 
 % function stats = rm_anova2(Y,S,F1,F2,FACTNAMES)
 %
@@ -157,6 +186,7 @@ stats = rm_anova2(Y, subjs, contrast, condition, FACTNAMES);
 disp(stats)
 
 
+clear accuracies mAccuracy semAccuracy prop_seen mProp_seen  semProp_seen
 
 
 
@@ -198,7 +228,10 @@ for subj = 1: length(subjects)
             
             
             % Collect data
-            accuracies(cond, contrast, subj) = prop_correct;            
+            accuracies(cond, contrast, subj) = prop_correct;  
+            
+            prop_seen(cond, contrast, subj) = size(aux_data(aux_data(:,8) == 3), 1) / size(aux_data,1);
+
             
             if nCorrect == 0
                 phit(cond, contrast, subj) = 0;
@@ -226,8 +259,34 @@ for subj = 1: length(subjects)
     end
 end
 
-% d_primes_type1(su, bi) = dprime( hit_rate(su, bi), falseAlarm_rate(su, bi)); %#ok / sqrt(2);       
-         
+
+
+
+
+mProp_seen = mean(prop_seen,3);
+semProp_seen = std(prop_seen, [], 3) / sqrt(length(subjects));
+
+figure(100); clf;
+markerSize = 8;
+hold on
+p1 = plot(all_contrasts', mProp_seen(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(all_contrasts', mProp_seen(1,:), semProp_seen(1,:), 'Color', [0 0 0]);
+
+p2 = plot(all_contrasts', mProp_seen(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(all_contrasts', mProp_seen(2,:), semProp_seen(2,:), 'Color', [0.5 0.5 0.5] );
+
+p3 = plot(all_contrasts', mProp_seen(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(all_contrasts', mProp_seen(3,:), semProp_seen(3,:), 'Color', [0.75 0.75 0.75] );
+
+ylim([0 1])
+set(gca, 'XTick', all_contrasts, 'XTickLabel', all_contrasts * 100)
+xlabel('Contrast', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('p(seen)', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
+legend([p1 p2 p3],'Backward', 'Forward', 'Middle', 'Location', 'SouthEast')
+legend boxoff
+print(gcf, '-dpng', [figsDir 'Exp2_propSeen.png']) 
+
 
 mAuc_II     = mean(auc_II, 3);
 semAUCII    = std(auc_II, [],3) / sqrt(length(subjects));
@@ -246,13 +305,14 @@ p3= plot(all_contrasts', mAuc_II(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75]
 errorbar(all_contrasts', mAuc_II(3,:), semAUCII(3,:), 'Color', [0.75 0.75 0.75] );
 
 ylim([0.45 1])
-set(gca, 'XTick', all_contrasts)
-title('Exp 1')
-xlabel('Contrast')
-ylabel('Type II AUC')
+set(gca, 'XTick', all_contrasts, 'XTickLabel', all_contrasts * 100)
+xlabel('Contrast', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('Type II AUC', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
 legend([p1 p2 p3], 'Backward', 'Forward', 'Middle', 'Location', 'SouthEast')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp1_AUC.png'])
+
 
 figure(2); clf;
 hold on
@@ -265,16 +325,18 @@ errorbar(all_contrasts', mDprimeII(2,:), semDprimeII(2,:), 'Color', [0.5 0.5 0.5
 plot(all_contrasts', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k')
 errorbar(all_contrasts', mDprimeII(3,:), semDprimeII(3,:), 'Color', [0.75 0.75 0.75] );
 
-set(gca, 'XTick', all_contrasts)
-title('Exp 1')
-xlabel('Contrast')
-ylabel('Type II d Prime')
+set(gca, 'XTick', all_contrasts, 'XTickLabel', all_contrasts * 100)
+xlabel('Contrast', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
+ylabel('Type II d Prime', 'FontSize', 20, 'FontWeight', 'Bold')
 legend('Backward', 'Forward', 'Middle', 'Location', 'SouthEast')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp1_dPrime.png'])
 
 close all
 clear accuracies phit pfa dPrimeII auc_II
+clear accuracies mAccuracy semAccuracy prop_seen mProp_seen  semProp_seen
+
 
 %% Type II d prime experiment 2
 
@@ -319,6 +381,8 @@ for subj = 1: length(subjects)
             % Collect data
             accuracies(contrast, cond, subj) = prop_correct;            
             
+            prop_seen(contrast, cond, subj) = size(aux_data(aux_data(:,8) == 3), 1) / size(aux_data,1);
+
             if nCorrect == 0
                 phit(contrast, cond, subj) = 0;
             else
@@ -345,6 +409,66 @@ for subj = 1: length(subjects)
     end
 end
 
+
+acc = accuracies(1:3,:, :); % we don't take into acount the control condition (row 4)
+overall_mean = mean(acc(:));
+for su = 1 : length(subjects)
+    subject_mean(su) = mean(mean(accuracies(1:3,:,su))); %#ok
+    accuracies(1:3,:,su) =  accuracies(1:3,:,su) - (subject_mean(su) - overall_mean); %#ok
+end
+
+mAccuracy = mean(accuracies, 3);
+semAccuracy = std(accuracies, [], 3) / sqrt(length(subjects));
+
+
+figure(90); clf;
+markerSize = 8;
+hold on
+p1 = plot(mask_freq', mAccuracy(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(mask_freq', mAccuracy(1,:), semAccuracy(1,:), 'Color', [0 0 0]);
+
+p2 = plot(mask_freq', mAccuracy(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(mask_freq', mAccuracy(2,:), semAccuracy(2,:), 'Color', [0.5 0.5 0.5] );
+
+p3 = plot(mask_freq', mAccuracy(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(mask_freq', mAccuracy(3,:), semAccuracy(3,:), 'Color', [0.75 0.75 0.75] );
+
+ylim([0.15 1.05])
+set(gca, 'XTick', mask_freq)
+xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('p(correct)', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
+legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend boxoff
+print(gcf, '-dpng', [figsDir 'Exp2_accuracies.png'])
+
+
+mProp_seen = mean(prop_seen,3);
+semProp_seen = std(prop_seen, [], 3) / sqrt(length(subjects));
+
+figure(102); clf;
+markerSize = 8;
+hold on
+p1 = plot(mask_freq', mProp_seen(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(mask_freq', mProp_seen(1,:), semProp_seen(1,:), 'Color', [0 0 0]);
+
+p2 = plot(mask_freq', mProp_seen(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(mask_freq', mProp_seen(2,:), semProp_seen(2,:), 'Color', [0.5 0.5 0.5] );
+
+p3 = plot(mask_freq', mProp_seen(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(mask_freq', mProp_seen(3,:), semProp_seen(3,:), 'Color', [0.75 0.75 0.75] );
+
+ylim([0 1])
+set(gca, 'XTick', mask_freq)
+xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('p(seen)', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
+legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend boxoff
+print(gcf, '-dpng', [figsDir 'Exp2_propSeen.png']) 
+
+
+
 mAuc_II     = mean(auc_II, 3);
 semAUCII    = std(auc_II, [],3) / sqrt(length(subjects));
 mDprimeII   = mean(dPrimeII, 3);
@@ -363,12 +487,14 @@ errorbar(mask_freq', mAuc_II(3,:), semAUCII(3,:), 'Color', [0.75 0.75 0.75] );
 
 ylim([0.45 1])
 set(gca, 'XTick', mask_freq)
-title('Exp 2')
-xlabel('Mondrian Frequency')
-ylabel('Type II AUC')
+xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('Type II AUC', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
 legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp2_AUC.png'])
+
+
 
 figure(2); clf;
 hold on
@@ -382,15 +508,17 @@ p3= plot(mask_freq', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 
 errorbar(mask_freq', mDprimeII(3,:), semDprimeII(3,:), 'Color', [0.75 0.75 0.75] );
 
 set(gca, 'XTick', mask_freq)
-title('Exp 2')
-xlabel('Mondrian Frequency')
-ylabel('Type II d Prime')
+xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('Type II d Prime', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
 legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp2_dPrime.png'])
 
+
 close all
 clear accuracies phit pfa dPrimeII auc_II
+clear accuracies mAccuracy semAccuracy prop_seen mProp_seen  semProp_seen
 
 
 %% Type II d prime experiment 3
@@ -432,7 +560,10 @@ for subj = 1: length(subjects)
             
             
             % Collect data
-            accuracies(contrast, cond, subj) = prop_correct;            
+            accuracies(contrast, cond, subj) = prop_correct;  
+            
+            prop_seen(contrast, cond, subj) = size(aux_data(aux_data(:,8) == 3), 1) / size(aux_data,1);
+
             
             if nCorrect == 0
                 phit(contrast, cond, subj) = 0;
@@ -460,8 +591,66 @@ for subj = 1: length(subjects)
     end
 end
 
-% d_primes_type1(su, bi) = dprime( hit_rate(su, bi), falseAlarm_rate(su, bi)); %#ok / sqrt(2);       
-         
+
+acc = accuracies(1:3,:, :); % we don't take into acount the control condition (row 4)
+overall_mean = mean(acc(:));
+for su = 1 : length(subjects)
+    subject_mean(su) = mean(mean(accuracies(1:3,:,su))); %#ok
+    accuracies(1:3,:,su) =  accuracies(1:3,:,su) - (subject_mean(su) - overall_mean); %#ok
+end
+
+mAccuracy = mean(accuracies, 3);
+semAccuracy = std(accuracies, [], 3) / sqrt(length(subjects));
+
+
+figure(92); clf;
+markerSize = 8;
+hold on
+p1 = plot(mask_freq', mAccuracy(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(mask_freq', mAccuracy(1,:), semAccuracy(1,:), 'Color', [0 0 0]);
+
+p2 = plot(mask_freq', mAccuracy(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(mask_freq', mAccuracy(2,:), semAccuracy(2,:), 'Color', [0.5 0.5 0.5] );
+
+p3 = plot(mask_freq', mAccuracy(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(mask_freq', mAccuracy(3,:), semAccuracy(3,:), 'Color', [0.75 0.75 0.75] );
+
+ylim([0.15 1.05])
+set(gca, 'XTick', mask_freq)
+xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('p(correct)', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
+legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend boxoff
+print(gcf, '-dpng', [figsDir 'Exp3_accuracies.png'])
+
+
+
+mProp_seen = mean(prop_seen,3);
+semProp_seen = std(prop_seen, [], 3) / sqrt(length(subjects));
+
+figure(103); clf;
+markerSize = 8;
+hold on
+p1 = plot(mask_freq', mProp_seen(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(mask_freq', mProp_seen(1,:), semProp_seen(1,:), 'Color', [0 0 0]);
+
+p2 = plot(mask_freq', mProp_seen(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(mask_freq', mProp_seen(2,:), semProp_seen(2,:), 'Color', [0.5 0.5 0.5] );
+
+p3 = plot(mask_freq', mProp_seen(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
+errorbar(mask_freq', mProp_seen(3,:), semProp_seen(3,:), 'Color', [0.75 0.75 0.75] );
+
+ylim([0 1])
+set(gca, 'XTick', mask_freq)
+xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('p(seen)', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
+legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend boxoff
+print(gcf, '-dpng', [figsDir 'Exp3_propSeen.png'])          
+
+
 
 mAuc_II     = mean(auc_II, 3);
 semAUCII    = std(auc_II, [],3) / sqrt(length(subjects));
@@ -482,12 +671,14 @@ errorbar(mask_freq', mAuc_II(3,:), semAUCII(3,:), 'Color', [0.75 0.75 0.75] );
 
 ylim([0.45 1])
 set(gca, 'XTick', mask_freq)
-title('Exp 3')
-xlabel('Mondrian Frequency')
-ylabel('Type II AUC')
+xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('Type II AUC', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
 legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp3_AUC.png'])
+
+
 
 figure(2); clf;
 hold on
@@ -501,15 +692,16 @@ p3= plot(mask_freq', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 
 errorbar(mask_freq', mDprimeII(3,:), semDprimeII(3,:), 'Color', [0.75 0.75 0.75] );
 
 set(gca, 'XTick', mask_freq)
-title('Exp 3')
-xlabel('Mondrian Frequency')
-ylabel('Type II d Prime')
+xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
+ylabel('Type II d Prime', 'FontSize', 20, 'FontWeight', 'Bold')
+set(gca, 'FontSize', 15)
 legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp3_dPrime.png'])
 
 close all
 
+clear accuracies mAccuracy semAccuracy prop_seen mProp_seen  semProp_seen
 
 
 
