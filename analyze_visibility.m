@@ -1,14 +1,15 @@
-% function analyze_visibility
+function analyze_visibility
 
 
 inDir = './Data_results/';
 outDir = './Data_results/';
 figsDir = './Figures/';
 
-close all
+% close all
 
 addpath(genpath('../Programs/eeglab11_0_4_3b/'))
 addpath(genpath('./rm_anova2/'))
+addpath(genpath('./teg_stats/'))
 
 
 % (1) subject number ; (2) Block number; (3) contrast value ; (4) timing
@@ -18,7 +19,7 @@ addpath(genpath('./rm_anova2/'))
 % Yes, 4: No)
 data = load([ inDir 'Data_12Subjects.mat']);
 data_main = data.Data;
-
+% data_main = data_main; %(data_main(:,4) < 10 | data_main(:,4) > 40, :);
 
 % (1) subject number ; (2) Block number; (3) contrast value ; (4) timing of checkerboard;
 % (5) mask frequencies; (6) location of the checkerboard
@@ -31,8 +32,6 @@ data_ctr = data_control.Data;
 
 
 %% Test for adaptation effects
-
-data_main = data_main(data_main(:,4) < 10 | data_main(:,4) > 40, :);
 
 %Visibility
 timing_conditions = unique(data_main(:,5)); 
@@ -74,6 +73,9 @@ for subj = 1: length(subjects)
     end
 end
 
+
+%% PROPORTION SEEN
+
 mProp_seen = mean(prop_seen,3);
 semProp_seen = std(prop_seen, [], 3) / sqrt(length(subjects));
 
@@ -99,15 +101,48 @@ legend([p1 p2 p3],'Backward', 'Forward', 'Middle', 'Location', 'SouthEast')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp1_propSeen.png'])
 
-
-acc = accuracies(1:3,:, :); % we don't take into acount the control condition (row 4)
-overall_mean = mean(acc(:));
-for su = 1 : length(subjects)
-    subject_mean(su) = mean(mean(accuracies(1:3,:,su))); %#ok
-    accuracies(1:3,:,su) =  accuracies(1:3,:,su) - (subject_mean(su) - overall_mean); %#ok
+% M is an N x k matrix of N observations of k nested combinations of factors, 
+% as ordered in SPSS. levels is a vector of number-of-levels per factor, from highest 
+% to lowest level. varnames is a cell array of variable names.
+acc = [];
+acc = prop_seen(1:3, :, :);
+levels = [3 5];
+varnames = {'Masking Condition' 'Contrast'};
+for su = 1 : length(subjects)    
+    M(su,:) = reshape(acc(:,:, su)', levels(1) * levels(2), 1)';
 end
+aov_propSeen_exp1 = teg_repeated_measures_ANOVA(M, levels, varnames);
 
-mAccuracy = mean(accuracies, 3);
+% Post hoc t-tests
+
+% 12% contrast
+bw = squeeze(prop_seen(1,2,:));
+fw = squeeze(prop_seen(2,2,:));
+md = squeeze(prop_seen(3,2,:));
+[h,p1,ci,stats] = ttest(bw, fw);
+[h,p2,ci,stats] = ttest(bw, md);
+[h,p3,ci,stats] = ttest(md, fw);
+
+% 12% contrast
+bw = squeeze(prop_seen(1,3,:));
+fw = squeeze(prop_seen(2,3,:));
+md = squeeze(prop_seen(3,3,:));
+[h,p4,ci,stats] = ttest(bw, fw);
+[h,p5,ci,stats] = ttest(bw, md);
+[h,p6,ci,stats] = ttest(md, fw);
+
+
+%% ACCURACY (P CORRECT)
+
+% acc = accuracies(1:3,:, :); % we don't take into acount the control condition (row 4)
+
+% overall_mean = mean(acc(:));
+% for su = 1 : length(subjects)
+%     subject_mean(su) = mean(mean(accuracies(1:3,:,su))); %#ok
+%     accuracies(1:3,:,su) =  accuracies(1:3,:,su); % - (subject_mean(su) - overall_mean); %#ok
+% end
+
+mAccuracy = mean(accuracies, 3); 
 semAccuracy = std(accuracies, [], 3) / sqrt(length(subjects));
 
 
@@ -133,6 +168,36 @@ legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp1_accuracies.png'])
 
 
+%%
+
+% REPEATED MEASURES ANOVA for accuracy of experiment 1
+acc = [];
+acc = accuracies(1:3, :, :);
+M = [];
+for su = 1 : length(subjects)    
+    M(su,:) = reshape(acc(:,:, su)', 15, 1)';
+end
+levels = [3 5];
+varnames = {'Masking Condition' 'Contrast'};
+
+aov_acc_exp1 = teg_repeated_measures_ANOVA(M, levels, varnames);
+
+% 12% contrast
+bw = squeeze(accuracies(1,2,:));
+fw = squeeze(accuracies(2,2,:));
+md = squeeze(accuracies(3,2,:));
+[h,p1,ci,stats] = ttest(bw, fw); % paired samples t-test
+[h,p2,ci,stats] = ttest(bw, md); % Only this is significant after correcting for 0.05 / 6 = 0.008
+[h,p3,ci,stats] = ttest(md, fw);
+
+% 12% contrast
+bw = squeeze(accuracies(1,3,:));
+fw = squeeze(accuracies(2,3,:));
+md = squeeze(accuracies(3,3,:));
+[h,p4,ci,stats] = ttest(bw, fw);
+[h,p5,ci,stats] = ttest(bw, md); % Only this is significant after correcting for 0.05 / 6 = 0.008
+[h,p6,ci,stats] = ttest(md, fw);
+
 
 
 
@@ -155,47 +220,22 @@ legend('Middle', 'Control', 'Location', 'NorthWest')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp1_middleVsControl.png'])
 
-% function stats = rm_anova2(Y,S,F1,F2,FACTNAMES)
-%
-% Two-factor, within-subject repeated measures ANOVA.
-% For designs with two within-subject factors.
-%
-% Parameters:
-% Y dependent variable (numeric) in a column vector
-% S grouping variable for SUBJECT
-% F1 grouping variable for factor #1
-% F2 grouping variable for factor #2
-% FACTNAMES a cell array w/ two char arrays: {'factor1', 'factor2'}
-%
-% Y should be a 1-d column vector with all of your data (numeric).
-% The grouping variables should also be 1-d numeric, each with same
-% length as Y. Each entry in each of the grouping vectors indicates the
-% level # (or subject #) of the corresponding entry in Y. 
 
- 
-middle = reshape(accuracies(3, :, :), 60,1);
-control = reshape(accuracies(4, :, :), 60,1);
-Y = [middle ; control];
-
-subjs = repmat(subjects, 10, 1);
-contrast = repmat(all_contrasts, 24, 1);
-condition = [ones(60, 1); ones(60, 1)+1];
-FACTNAMES = {'contrast', 'condition'};
-
-stats = rm_anova2(Y, subjs, contrast, condition, FACTNAMES);
-disp(stats)
-
-% rows participants, cols factors
-% mid = squeeze(accuracies(3, :, :))
-% 
-% O = teg_repeated_measures_ANOVA(M, levels, varnames)
-
-% where M is an N x k matrix of N observations of k nested combinations of factors, 
+% M is an N x k matrix of N observations of k nested combinations of factors, 
 % as ordered in SPSS. levels is a vector of number-of-levels per factor, from highest 
 % to lowest level. varnames is a cell array of variable names.
+acc = []; M = [];
+acc = accuracies(3:4, :, :);
+for su = 1 : length(subjects)    
+    M(su,:) = reshape(acc(:,:, su)', 10, 1)';
+end
+levels = [2 5];
+varnames = {'Masking Condition' 'Contrast'};
+
+% MiddvsControl = teg_repeated_measures_ANOVA(M, levels, varnames);
 
 
-clear accuracies mAccuracy semAccuracy prop_seen mProp_seen  semProp_seen
+clear accuracies mAccuracy semAccuracy prop_seen mProp_seen  semProp_seen O
 
 
 
@@ -269,9 +309,6 @@ for subj = 1: length(subjects)
 end
 
 
-
-
-
 mProp_seen = mean(prop_seen,3);
 semProp_seen = std(prop_seen, [], 3) / sqrt(length(subjects));
 
@@ -325,13 +362,13 @@ print(gcf, '-dpng', [figsDir 'Exp1_AUC.png'])
 
 figure(2); clf;
 hold on
-p1= plot(all_contrasts', mDprimeII(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k')
-errorbar(all_contrasts',mDprimeII(1,:), semDprimeII(1,:), 'Color', [0 0 0]);
+p1= plot(all_contrasts', mDprimeII(1,:), 's-', 'MarkerFaceColor', [0 0 0], 'Color', 'k');
+errorbar(all_contrasts', mDprimeII(1,:), semDprimeII(1,:), 'Color', [0 0 0]);
 
-p2= plot(all_contrasts', mDprimeII(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k')
+p2= plot(all_contrasts', mDprimeII(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k');
 errorbar(all_contrasts', mDprimeII(2,:), semDprimeII(2,:), 'Color', [0.5 0.5 0.5] );
 
-p3= plot(all_contrasts', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k')
+p3= plot(all_contrasts', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
 errorbar(all_contrasts', mDprimeII(3,:), semDprimeII(3,:), 'Color', [0.75 0.75 0.75] );
 
 set(gca, 'XTick', all_contrasts, 'XTickLabel', all_contrasts * 100)
@@ -342,9 +379,40 @@ legend([p1 p2 p3], 'Backward', 'Forward', 'Middle', 'Location', 'SouthEast')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp1_dPrime.png'])
 
+
+% Repeated measures anova
+acc = []; M = [];
+acc = dPrimeII(1:3, :, :);
+levels = [3 5];
+varnames = {'Masking Condition' 'Contrast'};
+for su = 1 : length(subjects)    
+    M(su,:) = reshape(acc(:,:, su)', levels(1) * levels(2), 1)';
+end
+aov_dP2_exp1 = teg_repeated_measures_ANOVA(M, levels, varnames);
+
+% Post hoc t-tests
+
+% 12% contrast
+bw = squeeze(prop_seen(1,4,:));
+fw = squeeze(prop_seen(2,4,:));
+md = squeeze(prop_seen(3,4,:));
+[h,p1,ci,stats] = ttest(bw, fw);
+[h,p2,ci,stats] = ttest(bw, md);
+[h,p3,ci,stats] = ttest(md, fw);
+
+% 12% contrast
+bw = squeeze(prop_seen(1,3,:));
+fw = squeeze(prop_seen(2,3,:));
+md = squeeze(prop_seen(3,3,:));
+[h,p4,ci,stats] = ttest(bw, fw);
+[h,p5,ci,stats] = ttest(bw, md);
+[h,p6,ci,stats] = ttest(md, fw);
+
+
 close all
 clear accuracies phit pfa dPrimeII auc_II
 clear accuracies mAccuracy semAccuracy prop_seen mProp_seen  semProp_seen
+
 
 
 %% Type II d prime experiment 2
@@ -419,12 +487,12 @@ for subj = 1: length(subjects)
 end
 
 
-acc = accuracies(1:3,:, :); % we don't take into acount the control condition (row 4)
-overall_mean = mean(acc(:));
-for su = 1 : length(subjects)
-    subject_mean(su) = mean(mean(accuracies(1:3,:,su))); %#ok
-    accuracies(1:3,:,su) =  accuracies(1:3,:,su) - (subject_mean(su) - overall_mean); %#ok
-end
+% acc = accuracies(1:3,:, :); % we don't take into acount the control condition (row 4)
+% overall_mean = mean(acc(:));
+% for su = 1 : length(subjects)
+%     subject_mean(su) = mean(mean(accuracies(1:3,:,su))); %#ok
+%     accuracies(1:3,:,su) =  accuracies(1:3,:,su) - (subject_mean(su) - overall_mean); %#ok
+% end
 
 mAccuracy = mean(accuracies, 3);
 semAccuracy = std(accuracies, [], 3) / sqrt(length(subjects));
@@ -513,16 +581,52 @@ errorbar(mask_freq',mDprimeII(1,:), semDprimeII(1,:), 'Color', [0 0 0]);
 p2= plot(mask_freq', mDprimeII(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k');
 errorbar(mask_freq', mDprimeII(2,:), semDprimeII(2,:), 'Color', [0.5 0.5 0.5] );
 
-p3= plot(mask_freq', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
-errorbar(mask_freq', mDprimeII(3,:), semDprimeII(3,:), 'Color', [0.75 0.75 0.75] );
+% p3= plot(mask_freq', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
+% errorbar(mask_freq', mDprimeII(3,:), semDprimeII(3,:), 'Color', [0.75 0.75 0.75] );
 
 set(gca, 'XTick', mask_freq)
 xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
 ylabel('Type II d Prime', 'FontSize', 20, 'FontWeight', 'Bold')
 set(gca, 'FontSize', 15)
-legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend([p1 p2],'12', '16', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp2_dPrime.png'])
+
+
+%% REPEATED MEASURES ANOVA
+
+% ACCURACY
+acc = []; M = [];
+acc = accuracies(1:2, :, :);
+for su = 1 : length(subjects)    
+    M(su,:) = reshape(acc(:,:, su)', 10, 1)';
+end
+levels = [2 5];
+varnames = {'Masking Condition' 'Mondrian Frequency'};
+
+aov_acc_exp2 = teg_repeated_measures_ANOVA(M, levels, varnames);
+
+% PROPORTION SEEN
+acc = []; M = [];
+acc = prop_seen(1:2, :, :);
+for su = 1 : length(subjects)    
+    M(su,:) = reshape(acc(:,:, su)', 10, 1)';
+end
+levels = [2 5];
+varnames = {'Masking Condition' 'Mondrian Frequency'};
+aov_propSeen_exp2 = teg_repeated_measures_ANOVA(M, levels, varnames);
+
+
+% TYPE II D PRIME
+acc = []; M = [];
+acc = dPrimeII(1:2, :, :);
+for su = 1 : length(subjects)    
+    M(su,:) = reshape(acc(:,:, su)', 10, 1)';
+end
+levels = [2 5];
+varnames = {'Masking Condition' 'Mondrian Frequency'};
+aov_dP2_exp2 = teg_repeated_measures_ANOVA(M, levels, varnames);
+
 
 
 close all
@@ -601,12 +705,14 @@ for subj = 1: length(subjects)
 end
 
 
-acc = accuracies(1:3,:, :); % we don't take into acount the control condition (row 4)
-overall_mean = mean(acc(:));
-for su = 1 : length(subjects)
-    subject_mean(su) = mean(mean(accuracies(1:3,:,su))); %#ok
-    accuracies(1:3,:,su) =  accuracies(1:3,:,su) - (subject_mean(su) - overall_mean); %#ok
-end
+% acc = accuracies(1:3,:, :); % we don't take into acount the control condition (row 4)
+% overall_mean = mean(acc(:));
+% for su = 1 : length(subjects)
+%     subject_mean(su) = mean(mean(accuracies(1:3,:,su))); %#ok
+%     accuracies(1:3,:,su) =  accuracies(1:3,:,su) - (subject_mean(su) - overall_mean); %#ok
+% end
+
+
 
 mAccuracy = mean(accuracies, 3);
 semAccuracy = std(accuracies, [], 3) / sqrt(length(subjects));
@@ -707,6 +813,46 @@ set(gca, 'FontSize', 15)
 legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp3_dPrime.png'])
+
+
+
+% REPEATED MEASURES ANOVA
+
+% ACCURACY
+acc = []; M = [];
+acc = accuracies(1:2, :, :);
+for su = 1 : length(subjects)    
+    M(su,:) = reshape(acc(:,:, su)', 10, 1)';
+end
+levels = [2 5];
+varnames = {'Masking Condition' 'Mondrian Frequency'};
+aov_acc_exp3 = teg_repeated_measures_ANOVA(M, levels, varnames);
+
+
+% PROPORTION SEEN
+acc = []; M = [];
+acc = prop_seen(1:2, :, :);
+for su = 1 : length(subjects)    
+    M(su,:) = reshape(acc(:,:, su)', 10, 1)';
+end
+levels = [2 5];
+varnames = {'Masking Condition' 'Mondrian Frequency'};
+aov_propSeen_exp3 = teg_repeated_measures_ANOVA(M, levels, varnames);
+
+
+% TYPE II D PRIME
+acc = []; M = [];
+acc = dPrimeII(1:2, :, :);
+for su = 1 : length(subjects)    
+    M(su,:) = reshape(acc(:,:, su)', 10, 1)';
+end
+levels = [2 5];
+varnames = {'Masking Condition' 'Mondrian Frequency'};
+aov_dP2_exp3 = teg_repeated_measures_ANOVA(M, levels, varnames);
+
+
+
+
 
 close all
 

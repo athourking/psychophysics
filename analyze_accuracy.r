@@ -29,7 +29,7 @@ str(dataset)
 dataset$acc <- ifelse(dataset$location == dataset$response, 1, 0)
 
 # FILTER OUT THE TRIALS WITH LESS THAN 4 INITIAL FLASHES
-dataset <- dataset[ dataset[,4] < 10 | dataset[,4] > 30 , ]                                                             
+# dataset <- dataset[ dataset[,4] < 10 | dataset[,4] > 30 , ]                                                             
 
 # Data sanity check: prints only the first 6 rows
 head(data.frame(dataset$acc,dataset$location,dataset$response))
@@ -78,11 +78,11 @@ axis(1,unique(contrastLin),unique(contrastLin),cex.axis=1.4)
 # axis(1,unique(contrastLog),unique(contrastLin))
 
 # Calculate zscore accuracy means
-aggregatedData$zAcc <- rep(0,dim(aggregatedData)[1])
-for (i in levels(aggregatedData$subject)) {
-  zScoreSubj <- scale( aggregatedData[aggregatedData$subject==i,4] )
-  aggregatedData$zAcc[aggregatedData$subject==i] <- zScoreSubj
-}
+#aggregatedData$zAcc <- rep(0,dim(aggregatedData)[1])
+#for (i in levels(aggregatedData$subject)) {
+#  zScoreSubj <- scale( aggregatedData[aggregatedData$subject==i,4] )
+#  aggregatedData$zAcc[aggregatedData$subject==i] <- zScoreSubj
+#}
 
 # Two-ways repeated measures Anova 
 mod.withinAnova <- aov(acc ~ (contrast * maskCode) +
@@ -90,9 +90,9 @@ mod.withinAnova <- aov(acc ~ (contrast * maskCode) +
 summary(mod.withinAnova)
 
 # Two-ways repeated measures Anova with the z-score values
-mod.withinAnovaZscore <-  aov(zAcc ~ (contrast * maskCode) +
-                       Error(subject / (contrast * maskCode) ),data=aggregatedData)
-summary(mod.withinAnovaZscore)
+# mod.withinAnovaZscore <-  aov(zAcc ~ (contrast * maskCode) +
+#                       Error(subject / (contrast * maskCode) ),data=aggregatedData)
+# summary(mod.withinAnovaZscore)
 
 
 # One-way repeated measures anova for each contrast condition
