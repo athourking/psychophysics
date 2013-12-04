@@ -507,15 +507,15 @@ errorbar(mask_freq', mAccuracy(1,:), semAccuracy(1,:), 'Color', [0 0 0]);
 p2 = plot(mask_freq', mAccuracy(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k', 'MarkerSize', markerSize);
 errorbar(mask_freq', mAccuracy(2,:), semAccuracy(2,:), 'Color', [0.5 0.5 0.5] );
 
-p3 = plot(mask_freq', mAccuracy(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
-errorbar(mask_freq', mAccuracy(3,:), semAccuracy(3,:), 'Color', [0.75 0.75 0.75] );
+% p3 = plot(mask_freq', mAccuracy(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
+% errorbar(mask_freq', mAccuracy(3,:), semAccuracy(3,:), 'Color', [0.75 0.75 0.75] );
 
 ylim([0.15 1.05])
 set(gca, 'XTick', mask_freq)
 xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
 ylabel('p(correct)', 'FontSize', 20, 'FontWeight', 'Bold')
 set(gca, 'FontSize', 15)
-legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend([p1 p2],'12', '16', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp2_accuracies.png'])
 
@@ -532,15 +532,15 @@ errorbar(mask_freq', mProp_seen(1,:), semProp_seen(1,:), 'Color', [0 0 0]);
 p2 = plot(mask_freq', mProp_seen(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k', 'MarkerSize', markerSize);
 errorbar(mask_freq', mProp_seen(2,:), semProp_seen(2,:), 'Color', [0.5 0.5 0.5] );
 
-p3 = plot(mask_freq', mProp_seen(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
-errorbar(mask_freq', mProp_seen(3,:), semProp_seen(3,:), 'Color', [0.75 0.75 0.75] );
+% p3 = plot(mask_freq', mProp_seen(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
+% errorbar(mask_freq', mProp_seen(3,:), semProp_seen(3,:), 'Color', [0.75 0.75 0.75] );
 
 ylim([0 1])
 set(gca, 'XTick', mask_freq)
 xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
 ylabel('p(seen)', 'FontSize', 20, 'FontWeight', 'Bold')
 set(gca, 'FontSize', 15)
-legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend([p1 p2],'12', '16', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp2_propSeen.png']) 
 
@@ -558,16 +558,16 @@ errorbar(mask_freq', mAuc_II(1,:), semAUCII(1,:), 'Color', [0 0 0]);
 
 p2= plot(mask_freq', mAuc_II(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k');
 errorbar(mask_freq', mAuc_II(2,:), semAUCII(2,:), 'Color', [0.5 0.5 0.5] );
-
-p3= plot(mask_freq', mAuc_II(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
-errorbar(mask_freq', mAuc_II(3,:), semAUCII(3,:), 'Color', [0.75 0.75 0.75] );
+% 
+% p3= plot(mask_freq', mAuc_II(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
+% errorbar(mask_freq', mAuc_II(3,:), semAUCII(3,:), 'Color', [0.75 0.75 0.75] );
 
 ylim([0.45 1])
 set(gca, 'XTick', mask_freq)
 xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
 ylabel('Type II AUC', 'FontSize', 20, 'FontWeight', 'Bold')
 set(gca, 'FontSize', 15)
-legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend([p1 p2],'12', '16', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp2_AUC.png'])
 
@@ -602,8 +602,7 @@ for su = 1 : length(subjects)
     M(su,:) = reshape(acc(:,:, su)', 10, 1)';
 end
 levels = [2 5];
-varnames = {'Masking Condition' 'Mondrian Frequency'};
-
+varnames = {'Constrast' 'Mondrian Frequency'};
 aov_acc_exp2 = teg_repeated_measures_ANOVA(M, levels, varnames);
 
 % PROPORTION SEEN
@@ -613,7 +612,7 @@ for su = 1 : length(subjects)
     M(su,:) = reshape(acc(:,:, su)', 10, 1)';
 end
 levels = [2 5];
-varnames = {'Masking Condition' 'Mondrian Frequency'};
+varnames = {'Contrast' 'Mondrian Frequency'};
 aov_propSeen_exp2 = teg_repeated_measures_ANOVA(M, levels, varnames);
 
 
@@ -624,7 +623,7 @@ for su = 1 : length(subjects)
     M(su,:) = reshape(acc(:,:, su)', 10, 1)';
 end
 levels = [2 5];
-varnames = {'Masking Condition' 'Mondrian Frequency'};
+varnames = {'Contrast' 'Mondrian Frequency'};
 aov_dP2_exp2 = teg_repeated_measures_ANOVA(M, levels, varnames);
 
 
@@ -727,15 +726,15 @@ errorbar(mask_freq', mAccuracy(1,:), semAccuracy(1,:), 'Color', [0 0 0]);
 p2 = plot(mask_freq', mAccuracy(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k', 'MarkerSize', markerSize);
 errorbar(mask_freq', mAccuracy(2,:), semAccuracy(2,:), 'Color', [0.5 0.5 0.5] );
 
-p3 = plot(mask_freq', mAccuracy(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
-errorbar(mask_freq', mAccuracy(3,:), semAccuracy(3,:), 'Color', [0.75 0.75 0.75] );
+% p3 = plot(mask_freq', mAccuracy(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
+% errorbar(mask_freq', mAccuracy(3,:), semAccuracy(3,:), 'Color', [0.75 0.75 0.75] );
 
 ylim([0.15 1.05])
 set(gca, 'XTick', mask_freq)
 xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
 ylabel('p(correct)', 'FontSize', 20, 'FontWeight', 'Bold')
 set(gca, 'FontSize', 15)
-legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend([p1 p2],'12', '16', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp3_accuracies.png'])
 
@@ -753,15 +752,15 @@ errorbar(mask_freq', mProp_seen(1,:), semProp_seen(1,:), 'Color', [0 0 0]);
 p2 = plot(mask_freq', mProp_seen(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k', 'MarkerSize', markerSize);
 errorbar(mask_freq', mProp_seen(2,:), semProp_seen(2,:), 'Color', [0.5 0.5 0.5] );
 
-p3 = plot(mask_freq', mProp_seen(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
-errorbar(mask_freq', mProp_seen(3,:), semProp_seen(3,:), 'Color', [0.75 0.75 0.75] );
+% p3 = plot(mask_freq', mProp_seen(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k', 'MarkerSize', markerSize);
+% errorbar(mask_freq', mProp_seen(3,:), semProp_seen(3,:), 'Color', [0.75 0.75 0.75] );
 
 ylim([0 1])
 set(gca, 'XTick', mask_freq)
 xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
 ylabel('p(seen)', 'FontSize', 20, 'FontWeight', 'Bold')
 set(gca, 'FontSize', 15)
-legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend([p1 p2],'12', '16', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp3_propSeen.png'])          
 
@@ -781,15 +780,15 @@ errorbar(mask_freq', mAuc_II(1,:), semAUCII(1,:), 'Color', [0 0 0]);
 p2= plot(mask_freq', mAuc_II(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k');
 errorbar(mask_freq', mAuc_II(2,:), semAUCII(2,:), 'Color', [0.5 0.5 0.5] );
 
-p3= plot(mask_freq', mAuc_II(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
-errorbar(mask_freq', mAuc_II(3,:), semAUCII(3,:), 'Color', [0.75 0.75 0.75] );
+% p3= plot(mask_freq', mAuc_II(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
+% errorbar(mask_freq', mAuc_II(3,:), semAUCII(3,:), 'Color', [0.75 0.75 0.75] );
 
 ylim([0.45 1])
 set(gca, 'XTick', mask_freq)
 xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
 ylabel('Type II AUC', 'FontSize', 20, 'FontWeight', 'Bold')
 set(gca, 'FontSize', 15)
-legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend([p1 p2 ],'12', '16', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp3_AUC.png'])
 
@@ -803,14 +802,14 @@ errorbar(mask_freq',mDprimeII(1,:), semDprimeII(1,:), 'Color', [0 0 0]);
 p2= plot(mask_freq', mDprimeII(2,:), 'o-',  'MarkerFaceColor', [0.5 0.5 0.5], 'Color', 'k');
 errorbar(mask_freq', mDprimeII(2,:), semDprimeII(2,:), 'Color', [0.5 0.5 0.5] );
 
-p3= plot(mask_freq', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
-errorbar(mask_freq', mDprimeII(3,:), semDprimeII(3,:), 'Color', [0.75 0.75 0.75] );
+% p3= plot(mask_freq', mDprimeII(3,:), '^-', 'MarkerFaceColor', [0.75 0.75 0.75], 'Color', 'k');
+% errorbar(mask_freq', mDprimeII(3,:), semDprimeII(3,:), 'Color', [0.75 0.75 0.75] );
 
 set(gca, 'XTick', mask_freq)
 xlabel('Mondrian Frequency', 'FontSize', 20, 'FontWeight', 'Bold')
 ylabel('Type II d Prime', 'FontSize', 20, 'FontWeight', 'Bold')
 set(gca, 'FontSize', 15)
-legend([p1 p2 p3],'12', '16', '64', 'Location', 'Best')
+legend([p1 p2],'12', '16', 'Location', 'Best')
 legend boxoff
 print(gcf, '-dpng', [figsDir 'Exp3_dPrime.png'])
 
@@ -825,7 +824,7 @@ for su = 1 : length(subjects)
     M(su,:) = reshape(acc(:,:, su)', 10, 1)';
 end
 levels = [2 5];
-varnames = {'Masking Condition' 'Mondrian Frequency'};
+varnames = {'Contrast' 'Mondrian Frequency'};
 aov_acc_exp3 = teg_repeated_measures_ANOVA(M, levels, varnames);
 
 
@@ -836,7 +835,7 @@ for su = 1 : length(subjects)
     M(su,:) = reshape(acc(:,:, su)', 10, 1)';
 end
 levels = [2 5];
-varnames = {'Masking Condition' 'Mondrian Frequency'};
+varnames = {'Contrast' 'Mondrian Frequency'};
 aov_propSeen_exp3 = teg_repeated_measures_ANOVA(M, levels, varnames);
 
 
@@ -847,10 +846,8 @@ for su = 1 : length(subjects)
     M(su,:) = reshape(acc(:,:, su)', 10, 1)';
 end
 levels = [2 5];
-varnames = {'Masking Condition' 'Mondrian Frequency'};
+varnames = {'Contrast' 'Mondrian Frequency'};
 aov_dP2_exp3 = teg_repeated_measures_ANOVA(M, levels, varnames);
-
-
 
 
 
