@@ -172,12 +172,15 @@ print(gcf, '-dpng', [figsDir 'Exp1_accuracies.png'])
 
 % REPEATED MEASURES ANOVA for accuracy of experiment 1
 acc = [];
-acc = accuracies(1:3, :, :);
+acc = accuracies(1:4, :, :);
 M = [];
+levels = [4 5];
+varnames = {'Masking Condition' 'Contrast'};
+
 for su = 1 : length(subjects)    
-    M(su,:) = reshape(acc(:,:, su)', 15, 1)';
+    M(su,:) = reshape(acc(:,:, su)', levels(1) * levels(2), 1)';
 end
-levels = [3 5];
+levels = [4 5];
 varnames = {'Masking Condition' 'Contrast'};
 
 aov_acc_exp1 = teg_repeated_measures_ANOVA(M, levels, varnames);
@@ -186,18 +189,25 @@ aov_acc_exp1 = teg_repeated_measures_ANOVA(M, levels, varnames);
 bw = squeeze(accuracies(1,2,:));
 fw = squeeze(accuracies(2,2,:));
 md = squeeze(accuracies(3,2,:));
+ctr = squeeze(accuracies(4,2,:));
 [h,p1,ci,stats] = ttest(bw, fw); % paired samples t-test
 [h,p2,ci,stats] = ttest(bw, md); % Only this is significant after correcting for 0.05 / 6 = 0.008
 [h,p3,ci,stats] = ttest(md, fw);
+[h,p4,ci,stats] = ttest(ctr, fw);
+[h,p5,ci,stats] = ttest(ctr, bw);
+[h,p6,ci,stats] = ttest(ctr, md);
 
-% 12% contrast
+% 16% contrast
 bw = squeeze(accuracies(1,3,:));
 fw = squeeze(accuracies(2,3,:));
 md = squeeze(accuracies(3,3,:));
-[h,p4,ci,stats] = ttest(bw, fw);
-[h,p5,ci,stats] = ttest(bw, md); % Only this is significant after correcting for 0.05 / 6 = 0.008
-[h,p6,ci,stats] = ttest(md, fw);
-
+ctr = squeeze(accuracies(4,3,:));
+[h,p7,ci,stats] = ttest(bw, fw);
+[h,p8,ci,stats] = ttest(bw, md); % Only this is significant after correcting for 0.05 / 6 = 0.008
+[h,p9,ci,stats] = ttest(md, fw);
+[h,p10,ci,stats] = ttest(ctr, fw);
+[h,p11,ci,stats] = ttest(ctr, bw);
+[h,p12,ci,stats] = ttest(ctr, md);
 
 
 
